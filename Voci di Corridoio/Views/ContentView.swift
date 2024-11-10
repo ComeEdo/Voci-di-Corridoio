@@ -9,25 +9,27 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
     
     var body: some View {
-        Button("Register") {
-            Text("roma la mejo").cornerRadius(10)
+        NavigationStack {
+            VStack {
+                Text("This is the First View")
+                NavigationLink("Go to Second View", destination: SwiftUIView())
+            }
+            .navigationTitle("Home")
         }
-        Button("dio") {
-            Text("Sign In")
-        }
+        Button("Outlined Button") {}
+            .foregroundColor(.blue)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.blue, lineWidth: 2)
+            )
+            .padding()
     }
     
 }
-    
 
 #Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    ContentView()
 }

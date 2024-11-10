@@ -13,7 +13,11 @@ struct Voci_di_CorridoioApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView().environment(\.managedObjectContext, persistenceController.container.viewContext)
+            if true {
+                LogIn()
+            } else {
+                ContentView()
+            }
         }
     }
 }
