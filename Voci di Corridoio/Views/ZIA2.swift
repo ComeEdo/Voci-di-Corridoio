@@ -1,14 +1,14 @@
 //
-//  SignInView.swift
+//  ZIA 2.swift
 //  Voci di Corridoio
 //
-//  Created by Edoardo Frezzotti on 10/11/24.
+//  Created by Edoardo Frezzotti on 23/11/24.
 //
 
 import SwiftUI
 
 
-struct SignInView: View {
+struct ZIA2: View {
     enum Field: Hashable {
         case mail
         case password
@@ -29,15 +29,24 @@ struct SignInView: View {
     var body: some View {
         ZStack {
             ColorGradient()
+            VStack {
+                Divider().offset(y: lastTextFieldPosition)
+                Spacer()
+            }.ignoresSafeArea()
+                .zIndex(10)
+            VStack {
+                Image(systemName: "triangle")
+                    .font(.system(size: 200))
+                Text("textfield \(lastTextFieldPosition)\nkeyboard \(keyboardHeight)\nscroll \(scrollOffset)\nbutton \(buttonPosition)")
+                Spacer()
+            }.zIndex(2)
             VScrollView {
-                VStack(spacing: 20) {
+                VStack(alignment: .center, spacing: 20) {
                     VStack {
                         HStack {
                             AuthTextField("Email", text: $mail)
                                 .emailFieldStyle($mail)
                                 .focused($focusedField, equals: .mail)
-                                .onChange(of: focusedField) {
-                                }
                             ValidationIcon(functions.isValidStudentEmail(mail)).validationIconStyle(mail.isEmpty)
                         }
                         Divider().dividerStyle(functions.isValidStudentEmail(mail) || mail.isEmpty)
@@ -51,8 +60,7 @@ struct SignInView: View {
                             ValidationIcon(functions.isValidPassword(password)).validationIconStyle(password.isEmpty)
                         }
                         Divider().dividerStyle(functions.isValidPassword(password) || password.isEmpty)
-                        Text(functions.isValidPassword(password) ? "Password valida." : "Maiuscola, minuscuola, numero e carattere speciale in mezzo.")
-                            .validationTextStyle(password.isEmpty, isValid: functions.isValidPassword(password))
+                        Text(functions.isValidPassword(password) ? "Password valida." : "Maiuscola, minuscuola, numero e carattere speciale in mezzo.").validationTextStyle(password.isEmpty, isValid: functions.isValidPassword(password))
                             .overlay(GeometryReader { localGeometry in
                                 Color.clear
                                     .onAppear {
@@ -61,25 +69,25 @@ struct SignInView: View {
                                     .onChange(of: buttonPosition) {
                                         functions.updateTextFieldPosition(localGeometry, textFieldPosition: &lastTextFieldPosition, offset: &scrollOffset, buttonPosition: buttonPosition, keyboardHeight: keyboardHeight)
                                     }
-                            })
+                            }).border(.red, width: 1)
                     }
                 }
             }
             .scrollDismissesKeyboard(.interactively)
             .scrollIndicators(.never)
             .padding(.horizontal, 30)
-            //            .offset(y: -scrollOffset)
+//            .offset(y: -scrollOffset)
             .padding(.bottom, scrollOffset*2)
             .animation(.easeOut(duration: 0.3), value: scrollOffset)
             .zIndex(0)
             VStack {
                 Spacer()
                 Button(action: handleLogin) {
-                    Text("Accedi").textButtonStyle(isFormValid())
+                    Text("Accedi")
+                        .textButtonStyle(isFormValid())
                 }
                 .disabled(!isFormValid())
-                .overlay(
-                    GeometryReader { localGeometry in
+                .overlay(GeometryReader { localGeometry in
                         Color.clear
                             .onAppear {
                                 functions.updateButtonPosition(localGeometry, button: &buttonPosition)
@@ -90,7 +98,7 @@ struct SignInView: View {
                     })
             }
             .zIndex(1)
-            .padding(.bottom, keyboardHeight == 0 ? 0 : UIScreen.main.bounds.height - keyboardHeight - 30)
+            .padding(.bottom, keyboardHeight == 0 ? 0 : (UIScreen.main.bounds.height - keyboardHeight - 30))
             .animation(.easeOut(duration: 0.3), value: keyboardHeight)
         }
         .getKeyboardYAxis($keyboardHeight)
@@ -111,5 +119,5 @@ struct SignInView: View {
 }
 
 #Preview {
-    SignInView()
+    ZIA2()
 }

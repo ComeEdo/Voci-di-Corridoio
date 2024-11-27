@@ -8,25 +8,29 @@
 import SwiftUI
 
 struct LogIn: View {
+    
     var body: some View {
-        VStack() {
-            NavigationStack {
-                ZStack {
-                    VStack {
-                        Text("Welcome")
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
-                            .padding()
-                        Spacer()
-                    }
-                    VStack {
-                        NavigationLink("Accedi", destination: SignInView())
-                            .fontWeight(.bold)
-                            .frame(width: 200)
-                            .padding(.vertical)
-                            .background(.tint, in: RoundedRectangle(cornerRadius: 20))
-                            .foregroundColor(Color.white)
-                        NavigationLink("Registarti", destination: RegisterView())
+        NavigationStack {
+            ZStack {
+                ColorGradient()
+                VStack {
+                    Text("Welcome")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .padding()
+                    Spacer()
+                }
+                VStack {
+                    NavigationLink(destination: SignInView()) {
+                            Text("Accedi")
+                                .fontWeight(.bold)
+                                .frame(width: 200)
+                                .padding(.vertical)
+                                .background(.tint, in: RoundedRectangle(cornerRadius: 20))
+                                .foregroundColor(Color.white)
+                        }
+                    NavigationLink(destination: RegisterView()) {
+                        Text("Registarti")
                             .fontWeight(.bold)
                             .frame(width: 200)
                             .padding(.vertical)
@@ -35,7 +39,7 @@ struct LogIn: View {
                     }
                 }
             }
-        }
+        }.foregroundStyle(Color.accentColor)
     }
 }
 

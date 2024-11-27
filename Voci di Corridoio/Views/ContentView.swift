@@ -19,11 +19,11 @@ struct ContentView: View {
             .navigationTitle("Home")
         }
         Button("Outlined Button") {}
-            .foregroundColor(.blue)
+            .foregroundColor(Color.accentColor)
             .padding()
             .frame(maxWidth: .infinity)
             .background(RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.blue, lineWidth: 2)
+                .stroke(.tint, lineWidth: 2)
             )
             .padding()
     }
