@@ -111,6 +111,7 @@ struct ZIA2: View {
         }
         .getKeyboardYAxis($keyboardHeight)
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .toolbarBackground(.hidden)
     }
     private func handleLogin() {
         focusedField = nil

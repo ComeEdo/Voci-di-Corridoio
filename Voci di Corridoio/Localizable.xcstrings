@@ -19,7 +19,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Log in"
+            "value" : "Sign in"
           }
         }
       }
@@ -66,6 +66,9 @@
     },
     "Email" : {
       "shouldTranslate" : false
+    },
+    "Hello, World!" : {
+
     },
     "La mail deve finire con %@." : {
       "localizations" : {

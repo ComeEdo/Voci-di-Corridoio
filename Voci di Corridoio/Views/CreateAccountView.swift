@@ -1,5 +1,5 @@
 //
-//  RegisterView.swift
+//  CreateAccountView.swift
 //  Voci di Corridoio
 //
 //  Created by Edoardo Frezzotti on 10/11/24.
@@ -183,6 +183,7 @@ struct CreateAccountView: View {
         }
         .getKeyboardYAxis($keyboardHeight)
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .toolbarBackground(.hidden)
     }
     private func handleRegister() {
         focusedField = nil

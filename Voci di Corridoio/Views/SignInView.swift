@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct LogInView: View {
+struct SignInView: View {
     enum Field: Hashable {
         case mail
         case password
@@ -101,6 +101,7 @@ struct LogInView: View {
         }
         .getKeyboardYAxis($keyboardHeight)
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .toolbarBackground(.hidden)
     }
     private func handleLogin() {
         focusedField = nil
@@ -127,5 +128,5 @@ struct LogInView: View {
 }
 
 #Preview {
-    LogInView()
+    SignInView()
 }
