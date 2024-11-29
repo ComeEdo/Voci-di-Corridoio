@@ -139,11 +139,11 @@ public struct VScrollView<Content>: View where Content: View {
 }
 
 struct AuthTextField: View {
-    private let placeholder: String
+    private let placeholder: LocalizedStringResource
     @Binding private var text: String
     private let isSecure: Bool
     
-    init(_ placeholder: String, text: Binding<String>, isSecure: Bool = false) {
+    init(_ placeholder: LocalizedStringResource, text: Binding<String>, isSecure: Bool = false) {
         self.placeholder = placeholder
         self._text = text
         self.isSecure = isSecure

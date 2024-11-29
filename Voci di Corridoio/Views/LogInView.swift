@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct SignInView: View {
+struct LogInView: View {
     enum Field: Hashable {
         case mail
         case password
@@ -36,7 +36,9 @@ struct SignInView: View {
                             AuthTextField("Email", text: $mail)
                                 .emailFieldStyle($mail)
                                 .focused($focusedField, equals: .mail)
-                                .onChange(of: focusedField) {
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    focusedField = getFocus()
                                 }
                             ValidationIcon(functions.isValidStudentEmail(mail)).validationIconStyle(mail.isEmpty)
                         }
@@ -48,6 +50,10 @@ struct SignInView: View {
                             AuthTextField("Password", text: $password, isSecure: true)
                                 .passwordFieldStyle($password)
                                 .focused($focusedField, equals: .password)
+                                .submitLabel(.done)
+                                .onSubmit {
+                                    focusedField = getFocus()
+                                }
                             ValidationIcon(functions.isValidPassword(password)).validationIconStyle(password.isEmpty)
                         }
                         Divider().dividerStyle(functions.isValidPassword(password) || password.isEmpty)
@@ -105,11 +111,21 @@ struct SignInView: View {
         }
     }
     
+    private func getFocus() -> Field? {
+        if !functions.isValidStudentEmail(mail) {
+            return .mail
+        }
+        if !functions.isValidPassword(password) {
+            return .password
+        }
+        return nil
+    }
+    
     private func isFormValid() -> Bool {
         return functions.isValidStudentEmail(mail) && functions.isValidPassword(password)
     }
 }
 
 #Preview {
-    SignInView()
+    LogInView()
 }

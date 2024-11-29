@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RegisterView: View {
+struct CreateAccountView: View {
     enum Field: Hashable {
         case name
         case surname
@@ -49,10 +49,14 @@ struct RegisterView: View {
                                     .personalFieldStyle($name)
                                     .focused($focusedField, equals: .name)
                                     .focused($isName)
+                                    .submitLabel(.next)
                                     .onChange(of: isName) {
                                         if (isName == false) {
                                             name = validateText(name)
                                         }
+                                    }
+                                    .onSubmit {
+                                        focusedField = getFocus()
                                     }
                                 ValidationIcon(isValidInput(name)).validationIconStyle(name.isEmpty)
                             }
@@ -65,10 +69,14 @@ struct RegisterView: View {
                                     .personalFieldStyle($surname)
                                     .focused($focusedField, equals: .surname)
                                     .focused($isSurname)
+                                    .submitLabel(.next)
                                     .onChange(of: isSurname) {
                                         if (isSurname == false) {
                                             surname = validateText(surname)
                                         }
+                                    }
+                                    .onSubmit {
+                                        focusedField = getFocus()
                                     }
                                 ValidationIcon(isValidInput(surname)).validationIconStyle(surname.isEmpty)
                             }
@@ -78,9 +86,13 @@ struct RegisterView: View {
                     }
                     VStack {
                         HStack {
-                            AuthTextField("Username", text: $username)
+                            AuthTextField("Nome utente", text: $username)
                                 .passwordFieldStyle($username)
                                 .focused($focusedField, equals: .username)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    focusedField = getFocus()
+                                }
                             ValidationIcon(isValidUsername()).validationIconStyle(username.isEmpty)
                         }
                         Divider().dividerStyle(isValidUsername() || username.isEmpty)
@@ -91,6 +103,10 @@ struct RegisterView: View {
                             AuthTextField("Email", text: $mail)
                                 .emailFieldStyle($mail)
                                 .focused($focusedField, equals: .mail)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    focusedField = getFocus()
+                                }
                             ValidationIcon(functions.isValidStudentEmail(mail)).validationIconStyle(mail.isEmpty)
                         }
                         Divider().dividerStyle(functions.isValidStudentEmail(mail) || mail.isEmpty)
@@ -101,6 +117,10 @@ struct RegisterView: View {
                             AuthTextField("Password", text: $password, isSecure: true)
                                 .passwordFieldStyle($password)
                                 .focused($focusedField, equals: .password)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    focusedField = getFocus()
+                                }
                             ValidationIcon(functions.isValidPassword(password)).validationIconStyle(password.isEmpty)
                         }
                         Divider().dividerStyle(functions.isValidPassword(password) || password.isEmpty)
@@ -111,6 +131,10 @@ struct RegisterView: View {
                             AuthTextField("Ripeti password", text: $repeatedPassword, isSecure: true)
                                 .passwordFieldStyle($repeatedPassword)
                                 .focused($focusedField, equals: .repeatedPassword)
+                                .submitLabel(.done)
+                                .onSubmit {
+                                    focusedField = getFocus()
+                                }
                             ValidationIcon(isPasswordsMatch()).validationIconStyle(repeatedPassword.isEmpty)
                         }
                         Divider().dividerStyle(isPasswordsMatch() || repeatedPassword.isEmpty)
@@ -137,7 +161,7 @@ struct RegisterView: View {
             VStack() {
                 Spacer()
                 Button(action: handleRegister) {
-                    Text("Accedi").textButtonStyle(isFormValid())
+                    Text("Crea account").textButtonStyle(isFormValid())
                 }
                 .disabled(!isFormValid())
                 .overlay(
@@ -150,7 +174,9 @@ struct RegisterView: View {
                                 functions.updateButtonPosition(localGeometry, button: &buttonPosition)
                             }
                     })
-                Text("Manca qualcosa").validationTextStyle(isAllGood, alignment: .center)
+                if !isAllGood {
+                    Text("Manca qualcosa").validationTextStyle(alignment: .center)
+                }
             }
             .padding(.bottom, keyboardHeight == 0 ? 0 : UIScreen.main.bounds.height - keyboardHeight - 30)
             .animation(.easeOut(duration: 0.3), value: keyboardHeight)
@@ -176,6 +202,28 @@ struct RegisterView: View {
         }
     }
     
+    private func getFocus() -> Field? {
+        if !isValidInput(name) {
+            return .name
+        }
+        if !isValidInput(surname) {
+            return .surname
+        }
+        if !isValidUsername() {
+            return .username
+        }
+        if !functions.isValidStudentEmail(mail) {
+            return .mail
+        }
+        if !functions.isValidPassword(password) {
+            return .password
+        }
+        if !isPasswordsMatch() {
+            return .repeatedPassword
+        }
+        return nil
+    }
+    
     private func isFormValid() -> Bool {
         return isValidInput(name) &&
         isValidInput(surname) &&
@@ -190,7 +238,7 @@ struct RegisterView: View {
     }
     
     private func isValidInput(_ text: String) -> Bool {
-        if (text == "") {
+        if text == "" {
             return false
         }
         let allowedCharacterSet = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzáàéèíìóòúùâêîôûäëïöüãñåæçđðøýÿßẞęÈÉƏÊËĘĖĒEÙÚÛÜŪŨÌÍÎÏĮİĪįÄÖłşğĨǏŁĻĽĶĦĞĠŹŽŻÇĆČĊÑŃŅŇŴĚẼŘȚŤÝŶŸŲŮŰǓŵěẽēėřțťŷųůűūũǔıīĩǐőōõœǒǎāăąșśšďġħķļľźžżćčċńņň ")
@@ -198,6 +246,9 @@ struct RegisterView: View {
     }
     
     private func isValidUsername() -> Bool {
+        if username == "" {
+            return false
+        }
         let allowedCharacterSet = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._")
         return username.rangeOfCharacter(from: allowedCharacterSet.inverted) == nil
     }
@@ -211,5 +262,5 @@ struct RegisterView: View {
 }
 
 #Preview {
-    RegisterView()
+    CreateAccountView()
 }

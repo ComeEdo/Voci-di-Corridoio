@@ -42,7 +42,7 @@ extension View {
         self.opacity(isEmpty ? 0.0 : 1.0)
     }
     
-    func validationTextStyle(_ isEmpty: Bool, isValid: Bool = false, alignment: Alignment = .leading) -> some View {
+    func validationTextStyle(_ isEmpty: Bool = false, isValid: Bool = false, alignment: Alignment = .leading) -> some View {
         self
             .font(.system(size: 12))
             .frame(maxWidth: .infinity, alignment: alignment)

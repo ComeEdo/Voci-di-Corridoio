@@ -1,0 +1,206 @@
+{
+  "sourceLanguage" : "it",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
+    "%@ non è valido, si possono usare solo . _." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ it’s not valid, you can only use . _."
+          }
+        }
+      }
+    },
+    "Accedi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log in"
+          }
+        }
+      }
+    },
+    "Benvenuto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome"
+          }
+        }
+      }
+    },
+    "Cognome" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Surname"
+          }
+        }
+      }
+    },
+    "Cognome valido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid surname."
+          }
+        }
+      }
+    },
+    "Crea account" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create account"
+          }
+        }
+      }
+    },
+    "Email" : {
+      "shouldTranslate" : false
+    },
+    "La mail deve finire con %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The mail has to finish in %@."
+          }
+        }
+      }
+    },
+    "Le password sono diverse." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The passwords are different."
+          }
+        }
+      }
+    },
+    "Mail valida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid mail."
+          }
+        }
+      }
+    },
+    "Maiuscola, minuscuola, numero e carattere speciale in mezzo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppercase, lowercase, number, and special character in the middle."
+          }
+        }
+      }
+    },
+    "Manca qualcosa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something is missing."
+          }
+        }
+      }
+    },
+    "Nome" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "Nome utente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Username"
+          }
+        }
+      }
+    },
+    "Nome valido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid name."
+          }
+        }
+      }
+    },
+    "Password" : {
+      "shouldTranslate" : false
+    },
+    "Password valida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid password."
+          }
+        }
+      }
+    },
+    "Ripeti password" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat password"
+          }
+        }
+      }
+    },
+    "Solo lettere." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only letters."
+          }
+        }
+      }
+    },
+    "textfield %lf\nkeyboard %lf\nscroll %lf\nbutton %lf" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "textfield %1$lf\nkeyboard %2$lf\nscroll %3$lf\nbutton %4$lf"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Username valido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid username."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

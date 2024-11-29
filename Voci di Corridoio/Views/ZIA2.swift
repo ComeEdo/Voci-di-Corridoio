@@ -47,6 +47,10 @@ struct ZIA2: View {
                             AuthTextField("Email", text: $mail)
                                 .emailFieldStyle($mail)
                                 .focused($focusedField, equals: .mail)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    focusedField = getFocus()
+                                }
                             ValidationIcon(functions.isValidStudentEmail(mail)).validationIconStyle(mail.isEmpty)
                         }
                         Divider().dividerStyle(functions.isValidStudentEmail(mail) || mail.isEmpty)
@@ -57,6 +61,10 @@ struct ZIA2: View {
                             AuthTextField("Password", text: $password, isSecure: true)
                                 .passwordFieldStyle($password)
                                 .focused($focusedField, equals: .password)
+                                .submitLabel(.done)
+                                .onSubmit {
+                                    focusedField = getFocus()
+                                }
                             ValidationIcon(functions.isValidPassword(password)).validationIconStyle(password.isEmpty)
                         }
                         Divider().dividerStyle(functions.isValidPassword(password) || password.isEmpty)
@@ -111,6 +119,16 @@ struct ZIA2: View {
         } else {
             // Handle login failure
         }
+    }
+    
+    private func getFocus() -> Field? {
+        if !functions.isValidStudentEmail(mail) {
+            return .mail
+        }
+        if !functions.isValidPassword(password) {
+            return .password
+        }
+        return nil
     }
     
     private func isFormValid() -> Bool {

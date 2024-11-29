@@ -14,9 +14,8 @@ struct Voci_di_CorridoioApp: App {
     var body: some Scene {
         WindowGroup {
             if true {
-                LogIn()
+                StartView()
             } else {
-                ContentView()
             }
         }
     }
