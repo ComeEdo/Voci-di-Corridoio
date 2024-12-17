@@ -6,27 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		DBE900CE2CDB76D3009A986A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DBE900AE2CDB76CB009A986A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DBE900B52CDB76CB009A986A;
-			remoteInfo = "Voci di Corridoio";
-		};
-		DBE900D82CDB76D3009A986A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DBE900AE2CDB76CB009A986A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DBE900B52CDB76CB009A986A;
-			remoteInfo = "Voci di Corridoio";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		DBE900B62CDB76CB009A986A /* Voci di Corridoio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Voci di Corridoio.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBE900CD2CDB76D3009A986A /* Voci di CorridoioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Voci di CorridoioTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBE900D72CDB76D3009A986A /* Voci di CorridoioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Voci di CorridoioUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -48,34 +29,10 @@
 			path = "Voci di Corridoio";
 			sourceTree = "<group>";
 		};
-		DBE900D02CDB76D3009A986A /* Voci di CorridoioTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Voci di CorridoioTests";
-			sourceTree = "<group>";
-		};
-		DBE900DA2CDB76D3009A986A /* Voci di CorridoioUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Voci di CorridoioUITests";
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		DBE900B32CDB76CB009A986A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DBE900CA2CDB76D3009A986A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DBE900D42CDB76D3009A986A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -89,8 +46,6 @@
 			isa = PBXGroup;
 			children = (
 				DBE900B82CDB76CB009A986A /* Voci di Corridoio */,
-				DBE900D02CDB76D3009A986A /* Voci di CorridoioTests */,
-				DBE900DA2CDB76D3009A986A /* Voci di CorridoioUITests */,
 				DBE900B72CDB76CB009A986A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -99,8 +54,6 @@
 			isa = PBXGroup;
 			children = (
 				DBE900B62CDB76CB009A986A /* Voci di Corridoio.app */,
-				DBE900CD2CDB76D3009A986A /* Voci di CorridoioTests.xctest */,
-				DBE900D72CDB76D3009A986A /* Voci di CorridoioUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -130,52 +83,6 @@
 			productReference = DBE900B62CDB76CB009A986A /* Voci di Corridoio.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DBE900CC2CDB76D3009A986A /* Voci di CorridoioTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DBE900E52CDB76D3009A986A /* Build configuration list for PBXNativeTarget "Voci di CorridoioTests" */;
-			buildPhases = (
-				DBE900C92CDB76D3009A986A /* Sources */,
-				DBE900CA2CDB76D3009A986A /* Frameworks */,
-				DBE900CB2CDB76D3009A986A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				DBE900CF2CDB76D3009A986A /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				DBE900D02CDB76D3009A986A /* Voci di CorridoioTests */,
-			);
-			name = "Voci di CorridoioTests";
-			packageProductDependencies = (
-			);
-			productName = "Voci di CorridoioTests";
-			productReference = DBE900CD2CDB76D3009A986A /* Voci di CorridoioTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		DBE900D62CDB76D3009A986A /* Voci di CorridoioUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DBE900E82CDB76D3009A986A /* Build configuration list for PBXNativeTarget "Voci di CorridoioUITests" */;
-			buildPhases = (
-				DBE900D32CDB76D3009A986A /* Sources */,
-				DBE900D42CDB76D3009A986A /* Frameworks */,
-				DBE900D52CDB76D3009A986A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				DBE900D92CDB76D3009A986A /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				DBE900DA2CDB76D3009A986A /* Voci di CorridoioUITests */,
-			);
-			name = "Voci di CorridoioUITests";
-			packageProductDependencies = (
-			);
-			productName = "Voci di CorridoioUITests";
-			productReference = DBE900D72CDB76D3009A986A /* Voci di CorridoioUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -188,14 +95,6 @@
 				TargetAttributes = {
 					DBE900B52CDB76CB009A986A = {
 						CreatedOnToolsVersion = 16.1;
-					};
-					DBE900CC2CDB76D3009A986A = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = DBE900B52CDB76CB009A986A;
-					};
-					DBE900D62CDB76D3009A986A = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = DBE900B52CDB76CB009A986A;
 					};
 				};
 			};
@@ -215,28 +114,12 @@
 			projectRoot = "";
 			targets = (
 				DBE900B52CDB76CB009A986A /* Voci di Corridoio */,
-				DBE900CC2CDB76D3009A986A /* Voci di CorridoioTests */,
-				DBE900D62CDB76D3009A986A /* Voci di CorridoioUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		DBE900B42CDB76CB009A986A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DBE900CB2CDB76D3009A986A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DBE900D52CDB76D3009A986A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,34 +136,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DBE900C92CDB76D3009A986A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DBE900D32CDB76D3009A986A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		DBE900CF2CDB76D3009A986A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
-			targetProxy = DBE900CE2CDB76D3009A986A /* PBXContainerItemProxy */;
-		};
-		DBE900D92CDB76D3009A986A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
-			targetProxy = DBE900D82CDB76D3009A986A /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DBE900E12CDB76D3009A986A /* Debug */ = {
@@ -474,78 +330,6 @@
 			};
 			name = Release;
 		};
-		DBE900E62CDB76D3009A986A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 35V38T2Y43;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-CorridoioTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Voci di Corridoio.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Voci di Corridoio";
-			};
-			name = Debug;
-		};
-		DBE900E72CDB76D3009A986A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 35V38T2Y43;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-CorridoioTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Voci di Corridoio.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Voci di Corridoio";
-			};
-			name = Release;
-		};
-		DBE900E92CDB76D3009A986A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 35V38T2Y43;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-CorridoioUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Voci di Corridoio";
-			};
-			name = Debug;
-		};
-		DBE900EA2CDB76D3009A986A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 35V38T2Y43;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-CorridoioUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Voci di Corridoio";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -563,24 +347,6 @@
 			buildConfigurations = (
 				DBE900E12CDB76D3009A986A /* Debug */,
 				DBE900E22CDB76D3009A986A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DBE900E52CDB76D3009A986A /* Build configuration list for PBXNativeTarget "Voci di CorridoioTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DBE900E62CDB76D3009A986A /* Debug */,
-				DBE900E72CDB76D3009A986A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DBE900E82CDB76D3009A986A /* Build configuration list for PBXNativeTarget "Voci di CorridoioUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DBE900E92CDB76D3009A986A /* Debug */,
-				DBE900EA2CDB76D3009A986A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

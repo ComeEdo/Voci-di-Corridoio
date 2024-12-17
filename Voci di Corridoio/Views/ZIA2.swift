@@ -14,7 +14,7 @@ struct ZIA2: View {
         case password
     }
     
-    private var functions: ViewFunctions = ViewFunctions()
+    private var functions: Utility = Utility()
     
     @State private var mail: String = ""
     @State private var password: String = ""

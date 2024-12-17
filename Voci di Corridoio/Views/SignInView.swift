@@ -14,9 +14,10 @@ struct SignInView: View {
         case password
     }
     
-    private var functions: ViewFunctions = ViewFunctions()
+    private var functions: Utility = Utility()
     
-    @State private var mail: String = ""
+    @State private var user: User = User()
+    
     @State private var password: String = ""
     
     @FocusState private var focusedField: Field?
@@ -33,17 +34,17 @@ struct SignInView: View {
                 VStack(spacing: 20) {
                     VStack {
                         HStack {
-                            AuthTextField("Email", text: $mail)
-                                .emailFieldStyle($mail)
+                            AuthTextField("Email", text: $user.mail)
+                                .emailFieldStyle($user.mail)
                                 .focused($focusedField, equals: .mail)
                                 .submitLabel(.next)
                                 .onSubmit {
                                     focusedField = getFocus()
                                 }
-                            ValidationIcon(functions.isValidStudentEmail(mail)).validationIconStyle(mail.isEmpty)
+                            ValidationIcon(functions.isValidStudentEmail(user.mail)).validationIconStyle(user.mail.isEmpty)
                         }
-                        Divider().dividerStyle(functions.isValidStudentEmail(mail) || mail.isEmpty)
-                        Text(functions.isValidStudentEmail(mail) ? "Mail valida." : "La mail deve finire con \(functions.combinedMailEnding).").validationTextStyle(mail.isEmpty, isValid: functions.isValidStudentEmail(mail))
+                        Divider().dividerStyle(functions.isValidStudentEmail(user.mail) || user.mail.isEmpty)
+                        Text(functions.isValidStudentEmail(user.mail) ? "Mail valida." : "La mail deve finire con \(functions.combinedMailEnding).").validationTextStyle(user.mail.isEmpty, isValid: functions.isValidStudentEmail(user.mail))
                     }
                     VStack {
                         HStack {
@@ -113,7 +114,7 @@ struct SignInView: View {
     }
     
     private func getFocus() -> Field? {
-        if !functions.isValidStudentEmail(mail) {
+        if !functions.isValidStudentEmail(user.mail) {
             return .mail
         }
         if !functions.isValidPassword(password) {
@@ -123,7 +124,7 @@ struct SignInView: View {
     }
     
     private func isFormValid() -> Bool {
-        return functions.isValidStudentEmail(mail) && functions.isValidPassword(password)
+        return functions.isValidStudentEmail(user.mail) && functions.isValidPassword(password)
     }
 }
 

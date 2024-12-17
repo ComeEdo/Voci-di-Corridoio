@@ -1,5 +1,5 @@
 //
-//  ViewUtility.swift
+//  Utility.swift
 //  Voci di Corridoio
 //
 //  Created by Edoardo Frezzotti on 27/11/24.
@@ -23,7 +23,7 @@ struct ColorGradient: View {
     }
 }
 
-struct ViewFunctions {
+struct Utility {
     let mailEnding: String = ".stud@itisgalileiroma"
     let fine: String = ".it"
     let combinedMailEnding: String
@@ -75,7 +75,7 @@ struct ViewFunctions {
     }
     
     func updateTextFieldPosition(_ localGeometry: GeometryProxy, textFieldPosition: inout CGFloat, offset: inout CGFloat, buttonPosition: CGFloat, keyboardHeight: CGFloat) {
-        textFieldPosition = localGeometry.frame(in: .global).maxY + offset
+        textFieldPosition = localGeometry.frame(in: .global).maxY + offset + 1
         
         if textFieldPosition > buttonPosition, buttonPosition > .zero {
             offset = textFieldPosition - buttonPosition
