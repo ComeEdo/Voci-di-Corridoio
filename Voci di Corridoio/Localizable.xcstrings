@@ -4,7 +4,47 @@
     "" : {
       "shouldTranslate" : false
     },
-    "%@ non è valido, si possono usare solo . _." : {
+    "%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@ è già in uso." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is already in use."
+          }
+        }
+      }
+    },
+    "%@ è troppo corto." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is too short."
+          }
+        }
+      }
+    },
+    "%@ è troppo lungo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is too long."
+          }
+        }
+      }
+    },
+    "%@ non è valido, poi usare solo . _." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14,12 +54,32 @@
         }
       }
     },
+    "%@ sei stato registrato con successo!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ you have been successfully registered! "
+          }
+        }
+      }
+    },
+    "%@ valido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is valid:"
+          }
+        }
+      }
+    },
     "Accedi" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sign in"
+            "value" : "Log in"
           }
         }
       }
@@ -34,6 +94,16 @@
         }
       }
     },
+    "C'è stato un errore del server: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There has been a problem with the server: %@"
+          }
+        }
+      }
+    },
     "Cognome" : {
       "localizations" : {
         "en" : {
@@ -44,12 +114,12 @@
         }
       }
     },
-    "Cognome valido." : {
+    "Contiene caratteri non validi." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Valid surname."
+            "value" : "Contains invalid characters."
           }
         }
       }
@@ -64,18 +134,171 @@
         }
       }
     },
-    "Email" : {
-      "shouldTranslate" : false
-    },
-    "Hello, World!" : {
-
-    },
-    "La mail deve finire con %@." : {
+    "DAJE" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The mail has to finish in %@."
+            "value" : "let’s go!"
+          }
+        }
+      }
+    },
+    "È stato trovato un conflitto: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conflict has been found: %@"
+          }
+        }
+      }
+    },
+    "È vuoto." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It’s empty."
+          }
+        }
+      }
+    },
+    "Email" : {
+      "shouldTranslate" : false
+    },
+    "Email dello studente valida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Student email is valid."
+          }
+        }
+      }
+    },
+    "Email istituzionale valida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Institutional email is valid."
+          }
+        }
+      }
+    },
+    "Errore" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
+    },
+    "Errore JSON riscontrato:\n%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON error encountered:\\n%@"
+          }
+        }
+      }
+    },
+    "Errore riscontrato:\n%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error encountered:%@"
+          }
+        }
+      }
+    },
+    "Errore sconosciuto." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown erroe."
+          }
+        }
+      }
+    },
+    "Impossibile interpretare la risposta: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to interpret the response: %@."
+          }
+        }
+      }
+    },
+    "L'email %@ è già in uso." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email %@ is already in use."
+          }
+        }
+      }
+    },
+    "L'email non è disponibile." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email is not available."
+          }
+        }
+      }
+    },
+    "L'email non è valida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email is not valid."
+          }
+        }
+      }
+    },
+    "L'URL %@ non è valido" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The URL %@ is not valid"
+          }
+        }
+      }
+    },
+    "L'username %@ è già in uso." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The username %@ is already in use."
+          }
+        }
+      }
+    },
+    "L'username %@ e la email %@ sono già in uso." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The username %1$@ and the email %2$@ are already in use."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "L'username %1$@ e la email %2$@ sono già in uso."
           }
         }
       }
@@ -86,26 +309,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The passwords are different."
-          }
-        }
-      }
-    },
-    "Mail valida." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valid mail."
-          }
-        }
-      }
-    },
-    "Maiuscola, minuscuola, numero e carattere speciale in mezzo." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uppercase, lowercase, number, and special character in the middle."
           }
         }
       }
@@ -140,18 +343,28 @@
         }
       }
     },
-    "Nome valido." : {
+    "Password" : {
+      "shouldTranslate" : false
+    },
+    "Password non disponibile." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Valid name."
+            "value" : "Password is not available."
           }
         }
       }
     },
-    "Password" : {
-      "shouldTranslate" : false
+    "Password non valida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password is not valid."
+          }
+        }
+      }
     },
     "Password valida." : {
       "localizations" : {
@@ -159,6 +372,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Valid password."
+          }
+        }
+      }
+    },
+    "Richiesta fallita: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request failed: %@"
+          }
+        }
+      }
+    },
+    "Richiesta non completa: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incomplete request: %@ "
           }
         }
       }
@@ -173,33 +406,52 @@
         }
       }
     },
-    "Solo lettere." : {
+    "Risposta del server non valida: %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Only letters."
+            "value" : "Server response is not valid: %@"
           }
         }
       }
     },
-    "textfield %lf\nkeyboard %lf\nscroll %lf\nbutton %lf" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "textfield %1$lf\nkeyboard %2$lf\nscroll %3$lf\nbutton %4$lf"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "Username valido." : {
+    "Si è verificato un errore JSON: %@." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Valid username."
+            "value" : "A JSON error is found: %@"
+          }
+        }
+      }
+    },
+    "Successo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success"
+          }
+        }
+      }
+    },
+    "URL non valido: %@/check-username." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL is not valid: %@/check-username."
+          }
+        }
+      }
+    },
+    "Valido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid."
           }
         }
       }

@@ -17,7 +17,6 @@ struct SignInView: View {
     private var functions: Utility = Utility()
     
     @State private var user: User = User()
-    
     @State private var password: String = ""
     
     @FocusState private var focusedField: Field?
@@ -30,6 +29,11 @@ struct SignInView: View {
     var body: some View {
         ZStack {
             ColorGradient()
+            VStack {
+                Divider().offset(y: lastTextFieldPosition)
+                Spacer()
+            }.ignoresSafeArea()
+                .zIndex(10)
             VScrollView {
                 VStack(spacing: 20) {
                     VStack {
@@ -41,10 +45,9 @@ struct SignInView: View {
                                 .onSubmit {
                                     focusedField = getFocus()
                                 }
-                            ValidationIcon(functions.isValidStudentEmail(user.mail)).validationIconStyle(user.mail.isEmpty)
+                            ValidationIcon(functions.mailChecker(user.mail).result).validationIconStyle(user.mail.isEmpty)
                         }
-                        Divider().dividerStyle(functions.isValidStudentEmail(user.mail) || user.mail.isEmpty)
-                        Text(functions.isValidStudentEmail(user.mail) ? "Mail valida." : "La mail deve finire con \(functions.combinedMailEnding).").validationTextStyle(user.mail.isEmpty, isValid: functions.isValidStudentEmail(user.mail))
+                        DividerText(result: functions.mailChecker(user.mail), empty: user.mail.isEmpty)
                     }
                     VStack {
                         HStack {
@@ -55,11 +58,9 @@ struct SignInView: View {
                                 .onSubmit {
                                     focusedField = getFocus()
                                 }
-                            ValidationIcon(functions.isValidPassword(password)).validationIconStyle(password.isEmpty)
+                            ValidationIcon(functions.passwordChecker(password).result).validationIconStyle(password.isEmpty)
                         }
-                        Divider().dividerStyle(functions.isValidPassword(password) || password.isEmpty)
-                        Text(functions.isValidPassword(password) ? "Password valida." : "Maiuscola, minuscuola, numero e carattere speciale in mezzo.")
-                            .validationTextStyle(password.isEmpty, isValid: functions.isValidPassword(password))
+                        DividerText(result: functions.passwordChecker(password), empty: password.isEmpty)
                             .overlay(GeometryReader { localGeometry in
                                 Color.clear
                                     .onAppear {
@@ -75,7 +76,6 @@ struct SignInView: View {
             .scrollDismissesKeyboard(.interactively)
             .scrollIndicators(.never)
             .padding(.horizontal, 30)
-            //            .offset(y: -scrollOffset)
             .padding(.bottom, scrollOffset*2)
             .animation(.easeOut(duration: 0.3), value: scrollOffset)
             .zIndex(0)
@@ -85,8 +85,7 @@ struct SignInView: View {
                     Text("Accedi").textButtonStyle(isFormValid())
                 }
                 .disabled(!isFormValid())
-                .overlay(
-                    GeometryReader { localGeometry in
+                .overlay(GeometryReader { localGeometry in
                         Color.clear
                             .onAppear {
                                 functions.updateButtonPosition(localGeometry, button: &buttonPosition)
@@ -114,17 +113,17 @@ struct SignInView: View {
     }
     
     private func getFocus() -> Field? {
-        if !functions.isValidStudentEmail(user.mail) {
+        if !functions.mailChecker(user.mail).result {
             return .mail
         }
-        if !functions.isValidPassword(password) {
+        if !functions.passwordChecker(password).result {
             return .password
         }
         return nil
     }
     
     private func isFormValid() -> Bool {
-        return functions.isValidStudentEmail(user.mail) && functions.isValidPassword(password)
+        return functions.mailChecker(user.mail).result && functions.passwordChecker(password).result
     }
 }
 

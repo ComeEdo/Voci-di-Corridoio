@@ -16,7 +16,7 @@ struct User: CustomStringConvertible, Equatable, Comparable, Codable {
     var username: String
     var mail: String
     
-    init(name: String = "", surname: String = "", username: String = "", mail: String = "edo.stud@itisgalileiroma.it") {
+    init(name: String = "", surname: String = "", username: String = "", mail: String = ".stud@itisgalileiroma.it") {
         self.name = name
         self.surname = surname
         self.username = username

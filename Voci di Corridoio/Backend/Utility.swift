@@ -23,55 +23,125 @@ struct ColorGradient: View {
     }
 }
 
+struct ResultLocalized {
+    let result: Bool
+    let message: LocalizedStringResource
+}
+
+struct AlertResponse {
+    let title: LocalizedStringResource
+    let message: LocalizedStringResource
+}
+
 struct Utility {
-    let mailEnding: String = ".stud@itisgalileiroma"
+    let student: String = ".stud"
+    let domain: String = "@itisgalileiroma"
     let fine: String = ".it"
-    let combinedMailEnding: String
+    let studentMail: String
+    let schoolMail: String
+    static let MIN_LENGHT = 2
+    static let MIN_LENGHT_INPUT = 1
+    static let MAX_LENGHT = 128
+    static let MAX_LENGHT_USERNAME = 40
     
     init() {
-        self.combinedMailEnding = mailEnding + fine
+        self.studentMail = student + domain + fine
+        self.schoolMail = domain + fine
     }
-
-    func isValidStudentEmail(_ email: String) -> Bool {
-        if email.hasPrefix(".") || email.contains("..") {
-            return false
+    
+    func mailChecker(_ email: String, avoid: [String] = []) -> ResultLocalized {
+        guard !avoid.contains(email.lowercased()) else {
+            return ResultLocalized(result: false, message: "L'email non è disponibile.")
         }
-        let pattern = "^[A-Za-z0-9._+-]+\\\(mailEnding)\\\(fine)$"
-        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", pattern)
-        return emailPredicate.evaluate(with: email)
+        guard !isValidStudentEmail(email) else {
+            return ResultLocalized(result: true, message: "Email dello studente valida.")
+        }
+        guard !isValidSchoolEmail(email) else {
+            return ResultLocalized(result: true, message: "Email istituzionale valida.")
+        }
+        /*guard !Utility.isValidEmail(email) else {
+         return ResultLocalized(result: true, message: "Email valida.")
+         }*/
+        return ResultLocalized(result: false, message: "L'email non è valida.")
     }
-
-    func isValidPassword(_ password: String) -> Bool {
-        if password.count < 4 {
+    
+    private func isValidStudentEmail(_ email: String) -> Bool {
+        let pattern = "^[A-Za-z0-9._-]+\\\(studentMail)$"
+        guard !(email.isEmpty || email.hasPrefix(".") || email.contains("..") || email.contains("__") || email.hasPrefix("_") || email.contains("--") || email.hasPrefix("-") || email.count < Utility.MIN_LENGHT || email.count > Utility.MAX_LENGHT) else {
             return false
         }
-        let allowedCharacterSet = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_+={}[]|\\;:\"<>,./?")
-        if password.rangeOfCharacter(from: allowedCharacterSet.inverted) != nil {
+        if let domainPart = email.split(separator: "@").first {
+            let domain = domainPart.split(separator: ".").dropLast().joined(separator: ".")
+            guard !(domain.hasSuffix("-") || domain.hasSuffix("_")) else {
+                return false
+            }
+        }
+        return email.matches(pattern)
+    }
+    
+    private func isValidSchoolEmail(_ email: String) -> Bool {
+        let pattern = "^[A-Za-z0-9._-]+\\\(schoolMail)$"
+        guard !(email.isEmpty || email.hasPrefix(".") || email.contains("..") || email.contains("__") || email.hasPrefix("_") || email.contains("--") || email.hasPrefix("-") || email.contains(".@") || email.contains("_@") || email.contains("-@") || email.count < Utility.MIN_LENGHT || email.count > Utility.MAX_LENGHT) else {
             return false
         }
+        return email.matches(pattern)
+    }
+    
+    static func isValidEmail(_ email: String) -> Bool {
+        let validEmailRegex = "^[a-z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        guard !(email.isEmpty || email.contains("..") || email.hasPrefix(".") || email.contains(".@") || email.contains("@.") || email.contains("__") || email.hasPrefix("_") || email.contains("_@") || email.contains("--") || email.hasPrefix("-") || email.contains("-@") || email.contains("@-") || email.count < MIN_LENGHT || email.count > MAX_LENGHT) else {
+            return false
+        }
+        
+        if let domainPart = email.split(separator: "@").last {
+            let domain = domainPart.split(separator: ".").dropLast().joined(separator: ".")
+            guard !(domain.hasSuffix("-")) else {
+                return false
+            }
+        }
+        
+        return email.matches(validEmailRegex)
+    }
+    
+    static func isValidHardPassword(_ password: String) -> Bool {
+        guard !(password.isEmpty || password.count < Utility.MIN_LENGHT || password.count > Utility.MAX_LENGHT) else {
+            return false
+        }
+        
+        let characterSet = "^[A-Za-z0-9~`!@#$%^&*()\\-_=\\+\\{\\}\\[\\]|\\\\;:\\\"<>,./?]+$"
+        guard password.matches(characterSet) else {
+            return false
+        }
+        
         let uppercasePattern = ".*[A-Z]+.*"
         let lowercasePattern = ".*[a-z]+.*"
         let numberPattern = ".*[0-9]+.*"
         let specialCharacterPattern = ".*[~`!@#$%^&*()\\-_=\\+\\{\\}\\[\\]|\\\\;:\\\"<>,./?]+.*"
-        let uppercaseTest = NSPredicate(format: "SELF MATCHES %@", uppercasePattern)
-        let lowercaseTest = NSPredicate(format: "SELF MATCHES %@", lowercasePattern)
-        let numberTest = NSPredicate(format: "SELF MATCHES %@", numberPattern)
-        let specialCharacterTest = NSPredicate(format: "SELF MATCHES %@", specialCharacterPattern)
-        
-        if !(uppercaseTest.evaluate(with: password) &&
-             lowercaseTest.evaluate(with: password) &&
-             numberTest.evaluate(with: password) &&
-             specialCharacterTest.evaluate(with: password)) {
+        guard password.matches(uppercasePattern), password.matches(lowercasePattern), password.matches(numberPattern), password.matches(specialCharacterPattern) else {
             return false
         }
         
-        let firstCharacter = password.first!
-        let lastCharacter = password.last!
+        let alphaNum = "^[A-Za-z0-9]$"
+        return String(password.first!).matches(alphaNum) && String(password.last!).matches(alphaNum)
+    }
+    
+    static private func isValidPassword(_ password: String) -> Bool {
+        guard !(password.isEmpty || password.count < Utility.MIN_LENGHT || password.count > Utility.MAX_LENGHT) else {
+            return false
+        }
         
-        let alphanumericCharacterSet = CharacterSet.alphanumerics
-        
-        return alphanumericCharacterSet.contains(firstCharacter.unicodeScalars.first!) &&
-        alphanumericCharacterSet.contains(lastCharacter.unicodeScalars.first!)
+        let validPasswordRegex = "^[A-Za-z0-9~`!@#$%^&*()\\-_+={}\\[\\]|\\\\;:\"<>,./?]+$"
+        return password.matches(validPasswordRegex)
+    }
+    
+    func passwordChecker(_ password: String, avoid: [String] = []) -> ResultLocalized {
+        guard !avoid.contains(password) else {
+            return ResultLocalized(result: false, message: "Password non disponibile.")
+        }
+        guard !Utility.isValidPassword(password) else {
+            return ResultLocalized(result: true, message: "Password valida.")
+        }
+        return ResultLocalized(result: false, message: "Password non valida.")
     }
     
     func updateTextFieldPosition(_ localGeometry: GeometryProxy, textFieldPosition: inout CGFloat, offset: inout CGFloat, buttonPosition: CGFloat, keyboardHeight: CGFloat) {
@@ -84,26 +154,50 @@ struct Utility {
             offset = .zero
         }
     }
-
+    
     func updateButtonPosition(_ localGeometry: GeometryProxy, button: inout CGFloat) {
         button = localGeometry.frame(in: .global).minY
     }
 }
 
-struct ValidationIcon: View {
-    private let correct: String
-    private let wrong: String
-    private let isValid: Bool
+struct DividerText: View {
+    let result: ResultLocalized
+    let empty: Bool
     
-    init(_ isValid: Bool, correct: String = "checkmark.circle", wrong: String = "xmark.circle") {
-        self.correct = correct
-        self.wrong = wrong
-        self.isValid = isValid
+    init(result: ResultLocalized, empty: Bool) {
+        self.result = result
+        self.empty = empty
     }
     
     var body: some View {
-        Image(systemName: isValid ? correct : wrong)
-            .foregroundStyle(isValid ? Color.green : Color.red)
+        VStack {
+            Divider().dividerStyle(result.result || empty)
+            Text(result.message).validationTextStyle(empty, isValid: result.result)
+        }
+    }
+}
+
+struct ValidationIcon: View {
+    private let icon: String
+    private let color: Color
+    
+    init(_ isValid: Bool?, correct: String = "checkmark.circle", wrong: String = "xmark.circle") {
+        if let isValid = isValid {
+            self.icon = isValid ? correct : wrong
+            self.color = isValid ? .green : .red
+        } else {
+            self.icon = ""
+            self.color = .clear
+        }
+    }
+    
+    var body: some View {
+        if icon.isEmpty {
+            ProgressView()
+        } else {
+            Image(systemName: icon)
+                .foregroundStyle(color)
+        }
     }
 }
 
@@ -155,5 +249,12 @@ struct AuthTextField: View {
         } else {
             TextField("", text: $text, prompt: Text(placeholder).textColor())
         }
+    }
+}
+
+extension String {
+    func matches(_ regex: String) -> Bool {
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        return predicate.evaluate(with: self)
     }
 }

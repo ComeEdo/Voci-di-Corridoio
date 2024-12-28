@@ -12,8 +12,75 @@ let server = "levoci.local"
 let port = 3000
 let URN = "https://\(server):\(port)"
 
-import Foundation
-import Combine
+enum RegistrationError: Error {
+    case invalidResponse(message: String)
+    case unknownError(message: String)
+    case JSONError(message: String)
+    case invalidURL(message: String)
+    
+    var message: AlertResponse {
+        switch self {
+        case .invalidResponse(let message):
+            return AlertResponse(title: "Errore", message: "Risposta del server non valida: \(message)")
+        case .unknownError(let message):
+            return AlertResponse(title: "Errore", message: "Errore riscontrato:\n\(message)")
+        case .JSONError(let message):
+            return AlertResponse(title: "Errore", message: "Errore JSON riscontrato:\n\(message)")
+        case .invalidURL(let message):
+            return AlertResponse(title: "Errore", message: "L'URL \(message) non è valido")
+        }
+    }
+}
+
+enum Codes: Error {
+    case code400(message: String)
+    case code409(message: String)
+    case code500(message: String)
+    
+    var response: AlertResponse {
+        switch self {
+        case .code400(let message):
+            return AlertResponse(title: "Errore", message: "Richiesta non completa: \(message)")
+        case .code409(let message):
+            return AlertResponse(title: "Errore", message: "È stato trovato un conflitto: \(message)")
+        case .code500(let message):
+            return AlertResponse(title: "Errore", message: "C'è stato un errore del server: \(message)")
+        }
+    }
+}
+
+enum Alert {
+    case sucess(username: String)
+    case failureUsername(username: String)
+    case failureMail(mail: String)
+    case failureUsernameMail(username: String, mail: String)
+    
+    var response: AlertResponse {
+        switch self {
+        case .sucess(let username):
+            return AlertResponse(title: "Successo", message: "\(username) sei stato registrato con successo!")
+        case .failureUsername(let username):
+            return AlertResponse(title: "Errore", message: "L'username \(username) è già in uso.")
+        case .failureMail(let mail):
+            return AlertResponse(title: "Errore", message: "L'email \(mail) è già in uso.")
+        case .failureUsernameMail(let username, let mail):
+            return AlertResponse(title: "Errore", message: "L'username \(username) e la email \(mail) sono già in uso.")
+        }
+    }
+}
+
+struct ApiResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: DataField?
+}
+
+struct DataField: Codable {
+    let exists: Bool?
+    let username: String?
+    let email: String?
+}
+
 
 class UserManager: ObservableObject {
     @Published var isAuthenticated = false
@@ -21,35 +88,72 @@ class UserManager: ObservableObject {
     @Published var currentUser: User? = nil
     
     // Register a user
-    func registerUser(password: String, completion: @escaping (Result<String, Error>) -> Void) {
-        let url = URL(string: "\(URN)/register")!
+    @MainActor
+    func registerUser(password: String) async throws -> Alert {
+        guard let url = URL(string: "\(URN)/register") else {
+            throw RegistrationError.invalidURL(message: "\(URN)/register")
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        // Create the registration payload
+        let registrationPayload: [String: Any] = [
+            "name": currentUser?.name ?? "",
+            "surname": currentUser?.surname ?? "",
+            "username": currentUser?.username ?? "",
+            "email": currentUser?.mail ?? "",
+            "password": password
+        ]
+        
         do {
-            print(try JSONEncoder().encode(currentUser))
-            request.httpBody = try JSONEncoder().encode(currentUser)
-        } catch {
-            completion(.failure(error))
-            return
+            request.httpBody = try JSONSerialization.data(withJSONObject: registrationPayload)
+        } catch let err {
+            throw RegistrationError.JSONError(message: err.localizedDescription)
         }
         
         let session = URLSession.shared
-        session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw RegistrationError.invalidResponse(message: "Invalid response from server.")
             }
             
-            if let response = response as? HTTPURLResponse, response.statusCode == 201 {
-                completion(.success("User registered successfully"))
-            } else {
-                let errorMessage = String(data: data ?? Data(), encoding: .utf8) ?? "Unknown error"
-                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: errorMessage])))
+            let statusCode = httpResponse.statusCode
+            let apiResponse = try JSONDecoder().decode(ApiResponse.self, from: data)
+            print("Success: \(apiResponse.success)")
+            print("Message: \(apiResponse.message)")
+            
+            switch statusCode {
+            case 201:
+                if let username = apiResponse.data?.username {
+                    return Alert.sucess(username: username)
+                } else {
+                    return Alert.sucess(username: "User") //boh
+                }
+            case 400:
+                throw Codes.code400(message: apiResponse.message)
+            case 409:
+                if let username = apiResponse.data?.username, let mail = apiResponse.data?.email {
+                    return Alert.failureUsernameMail(username: username, mail: mail)
+                } else if let username = apiResponse.data?.username {
+                    return Alert.failureUsername(username: username)
+                } else if let mail = apiResponse.data?.email {
+                    return Alert.failureMail(mail: mail)
+                } else {
+                    throw Codes.code409(message: apiResponse.message)
+                }
+            case 500:
+                throw Codes.code500(message: apiResponse.message)
+            default:
+                throw RegistrationError.invalidResponse(message: apiResponse.message)
             }
-        }.resume()
+        } catch let error as DecodingError {
+            throw RegistrationError.JSONError(message: error.localizedDescription)
+        } catch {
+            throw RegistrationError.unknownError(message: error.localizedDescription)
+        }
     }
     /*
     // Login user and get a token

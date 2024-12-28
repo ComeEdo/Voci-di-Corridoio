@@ -11,9 +11,25 @@ extension Text {
     func textColor() -> Text {
         self.foregroundStyle(.accent)
     }
+    func title() -> Text {
+        self
+            .textColor()
+            .font(.title2)
+            .fontWeight(.bold)
+    }
+    func body() -> Text {
+        self
+            .textColor()
+            .font(.body)
+            .fontWeight(.semibold)
+    }
 }
 
 extension View {
+    func rotateIt() -> some View {
+        self.modifier(RotatingModifier())
+    }
+    
     func personalFieldStyle(_ cleanText: Binding<String>) -> some View {
         self
             .autocorrectionDisabled()
@@ -39,7 +55,7 @@ extension View {
     }
     
     func validationIconStyle(_ isEmpty: Bool) -> some View {
-        self.opacity(isEmpty ? 0.0 : 1.0)
+        self.opacity(isEmpty ? 0 : 1)
     }
     
     func validationTextStyle(_ isEmpty: Bool = false, isValid: Bool = false, alignment: Alignment = .leading) -> some View {
@@ -47,7 +63,7 @@ extension View {
             .font(.system(size: 12))
             .frame(maxWidth: .infinity, alignment: alignment)
             .foregroundStyle(isValid ? Color.accentColor : Color.red)
-            .opacity(isEmpty ? 0.0 : 1.0)
+            .opacity(isEmpty ? 0 : 1)
     }
     
     func dividerStyle(_ isValid: Bool) -> some View {
@@ -65,6 +81,14 @@ extension View {
     
     func getKeyboardYAxis(_ height: Binding<CGFloat>) -> some View {
         self.modifier(KeyboardPosition(height))
+    }
+    
+    func alertStyle() -> some View {
+        self
+            .padding()
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 20).inset(by: -10))
+            .padding(.horizontal, 60)
+            .shadow(radius: 100)
     }
 }
 
@@ -115,5 +139,24 @@ struct KeyboardPosition: ViewModifier{
     private func removeKeyboardObservers() {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+}
+
+private struct RotatingModifier: ViewModifier {
+    @State private var rotation: Double = 0
+    
+    func body(content: Content) -> some View {
+        content
+            .rotationEffect(.degrees(rotation))
+            .onAppear() {
+                withAnimation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: false)) {
+                    rotation = 360
+                }
+            }
+            .onDisappear() {
+                withAnimation(Animation.easeInOut(duration: 1)) {
+                    rotation = 0
+                }
+            }
     }
 }
