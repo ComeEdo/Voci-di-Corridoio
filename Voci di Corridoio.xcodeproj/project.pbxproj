@@ -13,6 +13,7 @@
 		DB371E6C2D365C2800BA210F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DB371E512D365C2800BA210F /* .gitignore */; };
 		DB371E6D2D365C2800BA210F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB371E522D365C2800BA210F /* Assets.xcassets */; };
 		DB371E6F2D365C2800BA210F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DB371E542D365C2800BA210F /* Localizable.xcstrings */; };
+		DB371E982D36646400BA210F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DB371E972D36645F00BA210F /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voci_di_CorridoioApp.swift; sourceTree = "<group>"; };
 		DB371E592D365C2800BA210F /* Voci_di_Corridoio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Voci_di_Corridoio.xcdatamodel; sourceTree = "<group>"; };
 		DB371E952D36603E00BA210F /* Voci di Corridoio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Voci di Corridoio.app"; path = "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/build/Debug-iphoneos/Voci di Corridoio.app"; sourceTree = "<absolute>"; };
+		DB371E972D36645F00BA210F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -110,6 +112,7 @@
 		DBE900AD2CDB76CB009A986A = {
 			isa = PBXGroup;
 			children = (
+				DB371E972D36645F00BA210F /* README.md */,
 				DB371E732D365C3500BA210F /* Backend */,
 				DB371E7B2D365C3500BA210F /* Notifications */,
 				DB371E7D2D365C3500BA210F /* Preview Content */,
@@ -197,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB371E6C2D365C2800BA210F /* .gitignore in Resources */,
+				DB371E982D36646400BA210F /* README.md in Resources */,
 				DB371E6D2D365C2800BA210F /* Assets.xcassets in Resources */,
 				DB371E6F2D365C2800BA210F /* Localizable.xcstrings in Resources */,
 			);
