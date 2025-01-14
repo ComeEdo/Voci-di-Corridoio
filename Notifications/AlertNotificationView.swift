@@ -10,8 +10,8 @@ import SwiftUI
 struct AlertNotificationView: View {
     @ObservedObject private(set) var alert: AlertNotification
     
-    init(_ notification: MainNotification.NotificationStructure, dismissButtonTitle: LocalizedStringResource, onDismiss: @escaping () -> Void) {
-        self.alert = AlertNotification(notification: notification, dismissButtonTitle: dismissButtonTitle, onDismiss: onDismiss)
+    init(_ notification: AlertNotification) {
+        self.alert = notification
     }
     
     var body: some View {
@@ -29,19 +29,20 @@ struct AlertNotificationView: View {
                     .body()
                     .multilineTextAlignment(.center)
                 
-                Button(action: alert.onDismiss) {
+                Button() {
+                    alert.onDismiss()
+                } label: {
                     Text(alert.dismissButtonTitle)
                         .textButtonStyle(true)
                 }
             }
             .alertStyle()
         }
-        .transition(.blurReplace)
     }
 }
 
 #Preview {
-    AlertNotificationView(MainNotification.NotificationStructure(title: "Test", message: "Prova Prova Prova Prova Prova Prova Prova Prova"), dismissButtonTitle: "DAJE", onDismiss: {
+    AlertNotificationView(AlertNotification(notification: MainNotification.NotificationStructure(title: "Test", message: "Prova Prova Prova Prova Prova Prova Prova Prova"), dismissButtonTitle: "DAJE", type: .error, onDismiss: {
         print("test")
-    })
+    }))
 }

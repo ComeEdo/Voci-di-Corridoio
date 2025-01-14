@@ -4,9 +4,6 @@
     "" : {
       "shouldTranslate" : false
     },
-    "  SIUM%lld" : {
-
-    },
     "%@" : {
       "localizations" : {
         "en" : {
@@ -486,6 +483,9 @@
     "Si è verificato un errore sconosciuto. Riprova." : {
 
     },
+    "SIUM%lld" : {
+
+    },
     "studente" : {
 
     },
@@ -498,6 +498,9 @@
           }
         }
       }
+    },
+    "Test alert notifications" : {
+
     },
     "Test bottom notifications" : {
 

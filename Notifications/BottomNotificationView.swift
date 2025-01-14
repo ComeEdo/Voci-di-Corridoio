@@ -17,9 +17,8 @@ struct BottomNotificationView: View {
     
     private var type: Animation = Animation.bouncy(extraBounce: 0.1)
     
-    init(_ notification: MainNotification.NotificationStructure, duration: TimeInterval, onDismiss: @escaping () -> Void) {
-        self.bottom = BottomNotification(notification: notification, duration: duration, onDismiss: onDismiss)
-        self.offsetY = defaultOffset
+    init(_ notification: BottomNotification) {
+        self.bottom = notification
     }
     
     var body: some View {
@@ -58,11 +57,20 @@ struct BottomNotificationView: View {
     }
     
     private func showNotification() {
-        withAnimation(type) {
-            offsetY = 0
+        withAnimation(self.type) {
+            self.offsetY = 0
         }
-        dismissalTimer = Timer.scheduledTimer(withTimeInterval: bottom.duration, repeats: false) { a in
-            self.dismissNotification()
+        HapticFeedback.trigger(HapticType.impact(style: .heavy))
+        startTimer()
+    }
+
+    
+    func startTimer() {
+        self.dismissalTimer = Timer.scheduledTimer(withTimeInterval: bottom.duration, repeats: false) { [self] _ in
+            if NotificationManager.shared.BottomShowing?.id == self.bottom.id {
+                self.dismissNotification()
+            }
+            self.cancellationCleanup()
         }
     }
     
@@ -70,16 +78,15 @@ struct BottomNotificationView: View {
         withAnimation(type) {
             offsetY = defaultOffset
         }
-        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { _ in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
             self.bottom.onDismiss()
-            print("dismissed")
         }
     }
     
     private func cancellationCleanup() {
-            dismissalTimer?.invalidate()
-            dismissalTimer = nil
-        }
+        dismissalTimer?.invalidate()
+        dismissalTimer = nil
+    }
     
     // MARK: - Gesture Handling
     
@@ -106,5 +113,5 @@ struct BottomNotificationView: View {
 }
 
 #Preview {
-    BottomNotificationView(MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbb"), duration: 6, onDismiss: {print("workaa")})
+    BottomNotificationView(BottomNotification(notification: MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbb"), duration: 6, type: .error, onDismiss: {print("workaa")}))
 }

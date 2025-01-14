@@ -18,10 +18,17 @@ struct StartView: View {
                     #if DEBUG
                     Button {
                         for i in 1...10 {
-                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "  SIUM\(i)", message: "matto"), duration: 2)
+                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto"), duration: 1)
                         }
                     } label: {
                         Text("Test bottom notifications").textButtonStyle(true)
+                    }
+                    Button {
+                        for i in 1...10 {
+                            notificationManager.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto"))
+                        }
+                    } label: {
+                        Text("Test alert notifications").textButtonStyle(true)
                     }
                     #endif
                     Text("Benvenuto")

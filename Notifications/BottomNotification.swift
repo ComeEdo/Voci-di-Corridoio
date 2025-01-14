@@ -8,10 +8,10 @@
 import SwiftUI
 
 class BottomNotification: MainNotification {
-    @Published private(set) var duration: TimeInterval
+    let duration: TimeInterval
     
-    init(notification: NotificationStructure, duration: TimeInterval, onDismiss: @escaping () -> Void) {
+    init(notification: NotificationStructure, duration: TimeInterval, type: NotificationType, onDismiss: @escaping () -> Void) {
         self.duration = duration
-        super.init(notification: notification, onDismiss: onDismiss)
+        super.init(notification: notification, type: type, onDismiss: onDismiss)
     }
 }

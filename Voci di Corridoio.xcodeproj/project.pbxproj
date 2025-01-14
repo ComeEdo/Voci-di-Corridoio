@@ -34,6 +34,7 @@
 		DB371E922D365C3500BA210F /* Exceptions for "Backend" folder in "Voci di Corridoio" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				HapticFeedback.swift,
 				User.swift,
 				UserManager.swift,
 				Utility.swift,
