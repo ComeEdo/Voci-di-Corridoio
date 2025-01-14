@@ -6,27 +6,85 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DB371E682D365C2800BA210F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB371E552D365C2800BA210F /* Persistence.swift */; };
+		DB371E692D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */; };
+		DB371E6A2D365C2800BA210F /* Voci_di_CorridoioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */; };
+		DB371E6C2D365C2800BA210F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DB371E512D365C2800BA210F /* .gitignore */; };
+		DB371E6D2D365C2800BA210F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB371E522D365C2800BA210F /* Assets.xcassets */; };
+		DB371E6F2D365C2800BA210F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DB371E542D365C2800BA210F /* Localizable.xcstrings */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		DBE900B62CDB76CB009A986A /* Voci di Corridoio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Voci di Corridoio.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB060AE22D365B4E00865ABB /* Voci di Corridoio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Voci di Corridoio.xcodeproj"; path = "Voci di Corridoio/Voci di Corridoio.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		DB371E512D365C2800BA210F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		DB371E522D365C2800BA210F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DB371E532D365C2800BA210F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB371E542D365C2800BA210F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		DB371E552D365C2800BA210F /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		DB371E562D365C2800BA210F /* Voci_di_Corridoio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Voci_di_Corridoio.entitlements; sourceTree = SOURCE_ROOT; };
+		DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voci_di_CorridoioApp.swift; sourceTree = "<group>"; };
+		DB371E592D365C2800BA210F /* Voci_di_Corridoio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Voci_di_Corridoio.xcdatamodel; sourceTree = "<group>"; };
+		DB371E952D36603E00BA210F /* Voci di Corridoio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Voci di Corridoio.app"; path = "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/build/Debug-iphoneos/Voci di Corridoio.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		DBE900DF2CDB76D3009A986A /* Exceptions for "Voci di Corridoio" folder in "Voci di Corridoio" target */ = {
+		DB371E922D365C3500BA210F /* Exceptions for "Backend" folder in "Voci di Corridoio" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				User.swift,
+				UserManager.swift,
+				Utility.swift,
+			);
+			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
+		};
+		DB371E932D365C3500BA210F /* Exceptions for "Preview Content" folder in "Voci di Corridoio" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Preview Assets.xcassets",
+			);
+			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
+		};
+		DB371E942D365C3500BA210F /* Exceptions for "Views" folder in "Voci di Corridoio" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CreateAccountView.swift,
+				SignInView.swift,
+				StartView.swift,
+				ViewExtensions.swift,
 			);
 			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DBE900B82CDB76CB009A986A /* Voci di Corridoio */ = {
+		DB371E732D365C3500BA210F /* Backend */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				DBE900DF2CDB76D3009A986A /* Exceptions for "Voci di Corridoio" folder in "Voci di Corridoio" target */,
+				DB371E922D365C3500BA210F /* Exceptions for "Backend" folder in "Voci di Corridoio" target */,
 			);
-			path = "Voci di Corridoio";
+			path = Backend;
+			sourceTree = "<group>";
+		};
+		DB371E7B2D365C3500BA210F /* Notifications */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		DB371E7D2D365C3500BA210F /* Preview Content */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DB371E932D365C3500BA210F /* Exceptions for "Preview Content" folder in "Voci di Corridoio" target */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		DB371E822D365C3500BA210F /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DB371E942D365C3500BA210F /* Exceptions for "Views" folder in "Voci di Corridoio" target */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -42,20 +100,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB060AE52D365B4E00865ABB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DBE900AD2CDB76CB009A986A = {
 			isa = PBXGroup;
 			children = (
-				DBE900B82CDB76CB009A986A /* Voci di Corridoio */,
-				DBE900B72CDB76CB009A986A /* Products */,
+				DB371E732D365C3500BA210F /* Backend */,
+				DB371E7B2D365C3500BA210F /* Notifications */,
+				DB371E7D2D365C3500BA210F /* Preview Content */,
+				DB371E822D365C3500BA210F /* Views */,
+				DB371E512D365C2800BA210F /* .gitignore */,
+				DB371E522D365C2800BA210F /* Assets.xcassets */,
+				DB371E532D365C2800BA210F /* Info.plist */,
+				DB371E542D365C2800BA210F /* Localizable.xcstrings */,
+				DB371E552D365C2800BA210F /* Persistence.swift */,
+				DB371E562D365C2800BA210F /* Voci_di_Corridoio.entitlements */,
+				DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */,
+				DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */,
 			);
-			sourceTree = "<group>";
-		};
-		DBE900B72CDB76CB009A986A /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DBE900B62CDB76CB009A986A /* Voci di Corridoio.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,13 +141,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DBE900B82CDB76CB009A986A /* Voci di Corridoio */,
+				DB371E7B2D365C3500BA210F /* Notifications */,
 			);
 			name = "Voci di Corridoio";
 			packageProductDependencies = (
 			);
 			productName = "Voci di Corridoio";
-			productReference = DBE900B62CDB76CB009A986A /* Voci di Corridoio.app */;
+			productReference = DB371E952D36603E00BA210F /* Voci di Corridoio.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -109,8 +176,14 @@
 			mainGroup = DBE900AD2CDB76CB009A986A;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = DBE900B72CDB76CB009A986A /* Products */;
+			productRefGroup = DBE900AD2CDB76CB009A986A;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DB060AE52D365B4E00865ABB /* Products */;
+					ProjectRef = DB060AE22D365B4E00865ABB /* Voci di Corridoio.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				DBE900B52CDB76CB009A986A /* Voci di Corridoio */,
@@ -123,6 +196,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB371E6C2D365C2800BA210F /* .gitignore in Resources */,
+				DB371E6D2D365C2800BA210F /* Assets.xcassets in Resources */,
+				DB371E6F2D365C2800BA210F /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +209,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB371E682D365C2800BA210F /* Persistence.swift in Sources */,
+				DB371E692D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld in Sources */,
+				DB371E6A2D365C2800BA210F /* Voci_di_CorridoioApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,15 +223,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Voci di Corridoio/Voci_di_Corridoio.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Voci_di_Corridoio.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Voci di Corridoio/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Voci di Corridoio/Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = VDC;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -161,6 +240,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -180,14 +260,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Voci di Corridoio/Voci_di_Corridoio.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Voci_di_Corridoio.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Voci di Corridoio/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
 				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Voci di Corridoio/Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = VDC;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -196,11 +276,13 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-Corridoio";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -354,6 +436,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DB371E592D365C2800BA210F /* Voci_di_Corridoio.xcdatamodel */,
+			);
+			currentVersion = DB371E592D365C2800BA210F /* Voci_di_Corridoio.xcdatamodel */;
+			path = Voci_di_Corridoio.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = DBE900AE2CDB76CB009A986A /* Project object */;
 }

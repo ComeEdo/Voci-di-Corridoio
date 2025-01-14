@@ -17,22 +17,19 @@ struct CreateAccountView: View {
         case repeatedPassword
     }
     
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
     
     private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
     
-    @StateObject var userManager: UserManager = UserManager()
+    @EnvironmentObject private var userManager: UserManager
+    @EnvironmentObject private var notificationManager: NotificationManager
     
-    private var functions: Utility = Utility()
+    private var functions: Utility = Utility.shared
     
     @State private var isGoingWell: Bool = true
     @State private var isOperationFinished: Bool = true
     
     @State private var isRegistered: Bool = false
-    
-    @State private var isAlertVisible: Bool = false
-    @State private var alertTitle: LocalizedStringResource = ""
-    @State private var alertMessage: LocalizedStringResource = ""
     
     @State private var user: User = User()
     
@@ -46,6 +43,7 @@ struct CreateAccountView: View {
     
     @State private var usernameCheckTask: URLSessionDataTask?
     
+    @State private var email: String = ""
     @State private var password: String = ""
     @State private var repeatedPassword: String = ""
     
@@ -58,15 +56,21 @@ struct CreateAccountView: View {
     @State private var scrollOffset: CGFloat = .zero
     @State private var keyboardHeight: CGFloat = .zero
     
+    @State private var button: CGFloat = .zero
+    
+    @State private var bbbb: CGFloat = .zero
+    
+    init() {}
+    
     var body: some View {
         ZStack {
-            ColorGradient()
-                .zIndex(0)
+            ColorGradient().zIndex(0)
             VScrollView {
                 VStack(spacing: 20) {
+                    Text("\(button)")
                     nameSurname()
                     usernameView()
-                    mailView()
+                    emailView()
                     passwordView()
                     repeatedPasswordView()
                 }
@@ -75,8 +79,9 @@ struct CreateAccountView: View {
             .scrollIndicators(.never)
             .padding(.horizontal, 30)
             .padding(.bottom, scrollOffset*2)
-            .animation(.easeOut(duration: 0.3), value: scrollOffset)
-            .zIndex(1)
+            .animation(.easeInOut(duration: 0.3), value: scrollOffset)
+            .zIndex(10)
+            .simultaneousGesture(dragGesture, including: .all)
             VStack() {
                 Spacer()
                 Button(action: handleRegister) {
@@ -92,41 +97,34 @@ struct CreateAccountView: View {
                             .onChange(of: keyboardHeight) {
                                 functions.updateButtonPosition(localGeometry, button: &buttonPosition)
                             }
+                            .onChange(of: button) {
+                                if keyboardHeight != 0 && button > 0 {
+                                    functions.updateButtonPosition(localGeometry, button: &buttonPosition)
+                                }
+                            }
                     })
                 if !isGoingWell {
                     Text("Manca qualcosa").validationTextStyle(alignment: .center)
                 }
             }
             .padding(.bottom, keyboardHeight == 0 ? 0 : UIScreen.main.bounds.height - keyboardHeight - 30)
-            .animation(.easeOut(duration: 0.3), value: keyboardHeight)
+            .animation(.easeInOut(duration: 0.3), value: keyboardHeight)
+            .offset(y: button)
             .zIndex(2)
         }
         .getKeyboardYAxis($keyboardHeight)
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbarBackground(.hidden)
-        .navigationBarBackButtonHidden(!isOperationFinished || isAlertVisible)
+        .navigationBarBackButtonHidden(!isOperationFinished)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                if !isOperationFinished || isAlertVisible {
+                if !isOperationFinished {
                     Image(systemName: "arrow.2.circlepath")
                         .rotateIt()
                         .fontWeight(.bold)
                 }
             }
         }
-        .overlay(
-            Group {
-                if isAlertVisible {
-                    AlertView(title: alertTitle, message: alertMessage) {
-                        if isRegistered == true {
-                            exit()
-                        } else {
-                            isAlertVisible = false
-                        }
-                    }
-                }
-            }
-        )
     }
     
     private func nameView() -> some View {
@@ -202,19 +200,19 @@ struct CreateAccountView: View {
         }
     }
     
-    private func mailView() -> some View {
+    private func emailView() -> some View {
         VStack {
             HStack {
-                AuthTextField("Email", text: $user.mail)
-                    .emailFieldStyle($user.mail)
+                AuthTextField("Email", text: $email)
+                    .emailFieldStyle($email)
                     .focused($focusedField, equals: .mail)
                     .submitLabel(.next)
                     .onSubmit {
                         focusedField = getFocus()
                     }
-                ValidationIcon(functions.mailChecker(user.mail, avoid: avoidMails).result).validationIconStyle(user.mail.isEmpty)
+                ValidationIcon(functions.mailChecker(email, avoid: avoidMails).result).validationIconStyle(email.isEmpty)
             }
-            DividerText(result: functions.mailChecker(user.mail, avoid: avoidMails), empty: user.mail.isEmpty)
+            DividerText(result: functions.mailChecker(email, avoid: avoidMails), empty: email.isEmpty)
         }
     }
     
@@ -250,13 +248,35 @@ struct CreateAccountView: View {
                 .overlay(GeometryReader { localGeometry in
                     Color.clear
                         .onAppear {
+                            //                            withAnimation {
                             functions.updateTextFieldPosition(localGeometry, textFieldPosition: &lastTextFieldPosition, offset: &scrollOffset, buttonPosition: buttonPosition, keyboardHeight: keyboardHeight)
+                            //                            }
                         }
                         .onChange(of: buttonPosition) {
                             functions.updateTextFieldPosition(localGeometry, textFieldPosition: &lastTextFieldPosition, offset: &scrollOffset, buttonPosition: buttonPosition, keyboardHeight: keyboardHeight)
                         }
                 })
         }
+    }
+    
+    private var dragGesture: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                if keyboardHeight == 0 {
+                    if value.translation.height < 0 {
+                        button = value.translation.height/2
+                    } else {
+                        button = min(20, value.translation.height)/2
+                    }
+                } else {
+                    button = value.translation.height/2
+                }
+            }
+            .onEnded { value in
+                withAnimation {
+                    button = 0
+                }
+            }
     }
     
     private func handleRegister() {
@@ -279,14 +299,13 @@ struct CreateAccountView: View {
     
     private func registerLogic() {
         isOperationFinished = false
-        userManager.currentUser = user
         Task {
             //ordine esecuzione 2
             do {
                 usernameCheckTask?.cancel()
-                let alert = try await userManager.registerUser(password: password)
+                let alert = try await userManager.registerUser(user: user, email: email, password: password)
                 if case .sucess = alert {
-                    isRegistered = true
+                    exit()
                 } else if case .failureUsername(let username) = alert {
                     avoidUsernames.append(username)
                 } else if case .failureMail(let mail) = alert {
@@ -302,6 +321,7 @@ struct CreateAccountView: View {
                 setupAlert(error.response)
             } catch {
                 print(error.localizedDescription)
+                setupAlert(error)
             }
             //ordine esecuzione 3
             if !isRegistered {
@@ -312,10 +332,11 @@ struct CreateAccountView: View {
         //ordine esecuzione 1
     }
     
-    private func setupAlert(_ message: AlertResponse) {
-        alertTitle = message.title
-        alertMessage = message.message
-        isAlertVisible = true
+    private func setupAlert(_ alert: MainNotification.NotificationStructure) {
+        notificationManager.showAlert(alert)
+    }
+    private func setupAlert(_ error: Error) {
+        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)"))
     }
     
     private func getFocus() -> Field? {
@@ -328,7 +349,7 @@ struct CreateAccountView: View {
         if isValidUsername == false {
             return .username
         }
-        if !functions.mailChecker(user.mail, avoid: avoidMails).result {
+        if !functions.mailChecker(email, avoid: avoidMails).result {
             return .mail
         }
         if !functions.passwordChecker(password).result {
@@ -344,7 +365,7 @@ struct CreateAccountView: View {
         return isValidInput(user.name).result &&
         isValidInput(user.surname).result &&
         isValidUsername ?? true &&
-        functions.mailChecker(user.mail, avoid: avoidMails).result &&
+        functions.mailChecker(email, avoid: avoidMails).result &&
         functions.passwordChecker(password).result &&
         isPasswordsMatch().result
     }
@@ -403,10 +424,10 @@ struct CreateAccountView: View {
             isValidUsername = nil
         }
         
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in 
             
-            guard let url = URL(string: "\(URN)/check-username") else {
-                reason = "URL non valido: \(URN)/check-username."
+            guard let url = URL(string: "\(userManager.URN)/check-username") else {
+                reason = "URL non valido: \(userManager.URN)/check-username."
                 isValidUsername = true
                 return
             }
@@ -415,10 +436,10 @@ struct CreateAccountView: View {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
-            let payload: [String: Any] = ["username": username]
+            let body: [String: String] = ["username": username]
             
             do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: payload)
+                request.httpBody = try JSONEncoder().encode(body)
             } catch let err {
                 reason = "\(err.localizedDescription)"
                 isValidUsername = false
@@ -442,9 +463,7 @@ struct CreateAccountView: View {
                 
                 let statusCode = httpResponse.statusCode
                 do {
-                    let apiResponse = try JSONDecoder().decode(ApiResponse.self, from: data)
-                    print("Success: \(apiResponse.success)")
-                    print("Message: \(apiResponse.message)")
+                    let apiResponse = try JSONDecoder().decode(ApiResponse<DataFieldCheckUsername>.self, from: data)
                     
                     switch statusCode {
                     case 200:

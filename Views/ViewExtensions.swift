@@ -82,18 +82,40 @@ extension View {
     func getKeyboardYAxis(_ height: Binding<CGFloat>) -> some View {
         self.modifier(KeyboardPosition(height))
     }
+    /*
+     func alertStyle() -> some View {
+         self
+             .padding()
+             .background(Color.white, in: RoundedRectangle(cornerRadius: 20).inset(by: -10))
+             .padding(.horizontal, 60)
+             .shadow(radius: 100)
+     }
+     */
+    
+    func notificationStyle() -> some View {
+        self
+            .background(RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .inset(by: 5)
+                .stroke(lineWidth: 3)
+                .fill(Color.gray.opacity(0.5))
+            )
+            .background(RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .fill(Color.black.opacity(1))
+                .stroke(.accent)
+                .shadow(color: .accent, radius: 3))
+    }
     
     func alertStyle() -> some View {
         self
             .padding()
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 20).inset(by: -10))
+            .notificationStyle()
             .padding(.horizontal, 60)
-            .shadow(radius: 100)
+//            .shadow(radius: 100)
     }
 }
 
 fileprivate struct NoSpaceModifier: ViewModifier {
-    @Binding var text: String
+    @Binding private var text: String
     
     init(_ text: Binding<String>) {
         self._text = text
@@ -110,7 +132,7 @@ fileprivate struct NoSpaceModifier: ViewModifier {
 }
 
 struct KeyboardPosition: ViewModifier{
-    @Binding var keyboardHeight: CGFloat
+    @Binding private var keyboardHeight: CGFloat
         
     init(_ height: Binding<CGFloat>) {
         self._keyboardHeight = height

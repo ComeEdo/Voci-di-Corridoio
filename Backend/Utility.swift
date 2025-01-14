@@ -28,12 +28,9 @@ struct ResultLocalized {
     let message: LocalizedStringResource
 }
 
-struct AlertResponse {
-    let title: LocalizedStringResource
-    let message: LocalizedStringResource
-}
-
 struct Utility {
+    static let shared = Utility()
+    
     let student: String = ".stud"
     let domain: String = "@itisgalileiroma"
     let fine: String = ".it"
@@ -44,7 +41,7 @@ struct Utility {
     static let MAX_LENGHT = 128
     static let MAX_LENGHT_USERNAME = 40
     
-    init() {
+    private init() {
         self.studentMail = student + domain + fine
         self.schoolMail = domain + fine
     }
@@ -65,7 +62,7 @@ struct Utility {
         return ResultLocalized(result: false, message: "L'email non è valida.")
     }
     
-    private func isValidStudentEmail(_ email: String) -> Bool {
+    func isValidStudentEmail(_ email: String) -> Bool {
         let pattern = "^[A-Za-z0-9._-]+\\\(studentMail)$"
         guard !(email.isEmpty || email.hasPrefix(".") || email.contains("..") || email.contains("__") || email.hasPrefix("_") || email.contains("--") || email.hasPrefix("-") || email.count < Utility.MIN_LENGHT || email.count > Utility.MAX_LENGHT) else {
             return false
@@ -79,7 +76,7 @@ struct Utility {
         return email.matches(pattern)
     }
     
-    private func isValidSchoolEmail(_ email: String) -> Bool {
+    func isValidSchoolEmail(_ email: String) -> Bool {
         let pattern = "^[A-Za-z0-9._-]+\\\(schoolMail)$"
         guard !(email.isEmpty || email.hasPrefix(".") || email.contains("..") || email.contains("__") || email.hasPrefix("_") || email.contains("--") || email.hasPrefix("-") || email.contains(".@") || email.contains("_@") || email.contains("-@") || email.count < Utility.MIN_LENGHT || email.count > Utility.MAX_LENGHT) else {
             return false
@@ -161,8 +158,8 @@ struct Utility {
 }
 
 struct DividerText: View {
-    let result: ResultLocalized
-    let empty: Bool
+    private let result: ResultLocalized
+    private let empty: Bool
     
     init(result: ResultLocalized, empty: Bool) {
         self.result = result
@@ -256,5 +253,50 @@ extension String {
     func matches(_ regex: String) -> Bool {
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         return predicate.evaluate(with: self)
+    }
+}
+
+/*
+extension URLError {
+    
+    var response: MainNotification.NotificationStructure{
+        switch self.code {
+        case .notConnectedToInternet:
+            return MainNotification.NotificationStructure(title: "No Internet", message: "Please check your internet connection and try again.")
+        case .timedOut:
+            return MainNotification.NotificationStructure(title: "Request Timeout", message: "The request timed out. Please try again later.")
+        case .cannotFindHost:
+            return MainNotification.NotificationStructure(title: "Host Not Found", message: "Unable to find the host. Please check the URL or try again later.")
+        case .cannotConnectToHost:
+            return MainNotification.NotificationStructure(title: "Cannot Connect to Host", message: "Unable to connect to the host. Please check the server or your network.")
+        case .badServerResponse:
+            return MainNotification.NotificationStructure(title: "Server Error", message: "The server responded with an error. Please try again later.")
+        case .unsupportedURL:
+            return MainNotification.NotificationStructure(title: "Invalid URL", message: "The provided URL is not valid.")
+        default:
+            return MainNotification.NotificationStructure(title: "Unknown Error", message: "An unknown error occurred. Please try again.")
+        }
+    }
+}*/
+
+extension URLError {
+    
+    var response: MainNotification.NotificationStructure {
+        switch self.code {
+        case .notConnectedToInternet:
+            return MainNotification.NotificationStructure(title: "Nessuna Connessione Internet", message: "Controlla la tua connessione internet e riprova.")
+        case .timedOut:
+            return MainNotification.NotificationStructure(title: "Timeout Richiesta", message: "La richiesta ha impiegato troppo tempo. Riprova più tardi.")
+        case .cannotFindHost:
+            return MainNotification.NotificationStructure(title: "Host Non Trovato", message: "Impossibile trovare l'host. Controlla l'URL o riprova più tardi.")
+        case .cannotConnectToHost:
+            return MainNotification.NotificationStructure(title: "Impossibile Connettersi all'Host", message: "Impossibile connettersi all'host. Controlla il server o la tua rete.")
+        case .badServerResponse:
+            return MainNotification.NotificationStructure(title: "Errore del Server", message: "Il server ha risposto con un errore. Riprova più tardi.")
+        case .unsupportedURL:
+            return MainNotification.NotificationStructure(title: "URL Non Supportato", message: "L'URL fornito non è valido.")
+        default:
+            return MainNotification.NotificationStructure(title: "Errore Sconosciuto", message: "Si è verificato un errore sconosciuto. Riprova.")
+        }
     }
 }

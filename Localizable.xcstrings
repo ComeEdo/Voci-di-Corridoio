@@ -4,6 +4,9 @@
     "" : {
       "shouldTranslate" : false
     },
+    "  SIUM%lld" : {
+
+    },
     "%@" : {
       "localizations" : {
         "en" : {
@@ -74,6 +77,12 @@
         }
       }
     },
+    "%lf" : {
+
+    },
+    "%lld" : {
+
+    },
     "Accedi" : {
       "localizations" : {
         "en" : {
@@ -83,6 +92,9 @@
           }
         }
       }
+    },
+    "admin" : {
+
     },
     "Benvenuto" : {
       "localizations" : {
@@ -123,6 +135,9 @@
           }
         }
       }
+    },
+    "Controlla la tua connessione internet e riprova." : {
+
     },
     "Crea account" : {
       "localizations" : {
@@ -197,12 +212,15 @@
         }
       }
     },
+    "Errore del Server" : {
+
+    },
     "Errore JSON riscontrato:\n%@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "JSON error encountered:\\n%@"
+            "value" : "JSON error encountered:\n%@"
           }
         }
       }
@@ -212,10 +230,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Error encountered:%@"
+            "value" : "Error encountered:\n%@"
           }
         }
       }
+    },
+    "Errore Sconosciuto" : {
+
     },
     "Errore sconosciuto." : {
       "localizations" : {
@@ -227,6 +248,18 @@
         }
       }
     },
+    "Host Non Trovato" : {
+
+    },
+    "Il server ha risposto con un errore. Riprova più tardi." : {
+
+    },
+    "Impossibile Connettersi all'Host" : {
+
+    },
+    "Impossibile connettersi all'host. Controlla il server o la tua rete." : {
+
+    },
     "Impossibile interpretare la risposta: %@." : {
       "localizations" : {
         "en" : {
@@ -236,6 +269,9 @@
           }
         }
       }
+    },
+    "Impossibile trovare l'host. Controlla l'URL o riprova più tardi." : {
+
     },
     "L'email %@ è già in uso." : {
       "localizations" : {
@@ -277,6 +313,9 @@
         }
       }
     },
+    "L'URL fornito non è valido." : {
+
+    },
     "L'username %@ è già in uso." : {
       "localizations" : {
         "en" : {
@@ -303,6 +342,9 @@
         }
       }
     },
+    "La richiesta ha impiegato troppo tempo. Riprova più tardi." : {
+
+    },
     "Le password sono diverse." : {
       "localizations" : {
         "en" : {
@@ -322,6 +364,12 @@
           }
         }
       }
+    },
+    "matto" : {
+
+    },
+    "Nessuna Connessione Internet" : {
+
     },
     "Nome" : {
       "localizations" : {
@@ -376,6 +424,12 @@
         }
       }
     },
+    "preside" : {
+
+    },
+    "professore" : {
+
+    },
     "Richiesta fallita: %@" : {
       "localizations" : {
         "en" : {
@@ -416,6 +470,9 @@
         }
       }
     },
+    "segreteria" : {
+
+    },
     "Si è verificato un errore JSON: %@." : {
       "localizations" : {
         "en" : {
@@ -426,6 +483,12 @@
         }
       }
     },
+    "Si è verificato un errore sconosciuto. Riprova." : {
+
+    },
+    "studente" : {
+
+    },
     "Successo" : {
       "localizations" : {
         "en" : {
@@ -435,6 +498,15 @@
           }
         }
       }
+    },
+    "Test bottom notifications" : {
+
+    },
+    "Timeout Richiesta" : {
+
+    },
+    "URL Non Supportato" : {
+
     },
     "URL non valido: %@/check-username." : {
       "localizations" : {

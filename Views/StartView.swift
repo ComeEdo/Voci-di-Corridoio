@@ -8,15 +8,22 @@
 import SwiftUI
 
 struct StartView: View {
-    enum ButtonType {
-        case accedi, creaAccount
-    }
+    @EnvironmentObject private var notificationManager: NotificationManager
     
     var body: some View {
         NavigationStack {
             ZStack {
                 ColorGradient()
                 VStack {
+                    #if DEBUG
+                    Button {
+                        for i in 1...10 {
+                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "  SIUM\(i)", message: "matto"), duration: 2)
+                        }
+                    } label: {
+                        Text("Test bottom notifications").textButtonStyle(true)
+                    }
+                    #endif
                     Text("Benvenuto")
                         .font(.largeTitle)
                         .fontWeight(.semibold)
@@ -49,5 +56,5 @@ struct StartView: View {
 }
 
 #Preview {
-    StartView()
+    StartView().environmentObject(NotificationManager.shared)
 }

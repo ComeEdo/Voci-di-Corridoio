@@ -9,18 +9,17 @@ import SwiftUI
 
 struct User: CustomStringConvertible, Equatable, Comparable, Codable {
     var description: String {
-        return "\(name)"
+        return "\(name)\n\(surname)\n\(username)"
     }
+    
     var name: String
     var surname: String
     var username: String
-    var mail: String
     
-    init(name: String = "", surname: String = "", username: String = "", mail: String = ".stud@itisgalileiroma.it") {
+    init(name: String = "", surname: String = "", username: String = "") {
         self.name = name
         self.surname = surname
         self.username = username
-        self.mail = mail
     }
     
     static func < (lhs: User, rhs: User) -> Bool {
