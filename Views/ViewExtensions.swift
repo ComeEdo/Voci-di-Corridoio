@@ -82,15 +82,6 @@ extension View {
     func getKeyboardYAxis(_ height: Binding<CGFloat>) -> some View {
         self.modifier(KeyboardPosition(height))
     }
-    /*
-     func alertStyle() -> some View {
-         self
-             .padding()
-             .background(Color.white, in: RoundedRectangle(cornerRadius: 20).inset(by: -10))
-             .padding(.horizontal, 60)
-             .shadow(radius: 100)
-     }
-     */
     
     func notificationStyle() -> some View {
         self
@@ -110,7 +101,6 @@ extension View {
             .padding()
             .notificationStyle()
             .padding(.horizontal, 60)
-//            .shadow(radius: 100)
     }
 }
 
@@ -151,11 +141,15 @@ struct KeyboardPosition: ViewModifier{
     private func addKeyboardObservers() {
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
             if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                keyboardHeight = keyboardFrame.minY
+                withAnimation {
+                    keyboardHeight = keyboardFrame.minY
+                }
             }
         }
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-            keyboardHeight = .zero
+            withAnimation {
+                keyboardHeight = .zero
+            }
         }
     }
     private func removeKeyboardObservers() {

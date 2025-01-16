@@ -140,21 +140,6 @@ struct Utility {
         }
         return ResultLocalized(result: false, message: "Password non valida.")
     }
-    
-    func updateTextFieldPosition(_ localGeometry: GeometryProxy, textFieldPosition: inout CGFloat, offset: inout CGFloat, buttonPosition: CGFloat, keyboardHeight: CGFloat) {
-        textFieldPosition = localGeometry.frame(in: .global).maxY + offset + 1
-        
-        if textFieldPosition > buttonPosition, buttonPosition > .zero {
-            offset = textFieldPosition - buttonPosition
-            textFieldPosition -= offset
-        } else if keyboardHeight == .zero && offset != .zero {
-            offset = .zero
-        }
-    }
-    
-    func updateButtonPosition(_ localGeometry: GeometryProxy, button: inout CGFloat) {
-        button = localGeometry.frame(in: .global).minY
-    }
 }
 
 struct DividerText: View {
@@ -213,17 +198,27 @@ struct CommonSpacer: View {
 @frozen
 public struct VScrollView<Content>: View where Content: View {
     private let content: () -> Content
+    private var VerticalOffset: Binding<CGFloat>?
     
-    public init(@ViewBuilder content: @escaping () -> Content) {
+    public init(_ VerticalOffset: Binding<CGFloat>? = nil, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
+        self.VerticalOffset = VerticalOffset
     }
     
     public var body: some View {
         GeometryReader { geometry in
             ScrollView(.vertical) {
-                content()
-                    .frame(width: geometry.size.width)
-                    .frame(minHeight: geometry.size.height)
+                ZStack {
+                    GeometryReader { innerGeometry in
+                        Color.clear
+                            .onChange(of: innerGeometry.frame(in: .global).minY) {
+                                VerticalOffset?.wrappedValue = innerGeometry.frame(in: .global).maxY - geometry.frame(in: .global).maxY
+                            }
+                    }
+                    content()
+                }
+                .frame(width: geometry.size.width)
+                .frame(minHeight: geometry.size.height)
             }
         }
     }
@@ -253,50 +248,5 @@ extension String {
     func matches(_ regex: String) -> Bool {
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         return predicate.evaluate(with: self)
-    }
-}
-
-/*
-extension URLError {
-    
-    var response: MainNotification.NotificationStructure{
-        switch self.code {
-        case .notConnectedToInternet:
-            return MainNotification.NotificationStructure(title: "No Internet", message: "Please check your internet connection and try again.")
-        case .timedOut:
-            return MainNotification.NotificationStructure(title: "Request Timeout", message: "The request timed out. Please try again later.")
-        case .cannotFindHost:
-            return MainNotification.NotificationStructure(title: "Host Not Found", message: "Unable to find the host. Please check the URL or try again later.")
-        case .cannotConnectToHost:
-            return MainNotification.NotificationStructure(title: "Cannot Connect to Host", message: "Unable to connect to the host. Please check the server or your network.")
-        case .badServerResponse:
-            return MainNotification.NotificationStructure(title: "Server Error", message: "The server responded with an error. Please try again later.")
-        case .unsupportedURL:
-            return MainNotification.NotificationStructure(title: "Invalid URL", message: "The provided URL is not valid.")
-        default:
-            return MainNotification.NotificationStructure(title: "Unknown Error", message: "An unknown error occurred. Please try again.")
-        }
-    }
-}*/
-
-extension URLError {
-    
-    var response: MainNotification.NotificationStructure {
-        switch self.code {
-        case .notConnectedToInternet:
-            return MainNotification.NotificationStructure(title: "Nessuna Connessione Internet", message: "Controlla la tua connessione internet e riprova.")
-        case .timedOut:
-            return MainNotification.NotificationStructure(title: "Timeout Richiesta", message: "La richiesta ha impiegato troppo tempo. Riprova più tardi.")
-        case .cannotFindHost:
-            return MainNotification.NotificationStructure(title: "Host Non Trovato", message: "Impossibile trovare l'host. Controlla l'URL o riprova più tardi.")
-        case .cannotConnectToHost:
-            return MainNotification.NotificationStructure(title: "Impossibile Connettersi all'Host", message: "Impossibile connettersi all'host. Controlla il server o la tua rete.")
-        case .badServerResponse:
-            return MainNotification.NotificationStructure(title: "Errore del Server", message: "Il server ha risposto con un errore. Riprova più tardi.")
-        case .unsupportedURL:
-            return MainNotification.NotificationStructure(title: "URL Non Supportato", message: "L'URL fornito non è valido.")
-        default:
-            return MainNotification.NotificationStructure(title: "Errore Sconosciuto", message: "Si è verificato un errore sconosciuto. Riprova.")
-        }
     }
 }

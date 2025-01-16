@@ -27,8 +27,7 @@ struct BottomNotificationView: View {
                 Spacer()
                 HStack {
                     VStack() {
-                        Image(systemName: "exclamationmark.triangle")
-                            .symbolRenderingMode(.multicolor)
+                        bottom.type.icon
                             .fontWeight(.heavy)
                             .font(.system(size: 40))
                     }
@@ -41,8 +40,7 @@ struct BottomNotificationView: View {
                     
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 15)
+                .padding(15)
                 .notificationStyle()
                 .frame(maxHeight: 101, alignment: .bottom)
                 .padding(15)
@@ -60,10 +58,10 @@ struct BottomNotificationView: View {
         withAnimation(self.type) {
             self.offsetY = 0
         }
-        HapticFeedback.trigger(HapticType.impact(style: .heavy))
+        HapticFeedback.trigger(bottom.type.hapticFeedback)
         startTimer()
     }
-
+    
     
     func startTimer() {
         self.dismissalTimer = Timer.scheduledTimer(withTimeInterval: bottom.duration, repeats: false) { [self] _ in
@@ -113,5 +111,5 @@ struct BottomNotificationView: View {
 }
 
 #Preview {
-    BottomNotificationView(BottomNotification(notification: MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbb"), duration: 6, type: .error, onDismiss: {print("workaa")}))
+    BottomNotificationView(BottomNotification(notification: MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbbb"), duration: 6, type: .warning, onDismiss: {print("workaa")}))
 }

@@ -74,12 +74,6 @@
         }
       }
     },
-    "%lf" : {
-
-    },
-    "%lld" : {
-
-    },
     "Accedi" : {
       "localizations" : {
         "en" : {
@@ -91,6 +85,9 @@
       }
     },
     "admin" : {
+
+    },
+    "Apostrofi in posiszioni non valide." : {
 
     },
     "Benvenuto" : {

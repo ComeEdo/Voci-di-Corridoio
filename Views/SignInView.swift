@@ -19,88 +19,55 @@ struct SignInView: View {
     private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
     
     @EnvironmentObject private var userManager: UserManager
-    
-    @State private var isOperationFinished: Bool = true
-    
-    @State private var isAlertVisible: Bool = false
-    @State private var alert: MainNotification.NotificationStructure = MainNotification.NotificationStructure(title: "", message: "")
+    @EnvironmentObject private var notificationManager: NotificationManager
     
     private var functions: Utility = Utility.shared
+    
+    @State private var isOperationFinished: Bool = true
     
     @State private var email: String = ".stud@itisgalileiroma.it"
     @State private var password: String = ""
     
     @FocusState private var focusedField: Field?
     
-    @State private var lastTextFieldPosition: CGFloat = .zero
-    @State private var buttonPosition: CGFloat = .zero
-    @State private var scrollOffset: CGFloat = .zero
     @State private var keyboardHeight: CGFloat = .zero
+    @State private var scroll: CGFloat = .zero
     
     init() {}
     
     var body: some View {
         ZStack {
             ColorGradient().zIndex(0)
-            VScrollView {
-                VStack(spacing: 20) {
-                    emailView()
-                    passwordView()
+            VStack(spacing: 0) {
+                VScrollView($scroll) {
+                    VStack(spacing: 20) {
+                        if keyboardHeight != 0  {
+                            Spacer()
+                        }
+                        emailView()
+                        passwordView()
+                    }
                 }
+                .scrollDismissesKeyboard(.interactively)
+                .scrollIndicators(.never)
+                .padding(.horizontal, 30)
+                buttonView()
+                    .padding(keyboardHeight == 0 ? 0 : 10)
+                    .offset(y: keyboardHeight == 0 ? min(20, scroll) : min(10, scroll))
             }
-            .scrollDismissesKeyboard(.interactively)
-            .scrollIndicators(.never)
-            .padding(.horizontal, 30)
-            .padding(.bottom, scrollOffset*2)
-            .animation(.easeOut(duration: 0.3), value: scrollOffset)
-            .zIndex(1)
-            VStack {
-                Spacer()
-                Button(action: handleLogin) {
-                    Text("Accedi").textButtonStyle(isFormValid())
-                }
-                .disabled(!isFormValid() || !isOperationFinished)
-                .overlay(
-                    GeometryReader { localGeometry in
-                        Color.clear
-                            .onAppear {
-                                functions.updateButtonPosition(localGeometry, button: &buttonPosition)
-                            }
-                            .onChange(of: keyboardHeight) {
-                                functions.updateButtonPosition(localGeometry, button: &buttonPosition)
-                            }
-                    })
-            }
-            .padding(.bottom, keyboardHeight == 0 ? 0 : UIScreen.main.bounds.height - keyboardHeight - 30)
-            .animation(.easeOut(duration: 0.3), value: keyboardHeight)
-            .zIndex(2)
         }
         .getKeyboardYAxis($keyboardHeight)
-        .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbarBackground(.hidden)
-        .navigationBarBackButtonHidden(!isOperationFinished || isAlertVisible)
+        .navigationBarBackButtonHidden(!isOperationFinished)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                if !isOperationFinished || isAlertVisible {
+                if !isOperationFinished {
                     Image(systemName: "arrow.2.circlepath")
                         .rotateIt()
                         .fontWeight(.bold)
                 }
             }
         }
-        .overlay(
-            Group {
-                if isAlertVisible {
-                    /*AlertView(alert) {
-                        if userManager.isAuthenticated {
-                            exit()
-                        } else {
-                            isAlertVisible = false
-                        }
-                    }*/
-                }
-            }
-        )
     }
     
     private func emailView() -> some View {
@@ -132,15 +99,15 @@ struct SignInView: View {
                 ValidationIcon(functions.passwordChecker(password).result).validationIconStyle(password.isEmpty)
             }
             DividerText(result: functions.passwordChecker(password), empty: password.isEmpty)
-                .overlay(GeometryReader { localGeometry in
-                    Color.clear
-                        .onAppear {
-                            functions.updateTextFieldPosition(localGeometry, textFieldPosition: &lastTextFieldPosition, offset: &scrollOffset, buttonPosition: buttonPosition, keyboardHeight: keyboardHeight)
-                        }
-                        .onChange(of: buttonPosition) {
-                            functions.updateTextFieldPosition(localGeometry, textFieldPosition: &lastTextFieldPosition, offset: &scrollOffset, buttonPosition: buttonPosition, keyboardHeight: keyboardHeight)
-                        }
-                })
+        }
+    }
+    
+    private func buttonView() -> some View {
+        VStack {
+            Button(action: handleLogin) {
+                Text("Accedi").textButtonStyle(isFormValid())
+            }
+            .disabled(!isFormValid() || !isOperationFinished)
         }
     }
     
@@ -176,12 +143,10 @@ struct SignInView: View {
     }
     
     private func setupAlert(_ alert: MainNotification.NotificationStructure) {
-        self.alert = alert
-        isAlertVisible = true
+        notificationManager.showAlert(alert, type: .error)
     }
     private func setupAlert(_ error: Error) {
-        self.alert = MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)")
-        isAlertVisible = true
+        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)"), type: .success)
     }
                                                             
     private func getFocus() -> Field? {

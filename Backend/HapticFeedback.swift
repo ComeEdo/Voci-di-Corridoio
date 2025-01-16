@@ -5,15 +5,15 @@
 //  Created by Edoardo Frezzotti on 14/01/25.
 //
 
-import UIKit
-
-enum HapticType {
-    case impact(style: UIImpactFeedbackGenerator.FeedbackStyle)
-    case notification(type: UINotificationFeedbackGenerator.FeedbackType)
-    case selection
-}
+import SwiftUI
 
 struct HapticFeedback {
+    enum HapticType {
+        case impact(style: UIImpactFeedbackGenerator.FeedbackStyle)
+        case notification(type: UINotificationFeedbackGenerator.FeedbackType)
+        case selection
+    }
+    
     static func trigger(_ type: HapticType) {
         switch type {
         case .impact(let style):

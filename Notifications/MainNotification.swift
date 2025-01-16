@@ -16,26 +16,31 @@ class MainNotification: ObservableObject, Identifiable {
         }
     }
     enum NotificationType {
-        case success, error, info
-
-        var backgroundColor: Color {
+        case success,
+             error,
+             warning,
+             info
+        @ViewBuilder
+        var icon: some View {
             switch self {
-            case .success: return Color.green
-            case .error: return Color.red
-            case .info: return Color.blue
+            case .success:
+                Image(systemName: "checkmark.circle").foregroundStyle(.green)
+            case .error:
+                Image(systemName: "xmark.circle").symbolRenderingMode(.multicolor)
+            case .info:
+                Image(systemName: "info.circle").symbolRenderingMode(.multicolor)
+            case .warning:
+                Image(systemName: "exclamationmark.triangle").symbolRenderingMode(.multicolor)
             }
         }
-
-        var iconName: String {
+        
+        var hapticFeedback: HapticFeedback.HapticType {
             switch self {
-            case .success: return "checkmark.circle.fill"
-            case .error: return "xmark.circle.fill"
-            case .info: return "info.circle.fill"
+            case .success: return .notification(type: .success)
+            case .error: return .notification(type: .error)
+            case .warning: return .notification(type: .warning)
+            case .info: return .impact(style: .heavy)
             }
-        }
-
-        var iconColor: Color {
-            return .white
         }
     }
     

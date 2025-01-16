@@ -21,7 +21,7 @@ class NotificationManager: ObservableObject {
     
     private init() {}
     
-    func showBottom(_ notification: MainNotification.NotificationStructure, duration: TimeInterval = 6, type: MainNotification.NotificationType = .error, onDismiss: @escaping () -> Void = {} ) {
+    func showBottom(_ notification: MainNotification.NotificationStructure, duration: TimeInterval = 6, type: MainNotification.NotificationType, onDismiss: @escaping () -> Void = {} ) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if self.BottomShowing == nil && self.isBottomWaiting == false {
@@ -49,7 +49,7 @@ class NotificationManager: ObservableObject {
             self.isBottomWaiting = true
             self.BottomShowing = nil
             objectWillChange.send()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self.BottomShowing = self.BottomViewsQueue.removeFirst()
                 self.objectWillChange.send()
                 self.isBottomWaiting = false
@@ -57,15 +57,15 @@ class NotificationManager: ObservableObject {
         }
     }
     
-    func showAlert(_ notification: MainNotification.NotificationStructure, dismissButtonTitle: LocalizedStringResource = "DAJE", type: MainNotification.NotificationType = .error, onDismiss: @escaping () -> Void = {} ) {
+    func showAlert(_ notification: MainNotification.NotificationStructure, dismissButtonTitle: LocalizedStringResource = "DAJE", type: MainNotification.NotificationType, onDismiss: @escaping () -> Void = {} ) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if self.AlertShowing == nil && self.isAlertWaiting == false {
+                self.AlertShowing = AlertNotification(notification: notification, dismissButtonTitle: dismissButtonTitle, type: type) {
+                    onDismiss()
+                    self.nextAlert()
+                }
                 withAnimation {
-                    self.AlertShowing = AlertNotification(notification: notification, dismissButtonTitle: dismissButtonTitle, type: type) {
-                        onDismiss()
-                        self.nextAlert()
-                    }
                     self.objectWillChange.send()
                 }
             } else {
@@ -86,10 +86,12 @@ class NotificationManager: ObservableObject {
             }
             self.isAlertWaiting = true
             self.AlertShowing = nil
-            self.objectWillChange.send()
-            DispatchQueue.main.async() {
+//            withAnimation {
+                self.objectWillChange.send()    //needs fine tuning
+//            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                self.AlertShowing = self.AlertViewsQueue.removeFirst()
                 withAnimation {
-                    self.AlertShowing = self.AlertViewsQueue.removeFirst()
                     self.objectWillChange.send()
                 }
                 self.isAlertWaiting = false

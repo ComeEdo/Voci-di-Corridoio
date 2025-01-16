@@ -19,30 +19,34 @@ struct AlertNotificationView: View {
             Color.black.opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
-                    alert.onDismiss()
+                    DispatchQueue.main.async {
+                        alert.onDismiss()
+                    }
                 }
             VStack(spacing: 20) {
                 Text(alert.notification.title)
                     .title()
-                
                 Text(alert.notification.message)
                     .body()
                     .multilineTextAlignment(.center)
-                
-                Button() {
-                    alert.onDismiss()
+                Button {
+                    DispatchQueue.main.async {
+                        alert.onDismiss()
+                    }
                 } label: {
                     Text(alert.dismissButtonTitle)
                         .textButtonStyle(true)
                 }
             }
             .alertStyle()
+        }.onAppear {
+            HapticFeedback.trigger(alert.type.hapticFeedback)
         }
     }
 }
 
 #Preview {
-    AlertNotificationView(AlertNotification(notification: MainNotification.NotificationStructure(title: "Test", message: "Prova Prova Prova Prova Prova Prova Prova Prova"), dismissButtonTitle: "DAJE", type: .error, onDismiss: {
+    AlertNotificationView(AlertNotification(notification: MainNotification.NotificationStructure(title: "Test", message: "Prova Prova Prova Prova Prova Prova Prova Prova"), dismissButtonTitle: "DAJE", type: .success, onDismiss: {
         print("test")
     }))
 }

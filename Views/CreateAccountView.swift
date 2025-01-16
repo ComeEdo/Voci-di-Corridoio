@@ -51,69 +51,36 @@ struct CreateAccountView: View {
     @FocusState private var isName: Bool
     @FocusState private var isSurname: Bool
     
-    @State private var lastTextFieldPosition: CGFloat = .zero
-    @State private var buttonPosition: CGFloat = .zero
-    @State private var scrollOffset: CGFloat = .zero
     @State private var keyboardHeight: CGFloat = .zero
-    
-    @State private var button: CGFloat = .zero
-    
-    @State private var bbbb: CGFloat = .zero
+    @State private var scroll: CGFloat = .zero
     
     init() {}
     
     var body: some View {
         ZStack {
             ColorGradient().zIndex(0)
-            VScrollView {
-                VStack(spacing: 20) {
-                    Text("\(button)")
-                    nameSurname()
-                    usernameView()
-                    emailView()
-                    passwordView()
-                    repeatedPasswordView()
+            VStack(spacing: 0) {
+                VScrollView($scroll) {
+                    VStack(spacing: 20) {
+                        if keyboardHeight != 0  {
+                            Spacer()
+                        }
+                        nameSurname()
+                        usernameView()
+                        emailView()
+                        passwordView()
+                        repeatedPasswordView()
+                    }
                 }
+                .scrollDismissesKeyboard(.interactively)
+                .scrollIndicators(.never)
+                .padding(.horizontal, 30)
+                buttonView()
+                    .padding(keyboardHeight == 0 ? 0 : 10)
+                    .offset(y: keyboardHeight == 0 ? min(20, scroll) : min(10, scroll))
             }
-            .scrollDismissesKeyboard(.interactively)
-            .scrollIndicators(.never)
-            .padding(.horizontal, 30)
-            .padding(.bottom, scrollOffset*2)
-            .animation(.easeInOut(duration: 0.3), value: scrollOffset)
-            .zIndex(10)
-            .simultaneousGesture(dragGesture, including: .all)
-            VStack() {
-                Spacer()
-                Button(action: handleRegister) {
-                    Text("Crea account").textButtonStyle(isFormValid())
-                }
-                .disabled(!isFormValid() || !isOperationFinished)
-                .overlay(
-                    GeometryReader { localGeometry in
-                        Color.clear
-                            .onAppear {
-                                functions.updateButtonPosition(localGeometry, button: &buttonPosition)
-                            }
-                            .onChange(of: keyboardHeight) {
-                                functions.updateButtonPosition(localGeometry, button: &buttonPosition)
-                            }
-                            .onChange(of: button) {
-                                if keyboardHeight != 0 && button > 0 {
-                                    functions.updateButtonPosition(localGeometry, button: &buttonPosition)
-                                }
-                            }
-                    })
-                if !isGoingWell {
-                    Text("Manca qualcosa").validationTextStyle(alignment: .center)
-                }
-            }
-            .padding(.bottom, keyboardHeight == 0 ? 0 : UIScreen.main.bounds.height - keyboardHeight - 30)
-            .animation(.easeInOut(duration: 0.3), value: keyboardHeight)
-            .offset(y: button)
-            .zIndex(2)
         }
         .getKeyboardYAxis($keyboardHeight)
-        .ignoresSafeArea(.keyboard, edges: .bottom)
         .toolbarBackground(.hidden)
         .navigationBarBackButtonHidden(!isOperationFinished)
         .toolbar {
@@ -188,7 +155,7 @@ struct CreateAccountView: View {
                     .onChange(of: user.username) {
                         Task {
                             await checkUsernameAvailability(user.username)
-                         }
+                        }
                     }
                     .onSubmit {
                         focusedField = getFocus()
@@ -245,38 +212,19 @@ struct CreateAccountView: View {
                 ValidationIcon(isPasswordsMatch().result).validationIconStyle(repeatedPassword.isEmpty)
             }
             DividerText(result: isPasswordsMatch(), empty: repeatedPassword.isEmpty)
-                .overlay(GeometryReader { localGeometry in
-                    Color.clear
-                        .onAppear {
-                            //                            withAnimation {
-                            functions.updateTextFieldPosition(localGeometry, textFieldPosition: &lastTextFieldPosition, offset: &scrollOffset, buttonPosition: buttonPosition, keyboardHeight: keyboardHeight)
-                            //                            }
-                        }
-                        .onChange(of: buttonPosition) {
-                            functions.updateTextFieldPosition(localGeometry, textFieldPosition: &lastTextFieldPosition, offset: &scrollOffset, buttonPosition: buttonPosition, keyboardHeight: keyboardHeight)
-                        }
-                })
         }
     }
     
-    private var dragGesture: some Gesture {
-        DragGesture()
-            .onChanged { value in
-                if keyboardHeight == 0 {
-                    if value.translation.height < 0 {
-                        button = value.translation.height/2
-                    } else {
-                        button = min(20, value.translation.height)/2
-                    }
-                } else {
-                    button = value.translation.height/2
-                }
+    private func buttonView() -> some View {
+        VStack {
+            Button(action: handleRegister) {
+                Text("Crea account").textButtonStyle(isFormValid())
             }
-            .onEnded { value in
-                withAnimation {
-                    button = 0
-                }
+            .disabled(!isFormValid() || !isOperationFinished)
+            if !isGoingWell {
+                Text("Manca qualcosa").validationTextStyle(alignment: .center)
             }
+        }
     }
     
     private func handleRegister() {
@@ -333,10 +281,10 @@ struct CreateAccountView: View {
     }
     
     private func setupAlert(_ alert: MainNotification.NotificationStructure) {
-        notificationManager.showAlert(alert)
+        notificationManager.showAlert(alert, type: .success)
     }
     private func setupAlert(_ error: Error) {
-        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)"))
+        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)"), type: .warning)
     }
     
     private func getFocus() -> Field? {
@@ -379,9 +327,15 @@ struct CreateAccountView: View {
     }
     
     private func isValidInput(_ text: String) -> ResultLocalized {
-        let allowedCharacterSet = "^[a-zA-ZáàéèíìóòúùâêîôûäëïöüãñåæçđðøýÿßẞęÈÉƏÊËĘĖĒEÙÚÛÜŪŨÌÍÎÏĮİĪįÄÖłşğĨǏŁĻĽĶĦĞĠŹŽŻÇĆČĊÑŃŅŇŴĚẼŘȚŤÝŶŸŲŮŰǓŵěẽēėřțťŷųůűūũǔıīĩǐőōõœǒǎāăąșśšďġħķļľźžżćčċńņň ]+$"
+        let allowedCharacterSet = "^[a-zA-ZáàéèíìóòúùâêîôûäëïöüãñåæçđðøýÿßẞęÈÉƏÊËĘĖĒEÙÚÛÜŪŨÌÍÎÏĮİĪįÄÖłşğĨǏŁĻĽĶĦĞĠŹŽŻÇĆČĊÑŃŅŇŴĚẼŘȚŤÝŶŸŲŮŰǓŵěẽēėřțťŷųůűūũǔıīĩǐőōõœǒǎāăąșśšďġħķļľźžżćčċńņň'‘’ ]+$"
         guard !(text.isEmpty || text.count < Utility.MIN_LENGHT_INPUT || text.count > Utility.MAX_LENGHT), text.matches(allowedCharacterSet) else {
             return ResultLocalized(result: false, message: "Contiene caratteri non validi.")
+        }
+        func checkIfPresentIn(_ text: String, _ char: String) -> Bool {
+            return text.hasSuffix(char) || text.hasPrefix(char) || text.contains(char+char)
+        }
+        guard !(checkIfPresentIn(text, "'") || checkIfPresentIn(text, "’") || checkIfPresentIn(text, "‘") || text.contains("‘’") || text.contains("’‘") || text.contains("‘'") || text.contains("'‘") || text.contains("’'") || text.contains("'’") || text.contains(" ' ") || text.contains(" ’ ") || text.contains(" ‘ ")) else {
+            return ResultLocalized(result: false, message: "Apostrofi in posiszioni non valide.")
         }
         return ResultLocalized(result: true, message: "Valido.")
     }
@@ -424,7 +378,7 @@ struct CreateAccountView: View {
             isValidUsername = nil
         }
         
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in 
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in
             
             guard let url = URL(string: "\(userManager.URN)/check-username") else {
                 reason = "URL non valido: \(userManager.URN)/check-username."

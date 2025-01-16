@@ -26,8 +26,8 @@
 		DB371E562D365C2800BA210F /* Voci_di_Corridoio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Voci_di_Corridoio.entitlements; sourceTree = SOURCE_ROOT; };
 		DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voci_di_CorridoioApp.swift; sourceTree = "<group>"; };
 		DB371E592D365C2800BA210F /* Voci_di_Corridoio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Voci_di_Corridoio.xcdatamodel; sourceTree = "<group>"; };
-		DB371E952D36603E00BA210F /* Voci di Corridoio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Voci di Corridoio.app"; path = "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/build/Debug-iphoneos/Voci di Corridoio.app"; sourceTree = "<absolute>"; };
 		DB371E972D36645F00BA210F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		DB6B08F92D3842C200EA18D5 /* Voci di Corridoio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Voci di Corridoio.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -113,19 +113,20 @@
 		DBE900AD2CDB76CB009A986A = {
 			isa = PBXGroup;
 			children = (
+				DB371E512D365C2800BA210F /* .gitignore */,
+				DB6B08F92D3842C200EA18D5 /* Voci di Corridoio.app */,
+				DB371E562D365C2800BA210F /* Voci_di_Corridoio.entitlements */,
 				DB371E972D36645F00BA210F /* README.md */,
+				DB371E532D365C2800BA210F /* Info.plist */,
+				DB371E552D365C2800BA210F /* Persistence.swift */,
+				DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */,
+				DB371E522D365C2800BA210F /* Assets.xcassets */,
+				DB371E542D365C2800BA210F /* Localizable.xcstrings */,
 				DB371E732D365C3500BA210F /* Backend */,
 				DB371E7B2D365C3500BA210F /* Notifications */,
 				DB371E7D2D365C3500BA210F /* Preview Content */,
 				DB371E822D365C3500BA210F /* Views */,
-				DB371E512D365C2800BA210F /* .gitignore */,
-				DB371E522D365C2800BA210F /* Assets.xcassets */,
-				DB371E532D365C2800BA210F /* Info.plist */,
-				DB371E542D365C2800BA210F /* Localizable.xcstrings */,
-				DB371E552D365C2800BA210F /* Persistence.swift */,
-				DB371E562D365C2800BA210F /* Voci_di_Corridoio.entitlements */,
 				DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */,
-				DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -151,7 +152,7 @@
 			packageProductDependencies = (
 			);
 			productName = "Voci di Corridoio";
-			productReference = DB371E952D36603E00BA210F /* Voci di Corridoio.app */;
+			productReference = DB6B08F92D3842C200EA18D5 /* Voci di Corridoio.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
