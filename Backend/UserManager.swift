@@ -104,22 +104,33 @@ class UserManager: ObservableObject {
     
     private init() {
         self.URN = "https://\(server):\(port)/api"
-        /*if let token = getTokenFromKeychain() {
-            isAuthenticated = true
-            Task {
-                if await isAuth(token) {
-                    //tirare fuori il user
-                    authToken = token
-                } else {
-                    logoutUser()
-                }
-            }
-        }*/
+//        if let token = getTokenFromKeychain() {
+//            isAuthenticated = true
+//            Task {
+//                do {
+//                    print("siuuu")
+//                    if try await isAuth("token") {
+//                        //tirare fuori il user
+//                        authToken = "token"
+//                        print("boh3")
+//                    } else {
+//                        print("boh2")
+////                        logoutUser()
+//                    }
+//                } catch let error as Notifiable {
+//                    print("boh1")
+//                    NotificationManager.shared.showBottom(error.notification)
+//                } catch {
+//                    print("boh")
+//                    NotificationManager.shared.showBottom(.init(title: "sium", message: "Errore: \(error.localizedDescription)", type: .error))
+//                }
+//            }
+//        }
     }
     
     // Register a user
     @MainActor
-    func registerUser(user: User, email: String, password: String) async throws -> RegistrationNotification {
+    func registerUser(user: RegistrationData) async throws -> RegistrationNotification {
         guard let url = URL(string: "\(URN)\(APIEndpoints.register)") else {
             throw RegistrationError.invalidURL(message: "\(URN)\(APIEndpoints.register)")
         }
@@ -132,8 +143,8 @@ class UserManager: ObservableObject {
             "name": user.name,
             "surname": user.surname,
             "username": user.username,
-            "email": email,
-            "password": password
+            "email": user.email,
+            "password": user.password
         ]
         
         do {
@@ -224,7 +235,7 @@ class UserManager: ObservableObject {
                     throw RegistrationError.JSONError(message: "è tutto rotto")
                 }
                 
-                guard await isAuth(logInData.token) else {
+                guard try await isAuth(logInData.token) else {
                     throw RegistrationError.unknownError(message: "token fottuto\n\(logInData.token)")
                 }
                 
@@ -257,10 +268,9 @@ class UserManager: ObservableObject {
         }
     }
     
-    func isAuth(_ token: String) async /*throws*/ -> Bool {
+    func isAuth(_ token: String) async throws -> Bool {
         guard let url = URL(string: "\(URN)\(APIEndpoints.auth)") else {
-//            throw RegistrationError.invalidURL(message: "\(URN)\(APIEndpoints.auth)")
-            return false
+            throw RegistrationError.invalidURL(message: "\(URN)\(APIEndpoints.auth)")
         }
         
         var request = URLRequest(url: url)
@@ -287,6 +297,7 @@ class UserManager: ObservableObject {
             }
         } catch let error as URLError {
             // Handle specific URL errors
+            throw error
 
             switch error.code {
             case .notConnectedToInternet:
@@ -302,6 +313,7 @@ class UserManager: ObservableObject {
             }
             return false
         } catch {
+            throw error
             // Handle other errors
             print("Error during token verification:\n\(error.localizedDescription)")
             return false

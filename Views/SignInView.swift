@@ -38,6 +38,12 @@ struct SignInView: View {
     var body: some View {
         ZStack {
             ColorGradient().zIndex(0)
+            VStack {
+                Text("Accesso").title(30, .heavy)
+                Spacer()
+            }
+            .padding(.top, 58)
+            .ignoresSafeArea()
             VStack(spacing: 0) {
                 VScrollView($scroll) {
                     VStack(spacing: 20) {
@@ -53,7 +59,7 @@ struct SignInView: View {
                 .padding(.horizontal, 30)
                 buttonView()
                     .padding(keyboardHeight == 0 ? 0 : 10)
-                    .offset(y: keyboardHeight == 0 ? min(20, scroll) : min(10, scroll))
+                    .offset(y: keyboardHeight == 0 ? (scroll <= 0 ? scroll : scroll.progessionAsitotic(-20, -20)) : (scroll <= 0 ? scroll : scroll.progessionAsitotic(-10, -10)))
             }
         }
         .getKeyboardYAxis($keyboardHeight)
@@ -127,11 +133,9 @@ struct SignInView: View {
             //ordine esecuzione 2
             do {
                 let alert = try await userManager.loginUser(email: email, password: password)
-                setupAlert(alert.response)
-            } catch let error as RegistrationError {
-                setupAlert(error.message)
-            } catch let error as Codes {
-                setupAlert(error.response)
+                setupAlert(alert.notification)
+            } catch let error as Notifiable {
+                setupAlert(error.notification)
             } catch {
                 print(error.localizedDescription)
                 setupAlert(error)
@@ -143,10 +147,10 @@ struct SignInView: View {
     }
     
     private func setupAlert(_ alert: MainNotification.NotificationStructure) {
-        notificationManager.showAlert(alert, type: .error)
+        notificationManager.showAlert(alert)
     }
     private func setupAlert(_ error: Error) {
-        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)"), type: .success)
+        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
     }
                                                             
     private func getFocus() -> Field? {

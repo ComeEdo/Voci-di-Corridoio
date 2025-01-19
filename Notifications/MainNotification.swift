@@ -11,8 +11,10 @@ class MainNotification: ObservableObject, Identifiable {
     struct NotificationStructure: CustomStringConvertible {
         let title: LocalizedStringResource
         let message: LocalizedStringResource
+        let type: NotificationType
+        
         var description: String {
-            "\(title)\n\n\(message)"
+            "\(title)\n\n\(message)\n\n\(type)"
         }
     }
     enum NotificationType {
@@ -20,6 +22,7 @@ class MainNotification: ObservableObject, Identifiable {
              error,
              warning,
              info
+        
         @ViewBuilder
         var icon: some View {
             switch self {
@@ -45,13 +48,11 @@ class MainNotification: ObservableObject, Identifiable {
     }
     
     let notification: NotificationStructure
-    let type: NotificationType
     let id = UUID()
     let onDismiss: () -> Void
     
-    init(notification: NotificationStructure, type: NotificationType, onDismiss: @escaping () -> Void) {
+    init(notification: NotificationStructure, onDismiss: @escaping () -> Void) {
         self.notification = notification
-        self.type = type
         self.onDismiss = onDismiss
     }
 }

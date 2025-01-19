@@ -9,59 +9,52 @@ import SwiftUI
 
 struct StartView: View {
     @EnvironmentObject private var notificationManager: NotificationManager
+    @StateObject private var classes: ClassesManager = ClassesManager()
+    
+    init() {}
     
     var body: some View {
         NavigationStack {
             ZStack {
                 ColorGradient()
                 VStack {
+                    Text("Voci di Corridoio")
+                        .title(40, .heavy)
                     #if DEBUG
                     Button {
                         for i in 1...10 {
-                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto"), duration: 1, type: .success)
+                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .success), duration: 3)
                         }
                     } label: {
                         Text("Test bottom notifications").textButtonStyle(true)
                     }
                     Button {
                         for i in 1...3 {
-                            notificationManager.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto"), type: MainNotification.NotificationType.info)
+                            notificationManager.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
                         }
                     } label: {
                         Text("Test alert notifications").textButtonStyle(true)
                     }
                     #endif
-                    Text("Benvenuto")
-                        .font(.largeTitle)
-                        .fontWeight(.semibold)
-                        .padding()
                     Spacer()
                 }
                 VStack {
                     NavigationLink(destination: SignInView()) {
-                        Text("Accedi")
-                            .fontWeight(.bold)
-                            .frame(width: 200)
-                            .padding(.vertical)
-                            .background(.tint, in: RoundedRectangle(cornerRadius: 20))
-                            .foregroundStyle(Color.white)
+                        Text("Accedi").textButtonStyle(true, width: 200, padding: .vertical)
                     }
                     NavigationLink(destination: CreateAccountView()) {
-                        Text("Crea account")
-                            .fontWeight(.bold)
-                            .frame(width: 200)
-                            .padding(.vertical)
-                            .background(.tint, in: RoundedRectangle(cornerRadius: 20))
-                            .foregroundStyle(Color.white)
+                        Text("Crea account").textButtonStyle(true, width: 200, padding: .vertical)
                     }
                 }
             }
             .navigationTitle("")
         }
-        .foregroundStyle(Color.accentColor)
+        .environmentObject(classes)
     }
 }
 
 #Preview {
-    StartView().environmentObject(NotificationManager.shared)
+    StartView()
+        .foregroundStyle(Color.accentColor)
+        .environmentObject(NotificationManager.shared)
 }

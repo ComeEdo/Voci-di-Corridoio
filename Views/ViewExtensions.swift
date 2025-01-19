@@ -11,17 +11,11 @@ extension Text {
     func textColor() -> Text {
         self.foregroundStyle(.accent)
     }
-    func title() -> Text {
-        self
-            .textColor()
-            .font(.title2)
-            .fontWeight(.bold)
+    func title(_ size: CGFloat = 22, _ weight: Font.Weight = .bold) -> Text {
+        self.font(.system(size: size, weight: weight))
     }
-    func body() -> Text {
-        self
-            .textColor()
-            .font(.body)
-            .fontWeight(.semibold)
+    func body(_ size: CGFloat = 18) -> Text {
+        self.font(.system(size: size, weight: .semibold))
     }
 }
 

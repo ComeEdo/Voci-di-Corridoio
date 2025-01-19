@@ -27,7 +27,7 @@ struct BottomNotificationView: View {
                 Spacer()
                 HStack {
                     VStack() {
-                        bottom.type.icon
+                        bottom.notification.type.icon
                             .fontWeight(.heavy)
                             .font(.system(size: 40))
                     }
@@ -58,7 +58,7 @@ struct BottomNotificationView: View {
         withAnimation(self.type) {
             self.offsetY = 0
         }
-        HapticFeedback.trigger(bottom.type.hapticFeedback)
+        HapticFeedback.trigger(bottom.notification.type.hapticFeedback)
         startTimer()
     }
     
@@ -91,14 +91,14 @@ struct BottomNotificationView: View {
     private var dragGesture: some Gesture {
         DragGesture()
             .onChanged { value in
-                if value.translation.height > 0 {
+                if value.translation.height >= 0 {
                     offsetY = value.translation.height
                 } else {
-                    offsetY = max(-15, value.translation.height)
+                    offsetY = value.translation.height.progessionAsitotic(50, 100)
                 }
             }
             .onEnded { value in
-                if value.translation.height > 20 {
+                if value.translation.height >= 20 {
                     cancellationCleanup()
                     dismissNotification()
                 } else {
@@ -111,5 +111,5 @@ struct BottomNotificationView: View {
 }
 
 #Preview {
-    BottomNotificationView(BottomNotification(notification: MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbbb"), duration: 6, type: .warning, onDismiss: {print("workaa")}))
+    BottomNotificationView(BottomNotification(notification: MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbb", type: .info), duration: 6, onDismiss: { print("workaa") } ))
 }

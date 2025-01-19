@@ -23,6 +23,7 @@ struct Voci_di_CorridoioApp: App {
             }
             .addAlerts()
             .addBottomNotifications()
+            .foregroundStyle(Color.accentColor)
         }
         .environmentObject(userManager)
         .environmentObject(notificationManager)

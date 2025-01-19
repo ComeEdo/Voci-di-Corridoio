@@ -40,13 +40,11 @@ struct AlertNotificationView: View {
             }
             .alertStyle()
         }.onAppear {
-            HapticFeedback.trigger(alert.type.hapticFeedback)
+            HapticFeedback.trigger(alert.notification.type.hapticFeedback)
         }
     }
 }
 
 #Preview {
-    AlertNotificationView(AlertNotification(notification: MainNotification.NotificationStructure(title: "Test", message: "Prova Prova Prova Prova Prova Prova Prova Prova"), dismissButtonTitle: "DAJE", type: .success, onDismiss: {
-        print("test")
-    }))
+    AlertNotificationView(AlertNotification(notification: MainNotification.NotificationStructure(title: "Test", message: "Prova Prova Prova Prova Prova Prova Prova Prova", type: .success), dismissButtonTitle: "DAJE", onDismiss: { print("test") } ))
 }

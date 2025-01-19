@@ -74,6 +74,9 @@
         }
       }
     },
+    "%lld" : {
+
+    },
     "Accedi" : {
       "localizations" : {
         "en" : {
@@ -84,6 +87,9 @@
         }
       }
     },
+    "Acesso" : {
+
+    },
     "admin" : {
 
     },
@@ -91,6 +97,7 @@
 
     },
     "Benvenuto" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -109,6 +116,9 @@
           }
         }
       }
+    },
+    "Classe" : {
+
     },
     "Cognome" : {
       "localizations" : {
@@ -152,6 +162,9 @@
           }
         }
       }
+    },
+    "Dati ricevuti vuoti" : {
+
     },
     "È stato trovato un conflitto: %@" : {
       "localizations" : {
@@ -385,6 +398,9 @@
         }
       }
     },
+    "Non sono state trovate classi" : {
+
+    },
     "Password" : {
       "shouldTranslate" : false
     },
@@ -508,6 +524,9 @@
     "URL Non Supportato" : {
 
     },
+    "URL Non Valido" : {
+
+    },
     "URL non valido: %@/check-username." : {
       "localizations" : {
         "en" : {
@@ -527,6 +546,9 @@
           }
         }
       }
+    },
+    "Voci di Corridoio" : {
+
     }
   },
   "version" : "1.0"

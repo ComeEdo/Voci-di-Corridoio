@@ -198,9 +198,9 @@ struct CommonSpacer: View {
 @frozen
 public struct VScrollView<Content>: View where Content: View {
     private let content: () -> Content
-    private var VerticalOffset: Binding<CGFloat>?
+    private var VerticalOffset: Binding<CGFloat>
     
-    public init(_ VerticalOffset: Binding<CGFloat>? = nil, @ViewBuilder content: @escaping () -> Content) {
+    public init(_ VerticalOffset: Binding<CGFloat> = .constant(0), @ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self.VerticalOffset = VerticalOffset
     }
@@ -210,9 +210,9 @@ public struct VScrollView<Content>: View where Content: View {
             ScrollView(.vertical) {
                 ZStack {
                     GeometryReader { innerGeometry in
-                        Color.clear
+                        EmptyView()
                             .onChange(of: innerGeometry.frame(in: .global).minY) {
-                                VerticalOffset?.wrappedValue = innerGeometry.frame(in: .global).maxY - geometry.frame(in: .global).maxY
+                                VerticalOffset.wrappedValue = innerGeometry.frame(in: .global).maxY - geometry.frame(in: .global).maxY
                             }
                     }
                     content()
@@ -248,5 +248,11 @@ extension String {
     func matches(_ regex: String) -> Bool {
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         return predicate.evaluate(with: self)
+    }
+}
+
+extension CGFloat {
+    func progessionAsitotic(_ asintoto: CGFloat, _ k: CGFloat) -> CGFloat {
+        return -asintoto * (1 - exp(self / (k)))
     }
 }

@@ -23,6 +23,7 @@ struct CreateAccountView: View {
     
     @EnvironmentObject private var userManager: UserManager
     @EnvironmentObject private var notificationManager: NotificationManager
+    @EnvironmentObject private var classes: ClassesManager
     
     private var functions: Utility = Utility.shared
     
@@ -31,7 +32,7 @@ struct CreateAccountView: View {
     
     @State private var isRegistered: Bool = false
     
-    @State private var user: User = User()
+    @State private var user: RegistrationData = RegistrationData(email: "edo.stud@itisgalileiroma.it")
     
     @State private var isValidUsername: Bool? = false
     @State private var reason: LocalizedStringResource = ""
@@ -42,10 +43,6 @@ struct CreateAccountView: View {
     @State private var debounceTimer: Timer?
     
     @State private var usernameCheckTask: URLSessionDataTask?
-    
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var repeatedPassword: String = ""
     
     @FocusState private var focusedField: Field?
     @FocusState private var isName: Bool
@@ -59,6 +56,13 @@ struct CreateAccountView: View {
     var body: some View {
         ZStack {
             ColorGradient().zIndex(0)
+            VStack {
+                Text("Crea account")
+                    .title(30, .heavy)
+                Spacer()
+            }
+            .padding(.top, 58)
+            .ignoresSafeArea()
             VStack(spacing: 0) {
                 VScrollView($scroll) {
                     VStack(spacing: 20) {
@@ -66,7 +70,7 @@ struct CreateAccountView: View {
                             Spacer()
                         }
                         nameSurname()
-                        usernameView()
+                        usernameClass()
                         emailView()
                         passwordView()
                         repeatedPasswordView()
@@ -77,7 +81,7 @@ struct CreateAccountView: View {
                 .padding(.horizontal, 30)
                 buttonView()
                     .padding(keyboardHeight == 0 ? 0 : 10)
-                    .offset(y: keyboardHeight == 0 ? min(20, scroll) : min(10, scroll))
+                    .offset(y: keyboardHeight == 0 ? (scroll <= 0 ? scroll : scroll.progessionAsitotic(-20, -20)) : (scroll <= 0 ? scroll : scroll.progessionAsitotic(-10, -10)))
             }
         }
         .getKeyboardYAxis($keyboardHeight)
@@ -167,51 +171,106 @@ struct CreateAccountView: View {
         }
     }
     
+    private func extractNumberAndLetter(from value: String) -> (number: Int, letter: String) {
+        let regex = try? NSRegularExpression(pattern: "(\\d*)([a-zA-Z0-9]*)")
+        let match = regex?.firstMatch(in: value, options: [], range: NSRange(value.startIndex..., in: value))
+        
+        if let match = match, let numberRange = Range(match.range(at: 1), in: value), let letterRange = Range(match.range(at: 2), in: value) {
+            let number = Int(value[numberRange]) ?? 0
+            let letter = String(value[letterRange])
+            return (number, letter)
+        } else {
+            return (0, "")
+        }
+    }
+    
+    private func classSelectorView() -> some View {
+        VStack(spacing: 0) {
+            Picker(selection: $user.role) {
+                if case .teacher = user.role {
+                    Text("Classe").tag(RegistrationData.RegistrationRole.teacher)
+                }
+                ForEach(classes.classes.keys.sorted { key1, key2 in
+                    let value1 = classes.classes[key1] ?? ""
+                    let value2 = classes.classes[key2] ?? ""
+                    
+                    let (num1, letter1) = extractNumberAndLetter(from: value1)
+                    let (num2, letter2) = extractNumberAndLetter(from: value2)
+                    
+                    if num1 != num2 {
+                        return num1 > num2
+                    } else {
+                        return letter1 < letter2
+                    }
+                }, id: \.self) { key in
+                    Text(classes.classes[key] ?? "Error").tag(RegistrationData.RegistrationRole.student(classGroup: key))
+                }
+            } label: {
+                Text("Classe").title()
+            }
+            .pickerStyle(.menu)
+            .padding(.vertical, -4.4)
+            .onDisappear {
+                user.role = RegistrationData.RegistrationRole.teacher
+            }
+            Divider().dividerStyle(user.role != .teacher)
+        }.frame(width: 100)
+    }
+    
+    private func usernameClass() -> some View {
+        HStack(alignment: .top) {
+            usernameView()
+            if functions.isValidStudentEmail(user.email) {
+                classSelectorView()
+            }
+        }
+    }
+    
     private func emailView() -> some View {
         VStack {
             HStack {
-                AuthTextField("Email", text: $email)
-                    .emailFieldStyle($email)
+                AuthTextField("Email", text: $user.email)
+                    .emailFieldStyle($user.email)
                     .focused($focusedField, equals: .mail)
                     .submitLabel(.next)
                     .onSubmit {
                         focusedField = getFocus()
                     }
-                ValidationIcon(functions.mailChecker(email, avoid: avoidMails).result).validationIconStyle(email.isEmpty)
+                ValidationIcon(functions.mailChecker(user.email, avoid: avoidMails).result).validationIconStyle(user.email.isEmpty)
             }
-            DividerText(result: functions.mailChecker(email, avoid: avoidMails), empty: email.isEmpty)
+            DividerText(result: functions.mailChecker(user.email, avoid: avoidMails), empty: user.email.isEmpty)
         }
     }
     
     private func passwordView() -> some View {
         VStack {
             HStack {
-                AuthTextField("Password", text: $password, isSecure: true)
-                    .passwordFieldStyle($password)
+                AuthTextField("Password", text: $user.password, isSecure: true)
+                    .passwordFieldStyle($user.password)
                     .focused($focusedField, equals: .password)
                     .submitLabel(.next)
                     .onSubmit {
                         focusedField = getFocus()
                     }
-                ValidationIcon(functions.passwordChecker(password).result).validationIconStyle(password.isEmpty)
+                ValidationIcon(functions.passwordChecker(user.password).result).validationIconStyle(user.password.isEmpty)
             }
-            DividerText(result: functions.passwordChecker(password), empty: password.isEmpty)
+            DividerText(result: functions.passwordChecker(user.password), empty: user.password.isEmpty)
         }
     }
     
     private func repeatedPasswordView() -> some View {
         VStack {
             HStack {
-                AuthTextField("Ripeti password", text: $repeatedPassword, isSecure: true)
-                    .passwordFieldStyle($repeatedPassword)
+                AuthTextField("Ripeti password", text: $user.repeatedPassword, isSecure: true)
+                    .passwordFieldStyle($user.repeatedPassword)
                     .focused($focusedField, equals: .repeatedPassword)
                     .submitLabel(.done)
                     .onSubmit {
                         focusedField = getFocus()
                     }
-                ValidationIcon(isPasswordsMatch().result).validationIconStyle(repeatedPassword.isEmpty)
+                ValidationIcon(isPasswordsMatch().result).validationIconStyle(user.repeatedPassword.isEmpty)
             }
-            DividerText(result: isPasswordsMatch(), empty: repeatedPassword.isEmpty)
+            DividerText(result: isPasswordsMatch(), empty: user.repeatedPassword.isEmpty)
         }
     }
     
@@ -251,7 +310,7 @@ struct CreateAccountView: View {
             //ordine esecuzione 2
             do {
                 usernameCheckTask?.cancel()
-                let alert = try await userManager.registerUser(user: user, email: email, password: password)
+                let alert = try await userManager.registerUser(user: user)
                 if case .sucess = alert {
                     exit()
                 } else if case .failureUsername(let username) = alert {
@@ -262,11 +321,9 @@ struct CreateAccountView: View {
                     avoidUsernames.append(username)
                     avoidMails.append(mail)
                 }
-                setupAlert(alert.response)
-            } catch let error as RegistrationError {
-                setupAlert(error.message)
-            } catch let error as Codes {
-                setupAlert(error.response)
+                setupAlert(alert.notification)
+            } catch let error as Notifiable {
+                setupAlert(error.notification)
             } catch {
                 print(error.localizedDescription)
                 setupAlert(error)
@@ -281,10 +338,10 @@ struct CreateAccountView: View {
     }
     
     private func setupAlert(_ alert: MainNotification.NotificationStructure) {
-        notificationManager.showAlert(alert, type: .success)
+        notificationManager.showAlert(alert)
     }
     private func setupAlert(_ error: Error) {
-        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)"), type: .warning)
+        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
     }
     
     private func getFocus() -> Field? {
@@ -297,10 +354,10 @@ struct CreateAccountView: View {
         if isValidUsername == false {
             return .username
         }
-        if !functions.mailChecker(email, avoid: avoidMails).result {
+        if !functions.mailChecker(user.email, avoid: avoidMails).result {
             return .mail
         }
-        if !functions.passwordChecker(password).result {
+        if !functions.passwordChecker(user.password).result {
             return .password
         }
         if !isPasswordsMatch().result {
@@ -313,13 +370,13 @@ struct CreateAccountView: View {
         return isValidInput(user.name).result &&
         isValidInput(user.surname).result &&
         isValidUsername ?? true &&
-        functions.mailChecker(email, avoid: avoidMails).result &&
-        functions.passwordChecker(password).result &&
+        functions.mailChecker(user.email, avoid: avoidMails).result &&
+        functions.passwordChecker(user.password).result &&
         isPasswordsMatch().result
     }
     
     private func isPasswordsMatch() -> ResultLocalized {
-        if password == repeatedPassword {
+        if user.password == user.repeatedPassword {
             return ResultLocalized(result: true, message: "Password valida.")
         } else {
             return ResultLocalized(result: false, message: "Le password sono diverse.")
@@ -437,12 +494,10 @@ struct CreateAccountView: View {
                     }
                 } catch let error as DecodingError {
                     reason = "Si è verificato un errore JSON: \(error.localizedDescription)."
-                    isValidUsername = true
-                    return
+                    return isValidUsername = true
                 } catch {
                     reason = "Impossibile interpretare la risposta: \(error.localizedDescription)."
-                    isValidUsername = true
-                    return
+                    return isValidUsername = true
                 }
             }
             usernameCheckTask?.resume()
@@ -459,4 +514,29 @@ struct CreateAccountView: View {
 
 #Preview {
     CreateAccountView()
+}
+
+struct RegistrationData {
+    enum RegistrationRole: Hashable {
+        case student(classGroup: UUID)
+        case teacher
+    }
+    
+    var name: String
+    var surname: String
+    var username: String
+    var email: String
+    var password: String
+    var repeatedPassword: String
+    var role: RegistrationRole
+    
+    init(name: String = "", surname: String = "", username: String = "", email: String = "", password: String = "", repeatedPassword: String = "", role: RegistrationRole = RegistrationRole.teacher) {
+        self.name = name
+        self.surname = surname
+        self.username = username
+        self.email = email
+        self.password = password
+        self.repeatedPassword = repeatedPassword
+        self.role = role
+    }
 }
