@@ -94,10 +94,13 @@ class UserManager: ObservableObject {
     let port = 443
     let URN: String
     
-    private struct APIEndpoints {
+    struct APIEndpoints {
         static let register = "/register"
         static let login = "/login"
         static let auth = "/auth"
+        static let checkUsername = "/check/username"
+        static let fetchAvailableClasses = "/classes/registration"
+        static let SSLCertificate = "/downloads/certificates"
         
         private init() {}
     }
@@ -138,39 +141,40 @@ class UserManager: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         let body: [String: String] = [
-            "name": user.name,
-            "surname": user.surname,
-            "username": user.username,
-            "email": user.email,
-            "password": user.password
-        ]
+                "name": user.name,
+                "surname": user.surname,
+                "username": user.username,
+                "email": user.email,
+                "password": user.password,
+                "classUUID": {
+                    if case .student(let classGroup) = user.role {
+                        return classGroup.uuidString
+                    }
+                    return nil
+                }()
+            ].compactMapValues { $0 }
+        
+        print("body: \(body)")
         
         do {
             request.httpBody = try JSONEncoder().encode(body)
-        } catch let err {
-            throw RegistrationError.JSONError(message: err.localizedDescription)
+        } catch {
+            throw RegistrationError.JSONError(message: error.localizedDescription)
         }
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw RegistrationError.invalidResponse(message: "Invalid response from server.")
-            }
             
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponse<DataFieldRegistration>) = try checkResponse(data: data, response: response)
             let statusCode = httpResponse.statusCode
-            let apiResponse = try JSONDecoder().decode(ApiResponse<DataFieldRegistration>.self, from: data)
             print("Success: \(apiResponse.success)")
             print("Message: \(apiResponse.message)")
             
             switch statusCode {
             case 201:
-                if let username = apiResponse.data?.username {
-                    return RegistrationNotification.sucess(username: username)
-                } else {
-                    return RegistrationNotification.sucess(username: "User") //boh
-                }
+                return RegistrationNotification.sucess(username: apiResponse.data?.username ?? "User")
             case 400:
                 throw Codes.code400(message: apiResponse.message)
             case 409:
@@ -188,14 +192,8 @@ class UserManager: ObservableObject {
             default:
                 throw RegistrationError.invalidResponse(message: apiResponse.message)
             }
-        } catch let error as DecodingError {
-            throw RegistrationError.JSONError(message: error.localizedDescription)
-        } catch let error as Codes {
-            throw error
-        } catch let error as RegistrationError {
-            throw error
         } catch {
-            throw RegistrationError.unknownError(message: error.localizedDescription)
+            throw mapError(error)
         }
     }
     

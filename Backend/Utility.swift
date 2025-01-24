@@ -63,7 +63,11 @@ struct Utility {
     }
     
     func isValidStudentEmail(_ email: String) -> Bool {
-        let pattern = "^[A-Za-z0-9._-]+\\\(studentMail)$"
+        let email = email.lowercased()
+        let escapedStudentMail = studentMail
+            .replacingOccurrences(of: ".", with: "\\.")
+            .replacingOccurrences(of: "@", with: "\\@")
+        let pattern = "^[a-z0-9._-]+\(escapedStudentMail)$"
         guard !(email.isEmpty || email.hasPrefix(".") || email.contains("..") || email.contains("__") || email.hasPrefix("_") || email.contains("--") || email.hasPrefix("-") || email.count < Utility.MIN_LENGHT || email.count > Utility.MAX_LENGHT) else {
             return false
         }
@@ -77,7 +81,11 @@ struct Utility {
     }
     
     func isValidSchoolEmail(_ email: String) -> Bool {
-        let pattern = "^[A-Za-z0-9._-]+\\\(schoolMail)$"
+        let email = email.lowercased()
+        let escapedSchoolMail = schoolMail
+            .replacingOccurrences(of: ".", with: "\\.")
+            .replacingOccurrences(of: "@", with: "\\@")
+        let pattern = "^[a-z0-9._-]+\(escapedSchoolMail)$"
         guard !(email.isEmpty || email.hasPrefix(".") || email.contains("..") || email.contains("__") || email.hasPrefix("_") || email.contains("--") || email.hasPrefix("-") || email.contains(".@") || email.contains("_@") || email.contains("-@") || email.count < Utility.MIN_LENGHT || email.count > Utility.MAX_LENGHT) else {
             return false
         }
@@ -85,7 +93,8 @@ struct Utility {
     }
     
     static func isValidEmail(_ email: String) -> Bool {
-        let validEmailRegex = "^[a-z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        let email = email.lowercased()
+        let validEmailRegex = "^[a-z0-9._-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
         guard !(email.isEmpty || email.contains("..") || email.hasPrefix(".") || email.contains(".@") || email.contains("@.") || email.contains("__") || email.hasPrefix("_") || email.contains("_@") || email.contains("--") || email.hasPrefix("-") || email.contains("-@") || email.contains("@-") || email.count < MIN_LENGHT || email.count > MAX_LENGHT) else {
             return false
         }
@@ -100,7 +109,7 @@ struct Utility {
         return email.matches(validEmailRegex)
     }
     
-    static func isValidHardPassword(_ password: String) -> Bool {
+    static private func isValidHardPassword(_ password: String) -> Bool {
         guard !(password.isEmpty || password.count < Utility.MIN_LENGHT || password.count > Utility.MAX_LENGHT) else {
             return false
         }
@@ -253,6 +262,10 @@ extension String {
 
 extension CGFloat {
     func progessionAsitotic(_ asintoto: CGFloat, _ k: CGFloat) -> CGFloat {
-        return -asintoto * (1 - exp(self / (k)))
+        if (self > 0 && asintoto < 0) || (self < 0 && asintoto > 0) {
+            return -asintoto * (1 - exp(self / k))
+        } else {
+            return self
+        }
     }
 }

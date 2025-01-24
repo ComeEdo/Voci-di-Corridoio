@@ -59,7 +59,7 @@ struct SignInView: View {
                 .padding(.horizontal, 30)
                 buttonView()
                     .padding(keyboardHeight == 0 ? 0 : 10)
-                    .offset(y: keyboardHeight == 0 ? (scroll <= 0 ? scroll : scroll.progessionAsitotic(-20, -20)) : (scroll <= 0 ? scroll : scroll.progessionAsitotic(-10, -10)))
+                    .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
         }
         .getKeyboardYAxis($keyboardHeight)

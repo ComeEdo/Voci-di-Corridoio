@@ -69,7 +69,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ is valid:"
+            "value" : "%@ is valid."
           }
         }
       }
@@ -87,13 +87,16 @@
         }
       }
     },
-    "Acesso" : {
+    "Accesso" : {
 
     },
     "admin" : {
 
     },
-    "Apostrofi in posiszioni non valide." : {
+    "Apostrofi non valido." : {
+
+    },
+    "Apostrofo non valido." : {
 
     },
     "Benvenuto" : {
@@ -116,6 +119,9 @@
           }
         }
       }
+    },
+    "Certificato Del Server Non Valido" : {
+
     },
     "Classe" : {
 
@@ -258,6 +264,19 @@
     "Host Non Trovato" : {
 
     },
+    "Il nostro certificato è self-signed, iOS non apprezza.\nPer usare Voci Di Corridoio devi installarlo.\nScaricalo a https://%@%@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Il nostro certificato è self-signed, iOS non apprezza.\nPer usare Voci Di Corridoio devi installarlo.\nScaricalo a https://%1$@%2$@"
+          }
+        }
+      }
+    },
+    "Il server è offline.\nRiprova più tardi." : {
+
+    },
     "Il server ha risposto con un errore. Riprova più tardi." : {
 
     },
@@ -363,6 +382,7 @@
       }
     },
     "Manca qualcosa" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -479,6 +499,9 @@
           }
         }
       }
+    },
+    "Risposta inaspettata. Riprova più tardi." : {
+
     },
     "segreteria" : {
 

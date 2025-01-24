@@ -91,11 +91,7 @@ struct BottomNotificationView: View {
     private var dragGesture: some Gesture {
         DragGesture()
             .onChanged { value in
-                if value.translation.height >= 0 {
-                    offsetY = value.translation.height
-                } else {
-                    offsetY = value.translation.height.progessionAsitotic(50, 100)
-                }
+                offsetY = value.translation.height.progessionAsitotic(50, 100)
             }
             .onEnded { value in
                 if value.translation.height >= 20 {

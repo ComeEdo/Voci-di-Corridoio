@@ -12,7 +12,7 @@ struct CreateAccountView: View {
         case name
         case surname
         case username
-        case mail
+        case email
         case password
         case repeatedPassword
     }
@@ -27,10 +27,7 @@ struct CreateAccountView: View {
     
     private var functions: Utility = Utility.shared
     
-    @State private var isGoingWell: Bool = true
     @State private var isOperationFinished: Bool = true
-    
-    @State private var isRegistered: Bool = false
     
     @State private var user: RegistrationData = RegistrationData(email: "edo.stud@itisgalileiroma.it")
     
@@ -45,8 +42,6 @@ struct CreateAccountView: View {
     @State private var usernameCheckTask: URLSessionDataTask?
     
     @FocusState private var focusedField: Field?
-    @FocusState private var isName: Bool
-    @FocusState private var isSurname: Bool
     
     @State private var keyboardHeight: CGFloat = .zero
     @State private var scroll: CGFloat = .zero
@@ -81,7 +76,7 @@ struct CreateAccountView: View {
                 .padding(.horizontal, 30)
                 buttonView()
                     .padding(keyboardHeight == 0 ? 0 : 10)
-                    .offset(y: keyboardHeight == 0 ? (scroll <= 0 ? scroll : scroll.progessionAsitotic(-20, -20)) : (scroll <= 0 ? scroll : scroll.progessionAsitotic(-10, -10)))
+                    .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
         }
         .getKeyboardYAxis($keyboardHeight)
@@ -96,6 +91,10 @@ struct CreateAccountView: View {
                 }
             }
         }
+        .onDisappear {
+            cancelUsernameCheckTask()
+            invalidateDebounceTimer()
+        }
     }
     
     private func nameView() -> some View {
@@ -104,10 +103,9 @@ struct CreateAccountView: View {
                 AuthTextField("Nome", text: $user.name)
                     .personalFieldStyle($user.name)
                     .focused($focusedField, equals: .name)
-                    .focused($isName)
                     .submitLabel(.next)
-                    .onChange(of: isName) {
-                        if (isName == false) {
+                    .onChange(of: focusedField) { oldValue, newValue in
+                        if oldValue == .name && newValue != .name {
                             user.name = validateText(user.name)
                         }
                     }
@@ -126,10 +124,9 @@ struct CreateAccountView: View {
                 AuthTextField("Cognome", text: $user.surname)
                     .personalFieldStyle($user.surname)
                     .focused($focusedField, equals: .surname)
-                    .focused($isSurname)
                     .submitLabel(.next)
-                    .onChange(of: isSurname) {
-                        if (isSurname == false) {
+                    .onChange(of: focusedField) { oldValue, newValue in
+                        if oldValue == .surname && newValue != .surname {
                             user.surname = validateText(user.surname)
                         }
                     }
@@ -209,12 +206,13 @@ struct CreateAccountView: View {
                 Text("Classe").title()
             }
             .pickerStyle(.menu)
-            .padding(.vertical, -4.4)
+            .padding(.vertical, -4.4)   //allineamnto divider
             .onDisappear {
                 user.role = RegistrationData.RegistrationRole.teacher
             }
             Divider().dividerStyle(user.role != .teacher)
-        }.frame(width: 100)
+        }
+        .frame(width: 100)
     }
     
     private func usernameClass() -> some View {
@@ -231,7 +229,7 @@ struct CreateAccountView: View {
             HStack {
                 AuthTextField("Email", text: $user.email)
                     .emailFieldStyle($user.email)
-                    .focused($focusedField, equals: .mail)
+                    .focused($focusedField, equals: .email)
                     .submitLabel(.next)
                     .onSubmit {
                         focusedField = getFocus()
@@ -276,35 +274,39 @@ struct CreateAccountView: View {
     
     private func buttonView() -> some View {
         VStack {
-            Button(action: handleRegister) {
-                Text("Crea account").textButtonStyle(isFormValid())
-            }
-            .disabled(!isFormValid() || !isOperationFinished)
-            if !isGoingWell {
-                Text("Manca qualcosa").validationTextStyle(alignment: .center)
-            }
+            Button(action: handleRegister) { Text("Crea account").textButtonStyle(isFormValid()) }.disabled(!isFormValid() || !isOperationFinished)
         }
+    }
+    
+    func cancelUsernameCheckTask() {
+        usernameCheckTask?.cancel()
+        usernameCheckTask = nil
+    }
+    
+    func invalidateDebounceTimer() {
+        debounceTimer?.invalidate()
+        debounceTimer = nil
     }
     
     private func handleRegister() {
-        focusedField = nil
-        user.name = validateText(user.name)
-        user.surname = validateText(user.surname)
-        isGoingWell = isFormValid()
-        if (isGoingWell) {
-            registerLogic()
+        if focusedField == .name {
+            user.name = validateText(user.name)
+        } else if focusedField == .surname {
+            user.surname = validateText(user.surname)
+        }
+        if isFormValid() {
+            focusedField = nil
+            executeRegisterUser()
         } else {
-            if(isValidInput(user.name).result) {
-                user.surname = ""
-                isSurname = true
+            if(!isValidInput(user.name).result) {
+                focusedField = .name
             } else {
-                user.name = ""
-                isName = true
+                focusedField = .surname
             }
         }
     }
     
-    private func registerLogic() {
+    private func executeRegisterUser() {
         isOperationFinished = false
         Task {
             //ordine esecuzione 2
@@ -315,10 +317,12 @@ struct CreateAccountView: View {
                     exit()
                 } else if case .failureUsername(let username) = alert {
                     avoidUsernames.append(username)
+                    isValidUsername = isUsernameValid()
                 } else if case .failureMail(let mail) = alert {
                     avoidMails.append(mail)
                 } else if case .failureUsernameMail(let username, let mail) = alert {
                     avoidUsernames.append(username)
+                    isValidUsername = isUsernameValid()
                     avoidMails.append(mail)
                 }
                 setupAlert(alert.notification)
@@ -329,9 +333,6 @@ struct CreateAccountView: View {
                 setupAlert(error)
             }
             //ordine esecuzione 3
-            if !isRegistered {
-                isGoingWell = false
-            }
             isOperationFinished = true
         }
         //ordine esecuzione 1
@@ -355,7 +356,7 @@ struct CreateAccountView: View {
             return .username
         }
         if !functions.mailChecker(user.email, avoid: avoidMails).result {
-            return .mail
+            return .email
         }
         if !functions.passwordChecker(user.password).result {
             return .password
@@ -370,6 +371,7 @@ struct CreateAccountView: View {
         return isValidInput(user.name).result &&
         isValidInput(user.surname).result &&
         isValidUsername ?? true &&
+        (functions.isValidStudentEmail(user.email) ? user.isRoleStudent() : true) &&
         functions.mailChecker(user.email, avoid: avoidMails).result &&
         functions.passwordChecker(user.password).result &&
         isPasswordsMatch().result
@@ -391,8 +393,11 @@ struct CreateAccountView: View {
         func checkIfPresentIn(_ text: String, _ char: String) -> Bool {
             return text.hasSuffix(char) || text.hasPrefix(char) || text.contains(char+char)
         }
-        guard !(checkIfPresentIn(text, "'") || checkIfPresentIn(text, "’") || checkIfPresentIn(text, "‘") || text.contains("‘’") || text.contains("’‘") || text.contains("‘'") || text.contains("'‘") || text.contains("’'") || text.contains("'’") || text.contains(" ' ") || text.contains(" ’ ") || text.contains(" ‘ ")) else {
-            return ResultLocalized(result: false, message: "Apostrofi in posiszioni non valide.")
+        guard !(checkIfPresentIn(text, "'") || checkIfPresentIn(text, "’") || checkIfPresentIn(text, "‘") || text.contains(" ' ") || text.contains(" ’ ") || text.contains(" ‘ ")) else {
+            return ResultLocalized(result: false, message: "Apostrofo non valido.")
+        }
+        guard !(text.contains("‘’") || text.contains("’‘") || text.contains("‘'") || text.contains("'‘") || text.contains("’'") || text.contains("'’")) else {
+            return ResultLocalized(result: false, message: "Apostrofi non valido.")
         }
         return ResultLocalized(result: true, message: "Valido.")
     }
@@ -424,23 +429,19 @@ struct CreateAccountView: View {
     
     @MainActor
     private func checkUsernameAvailability(_ username: String) async {
-        debounceTimer?.invalidate()
+        invalidateDebounceTimer()
         
         guard isUsernameValid() else {
-            isValidUsername = false
-            return
+            return isValidUsername = false
         }
         
-        if isValidUsername != nil {
-            isValidUsername = nil
-        }
+        isValidUsername = nil
         
         debounceTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in
             
             guard let url = URL(string: "\(userManager.URN)/check-username") else {
                 reason = "URL non valido: \(userManager.URN)/check-username."
-                isValidUsername = true
-                return
+                return isValidUsername = true
             }
             
             var request = URLRequest(url: url)
@@ -451,14 +452,12 @@ struct CreateAccountView: View {
             
             do {
                 request.httpBody = try JSONEncoder().encode(body)
-            } catch let err {
-                reason = "\(err.localizedDescription)"
-                isValidUsername = false
-                return
+            } catch {
+                reason = "\(error.localizedDescription)"
+                return isValidUsername = false
             }
             
-            usernameCheckTask?.cancel()
-            usernameCheckTask = nil
+            cancelUsernameCheckTask()
             
             usernameCheckTask = URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil, let httpResponse = response as? HTTPURLResponse else {
@@ -468,8 +467,7 @@ struct CreateAccountView: View {
                         let unknownError: LocalizedStringResource = "Errore sconosciuto."
                         reason = "Richiesta fallita: \(unknownError)"
                     }
-                    isValidUsername = true
-                    return
+                    return isValidUsername = true
                 }
                 
                 let statusCode = httpResponse.statusCode
@@ -478,10 +476,8 @@ struct CreateAccountView: View {
                     
                     switch statusCode {
                     case 200:
-                        if let exist = apiResponse.data?.exists, let username = apiResponse.data?.username {
-                            if exist {
-                                avoidUsernames.append(username)
-                            }
+                        if apiResponse.data?.exists == true, let username = apiResponse.data?.username {
+                            avoidUsernames.append(username)
                         }
                         if isUsernameValid() {
                             reason = "\(user.username) valido."
@@ -491,13 +487,14 @@ struct CreateAccountView: View {
                         }
                     default:
                         reason = "\(apiResponse.message)"
+                        isValidUsername = true
                     }
                 } catch let error as DecodingError {
                     reason = "Si è verificato un errore JSON: \(error.localizedDescription)."
-                    return isValidUsername = true
+                    isValidUsername = true
                 } catch {
                     reason = "Impossibile interpretare la risposta: \(error.localizedDescription)."
-                    return isValidUsername = true
+                    isValidUsername = true
                 }
             }
             usernameCheckTask?.resume()
@@ -538,5 +535,12 @@ struct RegistrationData {
         self.password = password
         self.repeatedPassword = repeatedPassword
         self.role = role
+    }
+    
+    func isRoleStudent() -> Bool {
+        if case .student = role {
+            return true
+        }
+        return false
     }
 }

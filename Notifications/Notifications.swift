@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+import UIKit
 
 protocol Notifiable {
     var notification: MainNotification.NotificationStructure { get }
@@ -15,6 +17,23 @@ protocol Notifiable {
 extension Notifiable {
     var description: String {
         "\(notification.title)\n\n\(notification.message)"
+    }
+}
+
+enum ServerError: Error, Notifiable {
+    case serviceUnavailable
+    case unexpectedResponse
+    case sslError
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .serviceUnavailable:
+            return MainNotification.NotificationStructure(title: "Errore", message: "Il server è offline.\nRiprova più tardi.", type: .error)
+        case .unexpectedResponse:
+            return MainNotification.NotificationStructure(title: "Errore", message: "Risposta inaspettata. Riprova più tardi.", type: .error)
+        case .sslError:
+            return MainNotification.NotificationStructure(title: "Certificato Del Server Non Valido", message: "Il nostro certificato è self-signed, iOS non apprezza.\nPer usare Voci Di Corridoio devi installarlo.\nScaricalo a https://\(UserManager.shared.server)\(UserManager.APIEndpoints.SSLCertificate)", type: .info)
+        }
     }
 }
 
@@ -97,29 +116,6 @@ enum LoginNotification: CustomStringConvertible, Notifiable {
         }
     }
 }
-
-/*
-extension URLError {
-    
-    var response: MainNotification.NotificationStructure{
-        switch self.code {
-        case .notConnectedToInternet:
-            return MainNotification.NotificationStructure(title: "No Internet", message: "Please check your internet connection and try again.")
-        case .timedOut:
-            return MainNotification.NotificationStructure(title: "Request Timeout", message: "The request timed out. Please try again later.")
-        case .cannotFindHost:
-            return MainNotification.NotificationStructure(title: "Host Not Found", message: "Unable to find the host. Please check the URL or try again later.")
-        case .cannotConnectToHost:
-            return MainNotification.NotificationStructure(title: "Cannot Connect to Host", message: "Unable to connect to the host. Please check the server or your network.")
-        case .badServerResponse:
-            return MainNotification.NotificationStructure(title: "Server Error", message: "The server responded with an error. Please try again later.")
-        case .unsupportedURL:
-            return MainNotification.NotificationStructure(title: "Invalid URL", message: "The provided URL is not valid.")
-        default:
-            return MainNotification.NotificationStructure(title: "Unknown Error", message: "An unknown error occurred. Please try again.")
-        }
-    }
-}*/
 
 extension URLError: Notifiable {
     

@@ -4,6 +4,13 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Voci di Corridoio pre iOS 18.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>isShown</key>
+			<true/>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>Voci di Corridoio.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -12,6 +19,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>DBA0CF8D2D404A06005CF62F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>DBE900B52CDB76CB009A986A</key>
 		<dict>
 			<key>primary</key>

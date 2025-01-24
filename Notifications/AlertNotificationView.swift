@@ -26,6 +26,7 @@ struct AlertNotificationView: View {
             VStack(spacing: 20) {
                 Text(alert.notification.title)
                     .title()
+                    .multilineTextAlignment(.center)
                 Text(alert.notification.message)
                     .body()
                     .multilineTextAlignment(.center)
