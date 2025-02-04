@@ -24,33 +24,8 @@ struct DataFieldCheckUsername: Codable {
     let username: String?
 }
 
-struct DataFieldLogin: Codable {
-    let user: User
-    let role: Roles
-    let token: String
-    
-    enum CodingKeys: String, CodingKey {
-        case user
-        case role
-        case token
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        user = try container.decode(User.self, forKey: .user)
-        token = try container.decode(String.self, forKey: .token)
-        role = Roles.from(try container.decode(Int.self, forKey: .role))
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(user, forKey: .user)
-        try container.encode(token, forKey: .token)
-        try container.encode(role.rawValue, forKey: .role)
-    }
-}
-
 enum Roles: Int {
+    case user = 0
     case admin = 1
     case student = 2
     case teacher = 3
@@ -59,6 +34,8 @@ enum Roles: Int {
     
     var des: LocalizedStringResource {
         switch self {
+        case .user:
+            return "user"
         case .admin:
             return "admin"
         case .student:
@@ -73,11 +50,47 @@ enum Roles: Int {
     }
     
     static func from(_ id: Int) -> Roles {
-        if let role = Roles(rawValue: id) {
-            return role
-        } else {
-            print("Invalid role id: \(id)")
+//        if let role = Roles(rawValue: id) {
+//            return role
+//        } else {
+//            print("Invalid role id: \(id)")
+//            return .student
+//        }
+        return Roles(rawValue: id) ?? .user
+    }
+    
+    static func isRole(_ user: User) -> Roles {
+        switch user {
+        case is Student:
             return .student
+        case is Teacher:
+            return .teacher
+        case is Admin:
+            return .admin
+        case is Principal:
+            return .principal
+        case is Secretariat:
+            return .secretariat
+        default:
+            return .user
+        }
+    }
+    
+    static func isType(_ id: Int) -> User.Type {
+        let role: Roles = Roles.from(id)
+        switch role {
+        case .student:
+            return Student.self
+        case .user:
+            return User.self
+        case .admin:
+            return Admin.self
+        case .teacher:
+            return Teacher.self
+        case .principal:
+            return Principal.self
+        case .secretariat:
+            return Secretariat.self
         }
     }
 }
@@ -141,20 +154,21 @@ class UserManager: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         let body: [String: String] = [
-                "name": user.name,
-                "surname": user.surname,
-                "username": user.username,
-                "email": user.email,
-                "password": user.password,
-                "classUUID": {
-                    if case .student(let classGroup) = user.role {
-                        return classGroup.uuidString
-                    }
+            "name": user.name,
+            "surname": user.surname,
+            "username": user.username,
+            "email": user.email,
+            "password": user.password,
+            "classUUID": {
+                if case .student(let classGroup) = user.role {
+                    return classGroup.uuidString
+                } else {
                     return nil
-                }()
-            ].compactMapValues { $0 }
+                }
+            }()
+        ].compactMapValues { $0 }
         
         print("body: \(body)")
         
@@ -174,7 +188,7 @@ class UserManager: ObservableObject {
             
             switch statusCode {
             case 201:
-                return RegistrationNotification.sucess(username: apiResponse.data?.username ?? "User")
+                return RegistrationNotification.success(username: apiResponse.data?.username ?? "User")
             case 400:
                 throw Codes.code400(message: apiResponse.message)
             case 409:
@@ -220,31 +234,36 @@ class UserManager: ObservableObject {
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw RegistrationError.invalidResponse(message: "Invalid response from server.")
-            }
             
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponse<LoginResponse>) = try checkResponse(data: data, response: response)
             let statusCode = httpResponse.statusCode
-            let apiResponse = try JSONDecoder().decode(ApiResponse<DataFieldLogin>.self, from: data)
             
             switch statusCode {
             case 200:
                 guard let logInData = apiResponse.data else {
                     throw RegistrationError.JSONError(message: "è tutto rotto")
                 }
-                
-                guard try await isAuth(logInData.token) else {
-                    throw RegistrationError.unknownError(message: "token fottuto\n\(logInData.token)")
-                }
-                
-                print("token approved")
-                
-                try saveTokenToKeychain(token: logInData.token)
-                currentUser = logInData.user
-                self.authToken = logInData.token
-                self.isAuthenticated = true
-                
-                return LoginNotification.sucess(username: currentUser?.username ?? "user") // da cambiare
+                //                guard let logInData = apiResponse.data else {
+                //                    throw RegistrationError.JSONError(message: "è tutto rotto")
+                //                }
+                //
+                //                guard try await isAuth(logInData.token) else {
+                //                    throw RegistrationError.unknownError(message: "token fottuto\n\(logInData.token)")
+                //                }
+                //
+                //                print("token approved")
+                //
+                //                try saveTokenToKeychain(token: logInData.token)
+                //                currentUser = logInData.user
+                //                self.authToken = logInData.token
+                //                self.isAuthenticated = true
+                //                ForEach(logInData.roleGroups, id: \.roleId ) { username in
+                ////                    print(username)
+                //                    ForEach(username.users, id: \.id) { user in
+                //                        print(user.description)
+                //                    }
+                //                }
+                return LoginNotification.success(users: logInData.roleGroups)
             case 400:
                 let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
                 throw Codes.code400(message: errorMessage)
@@ -255,14 +274,8 @@ class UserManager: ObservableObject {
                 let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
                 throw RegistrationError.invalidResponse(message: errorMessage)
             }
-        } catch let error as DecodingError {
-            throw RegistrationError.JSONError(message: error.localizedDescription)
-        } catch let error as Codes {
-            throw error
-        } catch let error as RegistrationError {
-            throw error
         } catch {
-            throw RegistrationError.unknownError(message: error.localizedDescription)
+            throw mapError(error)
         }
     }
     

@@ -23,7 +23,7 @@ struct StartView: View {
                     #if DEBUG
                     Button {
                         for i in 1...10 {
-                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .success), duration: 3)
+                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
                         }
                     } label: {
                         Text("Test bottom notifications").textButtonStyle(true)
@@ -49,6 +49,8 @@ struct StartView: View {
             }
             .navigationTitle("")
         }
+        .addAlerts()
+        .addBottomNotifications()
         .environmentObject(classes)
     }
 }
@@ -57,4 +59,5 @@ struct StartView: View {
     StartView()
         .foregroundStyle(Color.accentColor)
         .environmentObject(NotificationManager.shared)
+        .environmentObject(UserManager.shared)
 }

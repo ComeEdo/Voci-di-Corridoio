@@ -51,25 +51,17 @@ struct CreateAccountView: View {
     var body: some View {
         ZStack {
             ColorGradient().zIndex(0)
-            VStack {
-                Text("Crea account")
-                    .title(30, .heavy)
-                Spacer()
-            }
-            .padding(.top, 58)
-            .ignoresSafeArea()
+            TitleOnView("Crea account")
             VStack(spacing: 0) {
-                VScrollView($scroll) {
-                    VStack(spacing: 20) {
-                        if keyboardHeight != 0  {
-                            Spacer()
-                        }
-                        nameSurname()
-                        usernameClass()
-                        emailView()
-                        passwordView()
-                        repeatedPasswordView()
+                VScrollView($scroll, spacing: 20) {
+                    if keyboardHeight != 0  {
+                        Spacer()
                     }
+                    nameSurname()
+                    usernameClass()
+                    emailView()
+                    passwordView()
+                    repeatedPasswordView()
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .scrollIndicators(.never)
@@ -187,20 +179,17 @@ struct CreateAccountView: View {
                 if case .teacher = user.role {
                     Text("Classe").tag(RegistrationData.RegistrationRole.teacher)
                 }
-                ForEach(classes.classes.keys.sorted { key1, key2 in
-                    let value1 = classes.classes[key1] ?? ""
-                    let value2 = classes.classes[key2] ?? ""
-                    
-                    let (num1, letter1) = extractNumberAndLetter(from: value1)
-                    let (num2, letter2) = extractNumberAndLetter(from: value2)
+                ForEach(classes.classes.sorted { class1, class2 in
+                    let (num1, letter1) = extractNumberAndLetter(from: class1.name)
+                    let (num2, letter2) = extractNumberAndLetter(from: class2.name)
                     
                     if num1 != num2 {
                         return num1 > num2
                     } else {
                         return letter1 < letter2
                     }
-                }, id: \.self) { key in
-                    Text(classes.classes[key] ?? "Error").tag(RegistrationData.RegistrationRole.student(classGroup: key))
+                }, id: \.id) { classItem in
+                    Text(classItem.name).tag(RegistrationData.RegistrationRole.student(classGroup: classItem.id))
                 }
             } label: {
                 Text("Classe").title()
@@ -313,7 +302,7 @@ struct CreateAccountView: View {
             do {
                 usernameCheckTask?.cancel()
                 let alert = try await userManager.registerUser(user: user)
-                if case .sucess = alert {
+                if case .success = alert {
                     exit()
                 } else if case .failureUsername(let username) = alert {
                     avoidUsernames.append(username)
@@ -326,6 +315,8 @@ struct CreateAccountView: View {
                     avoidMails.append(mail)
                 }
                 setupAlert(alert.notification)
+            } catch let error as ServerError {
+                SSLAlert(error)
             } catch let error as Notifiable {
                 setupAlert(error.notification)
             } catch {
@@ -488,6 +479,10 @@ struct CreateAccountView: View {
                     default:
                         reason = "\(apiResponse.message)"
                         isValidUsername = true
+                    }
+                } catch let error as URLError {
+                    if isSSLError(error) {
+                        SSLAlert(ServerError.sslError)
                     }
                 } catch let error as DecodingError {
                     reason = "Si è verificato un errore JSON: \(error.localizedDescription)."

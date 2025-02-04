@@ -25,34 +25,30 @@ struct SignInView: View {
     
     @State private var isOperationFinished: Bool = true
     
-    @State private var email: String = ".stud@itisgalileiroma.it"
-    @State private var password: String = ""
+    @State private var email: String = "frezzotti.edoardo.stud@itisgalileiroma.it"
+    @State private var password: String = "aa"
     
     @FocusState private var focusedField: Field?
     
     @State private var keyboardHeight: CGFloat = .zero
     @State private var scroll: CGFloat = .zero
     
+    @State private var users: [LoginResponse.RoleGroup]? = nil
+    @State private var isShowingUserSelector = false
+    
     init() {}
     
     var body: some View {
         ZStack {
             ColorGradient().zIndex(0)
-            VStack {
-                Text("Accesso").title(30, .heavy)
-                Spacer()
-            }
-            .padding(.top, 58)
-            .ignoresSafeArea()
+            TitleOnView("Accesso")
             VStack(spacing: 0) {
-                VScrollView($scroll) {
-                    VStack(spacing: 20) {
-                        if keyboardHeight != 0  {
-                            Spacer()
-                        }
-                        emailView()
-                        passwordView()
+                VScrollView($scroll, spacing: 20) {
+                    if keyboardHeight != 0  {
+                        Spacer()
                     }
+                    emailView()
+                    passwordView()
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .scrollIndicators(.never)
@@ -62,6 +58,14 @@ struct SignInView: View {
                     .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
         }
+        .navigationDestination(isPresented: $isShowingUserSelector) {
+            if let users = users {
+                UserSelectorView(users) {
+                    isOperationFinished = false
+                }
+            }
+        }
+        .navigationTitle("")
         .getKeyboardYAxis($keyboardHeight)
         .toolbarBackground(.hidden)
         .navigationBarBackButtonHidden(!isOperationFinished)
@@ -133,7 +137,14 @@ struct SignInView: View {
             //ordine esecuzione 2
             do {
                 let alert = try await userManager.loginUser(email: email, password: password)
+                if case .success(let users) = alert {
+                    self.users = users
+                    isShowingUserSelector = (self.users?.isEmpty == false) // some more logic here
+                    return isOperationFinished = true
+                }
                 setupAlert(alert.notification)
+            } catch let error as ServerError {
+                SSLAlert(error)
             } catch let error as Notifiable {
                 setupAlert(error.notification)
             } catch {

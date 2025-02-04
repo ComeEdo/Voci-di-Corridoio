@@ -55,14 +55,14 @@ enum Codes: Error, Notifiable {
 }
 
 enum RegistrationNotification: CustomStringConvertible, Notifiable {
-    case sucess(username: String)
+    case success(username: String)
     case failureUsername(username: String)
     case failureMail(mail: String)
     case failureUsernameMail(username: String, mail: String)
     
     var notification: MainNotification.NotificationStructure {
         switch self {
-        case .sucess(let username):
+        case .success(let username):
             return MainNotification.NotificationStructure(title: "Successo", message: "\(username) sei stato registrato con successo!", type: .success)
         case .failureUsername(let username):
             return MainNotification.NotificationStructure(title: "Errore", message: "L'username \(username) è già in uso.", type: .error)
@@ -98,21 +98,12 @@ enum RegistrationError: Error, Notifiable {
 }
 
 enum LoginNotification: CustomStringConvertible, Notifiable {
-    case sucess(username: String)
-    case failureUsername(username: String)
-    case failureMail(mail: String)
-    case failureUsernameMail(username: String, mail: String)
+    case success(users: [LoginResponse.RoleGroup])
     
     var notification: MainNotification.NotificationStructure {
         switch self {
-        case .sucess(let username):
-            return MainNotification.NotificationStructure(title: "Successo", message: "\(username) sei stato registrato con successo!", type: .success)
-        case .failureUsername(let username):
-            return MainNotification.NotificationStructure(title: "Errore", message: "L'username \(username) è già in uso.", type: .error)
-        case .failureMail(let mail):
-            return MainNotification.NotificationStructure(title: "Errore", message: "L'email \(mail) è già in uso.", type: .error)
-        case .failureUsernameMail(let username, let mail):
-            return MainNotification.NotificationStructure(title: "Errore", message: "L'username \(username) e la email \(mail) sono già in uso.", type: .error)
+        case .success:
+            return MainNotification.NotificationStructure(title: "Successo", message: "Sei stato loggato con successo!", type: .success)
         }
     }
 }

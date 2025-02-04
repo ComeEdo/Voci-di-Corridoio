@@ -208,10 +208,12 @@ struct CommonSpacer: View {
 public struct VScrollView<Content>: View where Content: View {
     private let content: () -> Content
     private var VerticalOffset: Binding<CGFloat>
+    private let spacing: CGFloat
     
-    public init(_ VerticalOffset: Binding<CGFloat> = .constant(0), @ViewBuilder content: @escaping () -> Content) {
+    init(_ VerticalOffset: Binding<CGFloat> = .constant(0), spacing: CGFloat, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self.VerticalOffset = VerticalOffset
+        self.spacing = spacing
     }
     
     public var body: some View {
@@ -224,12 +226,31 @@ public struct VScrollView<Content>: View where Content: View {
                                 VerticalOffset.wrappedValue = innerGeometry.frame(in: .global).maxY - geometry.frame(in: .global).maxY
                             }
                     }
-                    content()
+                    VStack(spacing: spacing) {
+                        content()
+                    }
                 }
                 .frame(width: geometry.size.width)
                 .frame(minHeight: geometry.size.height)
             }
         }
+    }
+}
+
+struct TitleOnView: View {
+    var title: String
+    
+    init(_ title: String) {
+        self.title = title
+    }
+    
+    var body: some View {
+        VStack {
+            Text(title).title(30, .heavy)
+            Spacer()
+        }
+        .padding(.top, 58)
+        .ignoresSafeArea()
     }
 }
 

@@ -7,29 +7,17 @@
 
 import SwiftUI
 
+struct Classs: Codable {
+    let id: UUID
+    let name: String
+}
+
 struct Classes: Codable {
-    let classes: [UUID: String]
-    
-    enum CodingKeys: String, CodingKey {
-        case classes
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let classesDict = try container.decode([String: String].self, forKey: .classes)
-        
-        var uuidClasses = [UUID: String]()
-        for (key, value) in classesDict {
-            if let uuid = UUID(uuidString: key) {
-                uuidClasses[uuid] = value
-            }
-        }
-        self.classes = uuidClasses
-    }
+    let classes: [Classs]
 }
 
 class ClassesManager: ObservableObject {
-    @Published private(set) var classes: [UUID: String] = [:]
+    @Published private(set) var classes: [Classs] = []
     
     init() {
         Task {

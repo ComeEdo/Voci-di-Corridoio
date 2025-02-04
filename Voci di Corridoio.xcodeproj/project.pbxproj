@@ -64,6 +64,7 @@
 				CreateAccountView.swift,
 				SignInView.swift,
 				StartView.swift,
+				UserSelectionView.swift,
 				ViewExtensions.swift,
 			);
 			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
@@ -85,6 +86,7 @@
 				CreateAccountView.swift,
 				SignInView.swift,
 				StartView.swift,
+				UserSelectionView.swift,
 				ViewExtensions.swift,
 			);
 			target = DBA0CF8D2D404A06005CF62F /* Voci di Corridoio pre iOS 18 */;

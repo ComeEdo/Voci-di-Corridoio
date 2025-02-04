@@ -17,6 +17,7 @@ class MainNotification: ObservableObject, Identifiable {
             "\(title)\n\n\(message)\n\n\(type)"
         }
     }
+    
     enum NotificationType {
         case success,
              error,
@@ -27,13 +28,13 @@ class MainNotification: ObservableObject, Identifiable {
         var icon: some View {
             switch self {
             case .success:
-                Image(systemName: "checkmark.circle").foregroundStyle(.green)
+                Image(systemName: "checkmark.circle").foregroundStyle(Color.green)
             case .error:
                 Image(systemName: "xmark.circle").symbolRenderingMode(.multicolor)
-            case .info:
-                Image(systemName: "info.circle").symbolRenderingMode(.multicolor)
             case .warning:
                 Image(systemName: "exclamationmark.triangle").symbolRenderingMode(.multicolor)
+            case .info:
+                Image(systemName: "info.circle").symbolRenderingMode(.multicolor)
             }
         }
         
@@ -43,6 +44,14 @@ class MainNotification: ObservableObject, Identifiable {
             case .error: return .notification(type: .error)
             case .warning: return .notification(type: .warning)
             case .info: return .impact(style: .heavy)
+            }
+        }
+        var color: Color {
+            switch self {
+            case .success: return Color.green
+            case .error: return Color.red
+            case .warning: return Color.yellow
+            case .info: return Color.blue
             }
         }
     }

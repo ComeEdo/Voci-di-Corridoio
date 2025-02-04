@@ -77,17 +77,17 @@ extension View {
         self.modifier(KeyboardPosition(height))
     }
     
-    func notificationStyle() -> some View {
+    func notificationStyle(_ accent: Color? = nil) -> some View {
         self
             .background(RoundedRectangle(cornerRadius: 40, style: .continuous)
                 .inset(by: 5)
                 .stroke(lineWidth: 3)
-                .fill(Color.gray.opacity(0.5))
+                .fill((accent != nil ? accent! : Color.gray.opacity(0.5)))
             )
             .background(RoundedRectangle(cornerRadius: 40, style: .continuous)
-                .fill(Color.black.opacity(1))
-                .stroke(.accent)
-                .shadow(color: .accent, radius: 3))
+                .fill(Color.black)
+                .stroke(accent ?? Color.accent)
+                .shadow(color: accent ?? Color.accent, radius: 3))
     }
     
     func alertStyle() -> some View {

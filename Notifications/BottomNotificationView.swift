@@ -27,9 +27,7 @@ struct BottomNotificationView: View {
                 Spacer()
                 HStack {
                     VStack() {
-                        bottom.notification.type.icon
-                            .fontWeight(.heavy)
-                            .font(.system(size: 40))
+                        bottom.notification.type.icon.font(.system(size: 40, weight: .heavy))
                     }
                     VStack(alignment: .leading) {
                         Text(bottom.notification.title)
@@ -41,7 +39,7 @@ struct BottomNotificationView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(15)
-                .notificationStyle()
+                .notificationStyle(bottom.notification.type.color)
                 .frame(maxHeight: 101, alignment: .bottom)
                 .padding(15)
                 .offset(y: offsetY)

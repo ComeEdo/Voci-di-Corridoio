@@ -123,6 +123,16 @@
     "Certificato Del Server Non Valido" : {
 
     },
+    "Class: %@ (ID: %@)" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Class: %1$@ (ID: %2$@)"
+          }
+        }
+      }
+    },
     "Classe" : {
 
     },
@@ -135,6 +145,9 @@
           }
         }
       }
+    },
+    "Confirm" : {
+
     },
     "Contiene caratteri non validi." : {
       "localizations" : {
@@ -395,7 +408,20 @@
     "matto" : {
 
     },
+    "Name: %@ %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Name: %1$@ %2$@"
+          }
+        }
+      }
+    },
     "Nessuna Connessione Internet" : {
+
+    },
+    "No users in this role" : {
 
     },
     "Nome" : {
@@ -503,7 +529,25 @@
     "Risposta inaspettata. Riprova più tardi." : {
 
     },
+    "Role: %@" : {
+
+    },
+    "Role: Admin" : {
+
+    },
+    "Role: Principal" : {
+
+    },
+    "Role: Secretariat" : {
+
+    },
+    "Role: User" : {
+
+    },
     "segreteria" : {
+
+    },
+    "Sei stato loggato con successo!" : {
 
     },
     "Si è verificato un errore JSON: %@." : {
@@ -523,6 +567,9 @@
 
     },
     "studente" : {
+
+    },
+    "Study Field: %@" : {
 
     },
     "Successo" : {
@@ -559,6 +606,15 @@
           }
         }
       }
+    },
+    "user" : {
+
+    },
+    "User Details" : {
+
+    },
+    "Username: %@" : {
+
     },
     "Valido." : {
       "localizations" : {
