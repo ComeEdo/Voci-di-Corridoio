@@ -316,7 +316,11 @@ struct CreateAccountView: View {
                 }
                 setupAlert(alert.notification)
             } catch let error as ServerError {
-                SSLAlert(error)
+                if error == .sslError {
+                    SSLAlert(error.notification)
+                } else {
+                    setupAlert(error.notification)
+                }
             } catch let error as Notifiable {
                 setupAlert(error.notification)
             } catch {
@@ -463,7 +467,7 @@ struct CreateAccountView: View {
                 
                 let statusCode = httpResponse.statusCode
                 do {
-                    let apiResponse = try JSONDecoder().decode(ApiResponse<DataFieldCheckUsername>.self, from: data)
+                    let apiResponse = try JSONDecoder().decode(ApiResponseData<DataFieldCheckUsername>.self, from: data)
                     
                     switch statusCode {
                     case 200:
@@ -482,7 +486,10 @@ struct CreateAccountView: View {
                     }
                 } catch let error as URLError {
                     if isSSLError(error) {
-                        SSLAlert(ServerError.sslError)
+                        SSLAlert(ServerError.sslError.notification)
+                    } else {
+                        reason = "Errore di rete: \(error.localizedDescription)."
+                        isValidUsername = true
                     }
                 } catch let error as DecodingError {
                     reason = "Si è verificato un errore JSON: \(error.localizedDescription)."

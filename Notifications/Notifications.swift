@@ -39,6 +39,7 @@ enum ServerError: Error, Notifiable {
 
 enum Codes: Error, Notifiable {
     case code400(message: String)
+    case code404(message: String)
     case code409(message: String)
     case code500(message: String)
     
@@ -48,13 +49,35 @@ enum Codes: Error, Notifiable {
             return MainNotification.NotificationStructure(title: "Errore", message: "Richiesta non completa: \(message)", type: .error)
         case .code409(let message):
             return MainNotification.NotificationStructure(title: "Errore", message: "È stato trovato un conflitto: \(message)", type: .error)
+        case .code404(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Risorsa non trovata: \(message)", type: .error)
         case .code500(let message):
             return MainNotification.NotificationStructure(title: "Errore", message: "C'è stato un errore del server: \(message)", type: .error)
         }
     }
 }
 
-enum RegistrationNotification: CustomStringConvertible, Notifiable {
+enum Errors: Error, Notifiable {
+    case invalidResponse(message: String)
+    case unknownError(message: String)
+    case JSONError(message: String)
+    case invalidURL(message: String)
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .invalidResponse(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Risposta del server non valida: \(message)", type: .error)
+        case .unknownError(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Errore riscontrato:\n\(message)", type: .error)
+        case .JSONError(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Errore JSON riscontrato:\n\(message)", type: .error)
+        case .invalidURL(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "L'URL \(message) non è valido", type: .error)
+        }
+    }
+}
+
+enum RegistrationNotification: Notifiable {
     case success(username: String)
     case failureUsername(username: String)
     case failureMail(mail: String)
@@ -74,36 +97,55 @@ enum RegistrationNotification: CustomStringConvertible, Notifiable {
     }
 }
 
-enum RegistrationError: Error, Notifiable {
-    case invalidResponse(message: String)
-    case unknownError(message: String)
-    case JSONError(message: String)
-    case invalidURL(message: String)
+enum ClassesError: Error, Notifiable {
     case noClassesFound
     
     var notification: MainNotification.NotificationStructure {
         switch self {
-        case .invalidResponse(let message):
-            return MainNotification.NotificationStructure(title: "Errore", message: "Risposta del server non valida: \(message)", type: .error)
-        case .unknownError(let message):
-            return MainNotification.NotificationStructure(title: "Errore", message: "Errore riscontrato:\n\(message)", type: .error)
-        case .JSONError(let message):
-            return MainNotification.NotificationStructure(title: "Errore", message: "Errore JSON riscontrato:\n\(message)", type: .error)
-        case .invalidURL(let message):
-            return MainNotification.NotificationStructure(title: "Errore", message: "L'URL \(message) non è valido", type: .error)
         case .noClassesFound:
             return MainNotification.NotificationStructure(title: "Dati ricevuti vuoti", message: "Non sono state trovate classi", type: .info)
         }
     }
 }
 
-enum LoginNotification: CustomStringConvertible, Notifiable {
+enum LoginNotification: Notifiable {
     case success(users: [LoginResponse.RoleGroup])
+    case gotUser(username: String)
     
     var notification: MainNotification.NotificationStructure {
         switch self {
         case .success:
             return MainNotification.NotificationStructure(title: "Successo", message: "Sei stato loggato con successo!", type: .success)
+        case .gotUser(let username):
+            return MainNotification.NotificationStructure(title: "Success", message: "\(username) sei stato loggato!", type: .success)
+        }
+    }
+}
+
+enum LoginError: Error, Notifiable {
+    case emailNotVerified
+    case invalidCredentials
+    case userNotFound
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .emailNotVerified:
+            return MainNotification.NotificationStructure(title: "Errore", message: "L'email non è stata verificata, controlla la tua casella postale.", type: .error)
+        case .invalidCredentials:
+            return MainNotification.NotificationStructure(title: "Errore", message: "Le credenziali non sono corrette.", type: .error)
+        case .userNotFound:
+            return MainNotification.NotificationStructure(title: "Errore", message: "Non è stato trovato trovato nessun utente alle seguenti credenziali, contattaci.", type: .warning)
+        }
+    }
+}
+
+enum AuthError: Error, Notifiable {
+    case unauthorized(message: String)
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .unauthorized(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Non autoricizzato:\n\(message)", type: .error)
         }
     }
 }

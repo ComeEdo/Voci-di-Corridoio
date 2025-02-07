@@ -45,7 +45,7 @@ class ClassesManager: ObservableObject {
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
             
-            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponse<Classes>) = try checkResponse(data: data, response: response)
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<Classes>) = try checkResponse(data: data, response: response)
             
             let statusCode = httpResponse.statusCode
             
@@ -54,7 +54,7 @@ class ClassesManager: ObservableObject {
                 if let classes = apiResponse.data?.classes {
                     self.classes = classes
                 } else {
-                    throw RegistrationError.noClassesFound
+                    throw ClassesError.noClassesFound
                 }
             default:
                 throw Codes.code500(message: apiResponse.message)
@@ -68,7 +68,7 @@ class ClassesManager: ObservableObject {
 func mapError(_ error: Error) -> Error {
     switch error {
     case let error as DecodingError:
-        return RegistrationError.JSONError(message: error.localizedDescription)
+        return Errors.JSONError(message: error.localizedDescription)
     case let error as URLError:
         if isSSLError(error) {
             return ServerError.sslError
@@ -76,10 +76,14 @@ func mapError(_ error: Error) -> Error {
         return error
     case let error as Codes:
         return error
+    case let error as Errors:
+        return error
+    case let error as LoginError:
+        return error
     case let error as ServerError:
         return error
     default:
-        return RegistrationError.unknownError(message: error.localizedDescription)
+        return Errors.unknownError(message: error.localizedDescription)
     }
 }
 
@@ -112,7 +116,7 @@ func SSLAlert(_ error: ServerError) {
     }
 }
 
-func checkResponse<T: Codable>(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, ApiResponse<T>) {
+func checkResponse<T: Codable>(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, ApiResponseData<T>) {
     guard let httpResponse = response as? HTTPURLResponse else {
         throw URLError(.badServerResponse)
     }
@@ -130,5 +134,26 @@ func checkResponse<T: Codable>(data: Data, response: URLResponse?) throws -> (HT
             }
         }
     }
-    return (httpResponse, try JSONDecoder().decode(ApiResponse<T>.self, from: data))
+    return (httpResponse, try JSONDecoder().decode(ApiResponseData<T>.self, from: data))
+}
+
+func checkResponse(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, ApiResponse) {
+    guard let httpResponse = response as? HTTPURLResponse else {
+        throw URLError(.badServerResponse)
+    }
+    if httpResponse.statusCode == 503 {
+        if let responseString = String(data: data, encoding: .utf8) {
+            let patterns = [
+                "<title>503 Service Unavailable</title>",
+                "<h1>Service Unavailable</h1>",
+                "The server is temporarily unable to service your request"
+            ]
+            for pattern in patterns {
+                if responseString.contains(pattern) {
+                    throw ServerError.serviceUnavailable
+                }
+            }
+        }
+    }
+    return (httpResponse, try JSONDecoder().decode(ApiResponse.self, from: data))
 }

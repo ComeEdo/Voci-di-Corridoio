@@ -39,29 +39,32 @@ struct SignInView: View {
     init() {}
     
     var body: some View {
-        ZStack {
-            ColorGradient().zIndex(0)
-            TitleOnView("Accesso")
-            VStack(spacing: 0) {
-                VScrollView($scroll, spacing: 20) {
-                    if keyboardHeight != 0  {
-                        Spacer()
+        NavigationStack {
+            ZStack {
+                ColorGradient().zIndex(0)
+                TitleOnView("Accesso")
+                VStack(spacing: 0) {
+                    VScrollView($scroll, spacing: 20) {
+                        if keyboardHeight != 0  {
+                            Spacer()
+                        }
+                        emailView()
+                        passwordView()
                     }
-                    emailView()
-                    passwordView()
+                    .scrollDismissesKeyboard(.interactively)
+                    .scrollIndicators(.never)
+                    .padding(.horizontal, 30)
+                    buttonView()
+                        .padding(keyboardHeight == 0 ? 0 : 10)
+                        .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
                 }
-                .scrollDismissesKeyboard(.interactively)
-                .scrollIndicators(.never)
-                .padding(.horizontal, 30)
-                buttonView()
-                    .padding(keyboardHeight == 0 ? 0 : 10)
-                    .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
-        }
-        .navigationDestination(isPresented: $isShowingUserSelector) {
-            if let users = users {
-                UserSelectorView(users) {
-                    isOperationFinished = false
+            .navigationDestination(isPresented: $isShowingUserSelector) {
+                if let users = users {
+                    UserSelectorView(users) { UUID in
+                        isOperationFinished = false
+                        logInUser(UUID)
+                    }
                 }
             }
         }
@@ -123,28 +126,37 @@ struct SignInView: View {
     
     private func handleLogin() {
         focusedField = nil
-        if isFormValid() {
-            logInLogic()
-        } else {
-            print("cose starne")
-            // Handle login failure
-        }
-    }
-    
-    private func logInLogic() {
         isOperationFinished = false
         Task {
             //ordine esecuzione 2
             do {
                 let alert = try await userManager.loginUser(email: email, password: password)
                 if case .success(let users) = alert {
-                    self.users = users
-                    isShowingUserSelector = (self.users?.isEmpty == false) // some more logic here
-                    return isOperationFinished = true
+                    guard !users.allSatisfy({ $0.users.isEmpty }) else {
+                        throw LoginError.userNotFound
+                    }
+                    let allUsers = users.flatMap { $0.users }
+                    if allUsers.count == 1, let singleUser = allUsers.first {
+                        return logInUser(singleUser.id)
+                    } else {
+                        self.users = users
+                        isShowingUserSelector = true
+                    }
+                } else {
+                    setupAlert(alert.notification)
                 }
-                setupAlert(alert.notification)
             } catch let error as ServerError {
-                SSLAlert(error)
+                if error == .sslError {
+                    SSLAlert(error.notification)
+                } else {
+                    setupAlert(error.notification)
+                }
+            } catch let error as LoginError {
+                if error == .userNotFound {
+                    setupBottom(error.notification)
+                } else {
+                    setupAlert(error.notification)
+                }
             } catch let error as Notifiable {
                 setupAlert(error.notification)
             } catch {
@@ -163,6 +175,9 @@ struct SignInView: View {
     private func setupAlert(_ error: Error) {
         notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
     }
+    private func setupBottom(_ alert: MainNotification.NotificationStructure) {
+        notificationManager.showBottom(alert)
+    }
                                                             
     private func getFocus() -> Field? {
         if !functions.mailChecker(email).result {
@@ -176,6 +191,22 @@ struct SignInView: View {
     
     private func isFormValid() -> Bool {
         return functions.mailChecker(email).result && functions.passwordChecker(password).result
+    }
+    
+    func logInUser(_ userUUID: UUID) {
+        Task {
+            do {
+                let alert = try await userManager.logInUser(userUUID)
+                setupBottom(alert.notification)
+            } catch let error as ServerError {
+                SSLAlert(error)
+            } catch let error as Notifiable {
+                setupAlert(error.notification)
+            } catch {
+                setupAlert(error)
+            }
+            isOperationFinished = true
+        }
     }
 }
 

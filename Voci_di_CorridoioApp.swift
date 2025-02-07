@@ -17,6 +17,22 @@ struct Voci_di_CorridoioApp: App {
         WindowGroup {
             ZStack {
                 if userManager.isAuthenticated {
+                    ColorGradient()
+                    VStack {
+                        Text("Authenticated")
+                        Button {
+                            for i in 1...10 {
+                                notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
+                            }
+                        } label: {
+                            Text("Test bottom notifications").textButtonStyle(true)
+                        }
+                        Button {
+                            userManager.logoutUser()
+                        } label: {
+                            Text("Log out").textButtonStyle(true)
+                        }
+                    }
                 } else {
                     StartView()
                 }

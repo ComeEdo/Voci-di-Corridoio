@@ -22,7 +22,9 @@ struct LoginResponse: Codable {
         
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            
             self.roleId = try container.decode(Int.self, forKey: .roleId)
+            
             let userType = Roles.isType(roleId)
             
             switch userType {
@@ -39,6 +41,64 @@ struct LoginResponse: Codable {
             default:
                 self.users = try container.decode([User].self, forKey: .users)
             }
+        }
+    }
+}
+
+struct LoginUser: Codable {
+    let userToken: String
+    let roleId: Int
+    let user: User
+    
+    enum CodingKeys: String, CodingKey {
+        case userToken
+        case roleId
+        case user
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.userToken = try container.decode(String.self, forKey: .userToken)
+        self.roleId = try container.decode(Int.self, forKey: .roleId)
+        
+        let userType = Roles.isType(roleId)
+        
+        switch userType {
+        case is Student.Type:
+            self.user = try container.decode(Student.self, forKey: .user)
+        case is Teacher.Type:
+            self.user = try container.decode(Teacher.self, forKey: .user)
+        case is Admin.Type:
+            self.user = try container.decode(Admin.self, forKey: .user)
+        case is Principal.Type:
+            self.user = try container.decode(Principal.self, forKey: .user)
+        case is Secretariat.Type:
+            self.user = try container.decode(Secretariat.self, forKey: .user)
+        default:
+            self.user = try container.decode(User.self, forKey: .user)
+        }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(userToken, forKey: .userToken)
+        try container.encode(roleId, forKey: .roleId)
+        
+        switch user {
+        case let student as Student:
+            try container.encode(student, forKey: .user)
+        case let teacher as Teacher:
+            try container.encode(teacher, forKey: .user)
+        case let admin as Admin:
+            try container.encode(admin, forKey: .user)
+        case let principal as Principal:
+            try container.encode(principal, forKey: .user)
+        case let secretariat as Secretariat:
+            try container.encode(secretariat, forKey: .user)
+        default:
+            try container.encode(user, forKey: .user)
         }
     }
 }

@@ -13,9 +13,9 @@ struct UserSelectorView: View {
     private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
     
     let response: [LoginResponse.RoleGroup]
-    let onDismiss: () -> Void
+    let onDismiss: (UUID) -> Void
     
-    init(_ response: [LoginResponse.RoleGroup], onDismiss: @escaping () -> Void) {
+    init(_ response: [LoginResponse.RoleGroup], onDismiss: @escaping (UUID) -> Void) {
         self.response = response
         self.onDismiss = onDismiss
     }
@@ -24,7 +24,7 @@ struct UserSelectorView: View {
     @State private var sheetUser: User?
     
     private func roleTitle(for roleId: Int) -> String {
-        return String(localized: Roles.from(roleId).des).uppercased()
+        return String(localized: Roles.from(roleId).description).uppercased()
     }
     
     var body: some View {
@@ -75,12 +75,10 @@ struct UserSelectorView: View {
                         CommonSpacer(50)
                     }
                     Button {
-//                        DispatchQueue.main.async {
-                            
-                            onDismiss()
-                            //                        UserManager.shared
-                            exit()
-//                        }
+                        if let userUUID = selectedUser?.id {
+                            onDismiss(userUUID)
+                        }
+                        exit()
                     } label: {
                         Text("Confirm").textButtonStyle(selectedUser != nil)
                     }
@@ -117,7 +115,7 @@ struct UserDetailsView: View {
                     if let teacher = user as? Teacher {
                         Text("Name: \(teacher.name) \(teacher.surname)")
                         Text("Username: \(teacher.username)")
-                        Text("Role: \(Roles.isRole(user).des)")
+                        Text("Role: \(Roles.isRole(user).description)")
                     }
                 case .admin:
                     Text("Name: \(user.name) \(user.surname)")

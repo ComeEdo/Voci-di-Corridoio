@@ -18,8 +18,7 @@ struct StartView: View {
             ZStack {
                 ColorGradient()
                 VStack {
-                    Text("Voci di Corridoio")
-                        .title(40, .heavy)
+                    Text("Voci di Corridoio").title(40, .heavy)
                     #if DEBUG
                     Button {
                         for i in 1...10 {
@@ -49,8 +48,6 @@ struct StartView: View {
             }
             .navigationTitle("")
         }
-        .addAlerts()
-        .addBottomNotifications()
         .environmentObject(classes)
     }
 }

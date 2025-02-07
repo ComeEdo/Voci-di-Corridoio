@@ -8,10 +8,33 @@
 
 import SwiftUI
 
-class ApiResponse<T: Codable>: Codable {
+class ApiResponse: Codable {
     let success: Bool
     let message: String
+
+    init(success: Bool, message: String) {
+        self.success = success
+        self.message = message
+    }
+}
+
+class ApiResponseData<T: Codable>: ApiResponse {
     let data: T?
+
+    init(success: Bool, message: String, data: T?) {
+        self.data = data
+        super.init(success: success, message: message)
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        data = try container.decodeIfPresent(T.self, forKey: .data)
+        try super.init(from: decoder)
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case data
+    }
 }
 
 struct DataFieldRegistration: Codable {
@@ -25,6 +48,7 @@ struct DataFieldCheckUsername: Codable {
 }
 
 enum Roles: Int {
+    
     case user = 0
     case admin = 1
     case student = 2
@@ -32,7 +56,7 @@ enum Roles: Int {
     case principal = 4
     case secretariat = 5
     
-    var des: LocalizedStringResource {
+    var description: LocalizedStringResource {
         switch self {
         case .user:
             return "user"
@@ -50,12 +74,6 @@ enum Roles: Int {
     }
     
     static func from(_ id: Int) -> Roles {
-//        if let role = Roles(rawValue: id) {
-//            return role
-//        } else {
-//            print("Invalid role id: \(id)")
-//            return .student
-//        }
         return Roles(rawValue: id) ?? .user
     }
     
@@ -100,8 +118,9 @@ class UserManager: ObservableObject {
     
     @Published private(set) var isAuthenticated = false
     @Published private(set) var authToken: String? = nil
+    @Published private(set) var userToken: String? = nil
     @Published private(set) var currentUser: User? = nil
-    @Published private(set) var role: Roles = .student
+    @Published private(set) var role: Roles? = nil
     
     let server = "levoci.local"
     let port = 443
@@ -110,10 +129,11 @@ class UserManager: ObservableObject {
     struct APIEndpoints {
         static let register = "/register"
         static let login = "/login"
-        static let auth = "/auth"
+        static let auth = "/auth/isAuthTokenValid"
         static let checkUsername = "/check/username"
         static let fetchAvailableClasses = "/classes/registration"
         static let SSLCertificate = "/downloads/certificates"
+        static let logUser = "/auth/loginUser"
         
         private init() {}
     }
@@ -148,7 +168,7 @@ class UserManager: ObservableObject {
     @MainActor
     func registerUser(user: RegistrationData) async throws -> RegistrationNotification {
         guard let url = URL(string: "\(URN)\(APIEndpoints.register)") else {
-            throw RegistrationError.invalidURL(message: "\(URN)\(APIEndpoints.register)")
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.register)")
         }
         
         var request = URLRequest(url: url)
@@ -175,13 +195,13 @@ class UserManager: ObservableObject {
         do {
             request.httpBody = try JSONEncoder().encode(body)
         } catch {
-            throw RegistrationError.JSONError(message: error.localizedDescription)
+            throw Errors.JSONError(message: error.localizedDescription)
         }
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
             
-            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponse<DataFieldRegistration>) = try checkResponse(data: data, response: response)
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<DataFieldRegistration>) = try checkResponse(data: data, response: response)
             let statusCode = httpResponse.statusCode
             print("Success: \(apiResponse.success)")
             print("Message: \(apiResponse.message)")
@@ -204,7 +224,7 @@ class UserManager: ObservableObject {
             case 500:
                 throw Codes.code500(message: apiResponse.message)
             default:
-                throw RegistrationError.invalidResponse(message: apiResponse.message)
+                throw Errors.invalidResponse(message: apiResponse.message)
             }
         } catch {
             throw mapError(error)
@@ -214,7 +234,7 @@ class UserManager: ObservableObject {
     @MainActor
     func loginUser(email: String, password: String) async throws -> LoginNotification {
         guard let url = URL(string: "\(URN)\(APIEndpoints.login)") else {
-            throw RegistrationError.invalidURL(message: "\(URN)\(APIEndpoints.login)")
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.login)")
         }
         
         var request = URLRequest(url: url)
@@ -229,33 +249,30 @@ class UserManager: ObservableObject {
         do {
             request.httpBody = try JSONEncoder().encode(body)
         } catch let error {
-            throw RegistrationError.JSONError(message: error.localizedDescription)
+            throw Errors.JSONError(message: error.localizedDescription)
         }
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
             
-            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponse<LoginResponse>) = try checkResponse(data: data, response: response)
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<LoginResponse>) = try checkResponse(data: data, response: response)
             let statusCode = httpResponse.statusCode
             
             switch statusCode {
             case 200:
                 guard let logInData = apiResponse.data else {
-                    throw RegistrationError.JSONError(message: "è tutto rotto")
+                    throw Errors.JSONError(message: "non sono riuscito a decodificare i dati")
                 }
-                //                guard let logInData = apiResponse.data else {
-                //                    throw RegistrationError.JSONError(message: "è tutto rotto")
-                //                }
-                //
-                //                guard try await isAuth(logInData.token) else {
-                //                    throw RegistrationError.unknownError(message: "token fottuto\n\(logInData.token)")
-                //                }
+                
+                guard try await isAuth(logInData.authToken) else {
+                    throw AuthError.unauthorized(message: apiResponse.message)
+                }
                 //
                 //                print("token approved")
                 //
                 //                try saveTokenToKeychain(token: logInData.token)
                 //                currentUser = logInData.user
-                //                self.authToken = logInData.token
+                self.authToken = logInData.authToken
                 //                self.isAuthenticated = true
                 //                ForEach(logInData.roleGroups, id: \.roleId ) { username in
                 ////                    print(username)
@@ -265,14 +282,21 @@ class UserManager: ObservableObject {
                 //                }
                 return LoginNotification.success(users: logInData.roleGroups)
             case 400:
-                let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
-                throw Codes.code400(message: errorMessage)
+                throw Codes.code400(message: apiResponse.message)
+            case 401:
+                throw LoginError.invalidCredentials
+            case 403:
+                throw LoginError.emailNotVerified
+            case 404:
+                if apiResponse.success {
+                    throw LoginError.userNotFound
+                } else {
+                    throw Codes.code404(message: apiResponse.message)
+                }
             case 500:
-                let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
-                throw Codes.code500(message: errorMessage)
+                throw Codes.code500(message: apiResponse.message)
             default:
-                let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
-                throw RegistrationError.invalidResponse(message: errorMessage)
+                throw Errors.invalidResponse(message: apiResponse.message)
             }
         } catch {
             throw mapError(error)
@@ -281,7 +305,7 @@ class UserManager: ObservableObject {
     
     func isAuth(_ token: String) async throws -> Bool {
         guard let url = URL(string: "\(URN)\(APIEndpoints.auth)") else {
-            throw RegistrationError.invalidURL(message: "\(URN)\(APIEndpoints.auth)")
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.auth)")
         }
         
         var request = URLRequest(url: url)
@@ -291,88 +315,94 @@ class UserManager: ObservableObject {
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                print("Invalid response from server.")
-                return false
-            }
             
-            if httpResponse.statusCode == 200 {
-                // If token is valid
-                print("Token is valid.")
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponse) = try checkResponse(data: data, response: response)
+            let statusCode = httpResponse.statusCode
+            
+            switch statusCode {
+            case 200:
+                NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "Success", message: "Token is valid.", type: .success))
                 return true
-            } else {
-                // Handle invalid token response
-                let responseMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
-                print("\(httpResponse.statusCode)\nToken invalid or error:\n\(responseMessage)")
-                return false
-            }
-        } catch let error as URLError {
-            // Handle specific URL errors
-            throw error
-
-            switch error.code {
-            case .notConnectedToInternet:
-                print("Error: Not connected to the Internet.")
-            case .timedOut:
-                print("Error: The request timed out.")
-            case .cannotFindHost:
-                print("Error: Cannot find the host.")
-            case .cannotConnectToHost:
-                print("Error: Cannot connect to the host.")
+            case 400:
+                throw Codes.code400(message: apiResponse.message)
+            case 401:
+                throw AuthError.unauthorized(message: apiResponse.message)
             default:
-                print("URLError: \(error.localizedDescription)")
+                throw Errors.unknownError(message: apiResponse.message)
             }
-            return false
         } catch {
-            throw error
-            // Handle other errors
-            print("Error during token verification:\n\(error.localizedDescription)")
-            return false
+            throw mapError(error)
         }
     }
     
-    /*func fetchAvailableClasses(completion: @escaping (Result<[Class], Error>) -> Void) {
-        // Define the URL for your API endpoint
-        guard let url = URL(string: "http://your-server-url.com/api/classes") else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-            return
+    @MainActor
+    func logInUser(_ id: UUID) async throws -> LoginNotification {
+        guard let url = URL(string: "\(URN)\(APIEndpoints.logUser)") else {
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.logUser)")
         }
-
-        // Create the URL request
+        guard let token = authToken else {
+            throw AuthError.unauthorized(message: "Token is nil")
+        }
+        
         var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-
-        // Create a data task
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            // Handle errors in the network request
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            // Ensure the response and data are valid
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(NSError(domain: "Invalid response", code: -1, userInfo: nil)))
-                return
-            }
-
-            do {
-                // Decode the JSON response
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .iso8601 // Adjust this based on your backend's date format
-                let response = try decoder.decode(ClassesResponse.self, from: data)
-
-                // Pass the fetched classes back to the caller
-                completion(.success(response.classes))
-            } catch {
-                completion(.failure(error))
-            }
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let body: [String: String] = [
+            "userId": id.uuidString
+        ]
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+        } catch let error {
+            throw Errors.JSONError(message: error.localizedDescription)
         }
-
-        // Start the task
-        task.resume()
-    }*/
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<LoginUser>) = try checkResponse(data: data, response: response)
+            let statusCode = httpResponse.statusCode
+            
+            switch statusCode {
+            case 200:
+                guard let logInData = apiResponse.data else {
+                    throw Errors.JSONError(message: "è tutto rotto")
+                }
+                
+//                guard /*try await isAuth(logInData.authToken)*/false else {
+//                    throw AuthError.unauthorized(message: apiResponse.message)     //cambiare il messaggio
+//                }
+                
+                self.currentUser = logInData.user
+                self.userToken = logInData.userToken
+                self.role = Roles.from(logInData.roleId)
+                
+                //salvare user e token in locale
+                
+                self.isAuthenticated = true
+                
+                return .gotUser(username: logInData.user.username)
+            case 400:
+                throw Codes.code400(message: apiResponse.message)
+            case 401:
+                throw AuthError.unauthorized(message: apiResponse.message)
+            case 404:
+                if apiResponse.success {
+                    throw LoginError.userNotFound
+                } else {
+                    throw Codes.code404(message: apiResponse.message)
+                }
+            case 500:
+                throw Codes.code500(message: apiResponse.message)
+            default:
+                throw Errors.unknownError(message: apiResponse.message)
+            }
+        } catch {
+            throw mapError(error)
+        }
+    }
 
 
        // Save token to Keychain
@@ -417,6 +447,8 @@ class UserManager: ObservableObject {
            // Clear authentication data
            self.currentUser = nil
            self.authToken = nil
+           self.userToken = nil
+           self.role = nil
            self.isAuthenticated = false
 
            // Remove token from Keychain
