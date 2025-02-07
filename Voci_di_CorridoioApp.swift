@@ -10,27 +10,29 @@ import SwiftUI
 @main
 struct Voci_di_CorridoioApp: App {
     let persistenceController = PersistenceController.shared
-    @ObservedObject private var notificationManager = NotificationManager.shared
-    @ObservedObject private var userManager = UserManager.shared
+    @StateObject private var notificationManager = NotificationManager.shared
+    @StateObject private var userManager = UserManager.shared
     
     var body: some Scene {
         WindowGroup {
-            ZStack {
+            NavigationStack {
                 if userManager.isAuthenticated {
-                    ColorGradient()
-                    VStack {
-                        Text("Authenticated")
-                        Button {
-                            for i in 1...10 {
-                                notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
+                    ZStack {
+                        ColorGradient()
+                        VStack {
+                            Text("Authenticated")
+                            Button {
+                                for i in 1...10 {
+                                    notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
+                                }
+                            } label: {
+                                Text("Test bottom notifications").textButtonStyle(true)
                             }
-                        } label: {
-                            Text("Test bottom notifications").textButtonStyle(true)
-                        }
-                        Button {
-                            userManager.logoutUser()
-                        } label: {
-                            Text("Log out").textButtonStyle(true)
+                            Button {
+                                userManager.logoutUser()
+                            } label: {
+                                Text("Log out").textButtonStyle(true)
+                            }
                         }
                     }
                 } else {

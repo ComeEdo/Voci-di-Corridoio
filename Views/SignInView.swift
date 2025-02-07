@@ -7,64 +7,61 @@
 
 import SwiftUI
 
-
 struct SignInView: View {
     enum Field {
         case mail
         case password
     }
-    
+
     @Environment(\.presentationMode) private var presentationMode
-    
+
     private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
-    
+
     @EnvironmentObject private var userManager: UserManager
     @EnvironmentObject private var notificationManager: NotificationManager
-    
+
     private var functions: Utility = Utility.shared
-    
+
     @State private var isOperationFinished: Bool = true
-    
+
     @State private var email: String = "frezzotti.edoardo.stud@itisgalileiroma.it"
     @State private var password: String = "aa"
-    
+
     @FocusState private var focusedField: Field?
-    
+
     @State private var keyboardHeight: CGFloat = .zero
     @State private var scroll: CGFloat = .zero
-    
+
     @State private var users: [LoginResponse.RoleGroup]? = nil
     @State private var isShowingUserSelector = false
-    
+
     init() {}
-    
+
     var body: some View {
-        NavigationStack {
-            ZStack {
-                ColorGradient().zIndex(0)
-                TitleOnView("Accesso")
-                VStack(spacing: 0) {
-                    VScrollView($scroll, spacing: 20) {
-                        if keyboardHeight != 0  {
-                            Spacer()
-                        }
-                        emailView()
-                        passwordView()
+        ZStack {
+            ColorGradient().zIndex(0)
+            TitleOnView("Accesso")
+            VStack(spacing: 0) {
+                VScrollView($scroll, spacing: 20) {
+                    if keyboardHeight != 0  {
+                        Spacer()
                     }
-                    .scrollDismissesKeyboard(.interactively)
-                    .scrollIndicators(.never)
-                    .padding(.horizontal, 30)
-                    buttonView()
-                        .padding(keyboardHeight == 0 ? 0 : 10)
-                        .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
+                    emailView()
+                    passwordView()
                 }
+                .scrollDismissesKeyboard(.interactively)
+                .scrollIndicators(.never)
+                .padding(.horizontal, 30)
+                buttonView()
+                    .padding(keyboardHeight == 0 ? 0 : 10)
+                    .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
-            .navigationDestination(isPresented: $isShowingUserSelector) {
-                if let users = users {
-                    UserSelectorView(users) { UUID in
-                        isOperationFinished = false
-                        logInUser(UUID)
-                    }
+        }
+        .navigationDestination(isPresented: $isShowingUserSelector) {
+            if let users = users {
+                UserSelectorView(users) { UUID in
+                    isOperationFinished = false
+                    logInUser(UUID)
                 }
             }
         }
@@ -82,7 +79,7 @@ struct SignInView: View {
             }
         }
     }
-    
+
     private func emailView() -> some View {
         VStack {
             HStack {
@@ -98,7 +95,7 @@ struct SignInView: View {
             DividerText(result: functions.mailChecker(email), empty: email.isEmpty)
         }
     }
-    
+
     private func passwordView() -> some View {
         VStack {
             HStack {
@@ -114,7 +111,7 @@ struct SignInView: View {
             DividerText(result: functions.passwordChecker(password), empty: password.isEmpty)
         }
     }
-    
+
     private func buttonView() -> some View {
         VStack {
             Button(action: handleLogin) {
@@ -123,7 +120,7 @@ struct SignInView: View {
             .disabled(!isFormValid() || !isOperationFinished)
         }
     }
-    
+
     private func handleLogin() {
         focusedField = nil
         isOperationFinished = false
@@ -168,7 +165,7 @@ struct SignInView: View {
         }
         //ordine esecuzione 1
     }
-    
+
     private func setupAlert(_ alert: MainNotification.NotificationStructure) {
         notificationManager.showAlert(alert)
     }
@@ -178,7 +175,7 @@ struct SignInView: View {
     private func setupBottom(_ alert: MainNotification.NotificationStructure) {
         notificationManager.showBottom(alert)
     }
-                                                            
+
     private func getFocus() -> Field? {
         if !functions.mailChecker(email).result {
             return .mail
@@ -188,15 +185,16 @@ struct SignInView: View {
         }
         return nil
     }
-    
+
     private func isFormValid() -> Bool {
         return functions.mailChecker(email).result && functions.passwordChecker(password).result
     }
-    
+
     func logInUser(_ userUUID: UUID) {
         Task {
             do {
                 let alert = try await userManager.logInUser(userUUID)
+                exit()
                 setupBottom(alert.notification)
             } catch let error as ServerError {
                 SSLAlert(error)

@@ -14,41 +14,38 @@ struct StartView: View {
     init() {}
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                ColorGradient()
-                VStack {
-                    Text("Voci di Corridoio").title(40, .heavy)
-                    #if DEBUG
-                    Button {
-                        for i in 1...10 {
-                            notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
-                        }
-                    } label: {
-                        Text("Test bottom notifications").textButtonStyle(true)
+        ZStack {
+            ColorGradient()
+            VStack {
+                Text("Voci di Corridoio").title(40, .heavy)
+                #if DEBUG
+                Button {
+                    for i in 1...10 {
+                        notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
                     }
-                    Button {
-                        for i in 1...3 {
-                            notificationManager.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
-                        }
-                    } label: {
-                        Text("Test alert notifications").textButtonStyle(true)
-                    }
-                    #endif
-                    Spacer()
+                } label: {
+                    Text("Test bottom notifications").textButtonStyle(true)
                 }
-                VStack {
-                    NavigationLink(destination: SignInView()) {
-                        Text("Accedi").textButtonStyle(true, width: 200, padding: .vertical)
+                Button {
+                    for i in 1...3 {
+                        notificationManager.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
                     }
-                    NavigationLink(destination: CreateAccountView()) {
-                        Text("Crea account").textButtonStyle(true, width: 200, padding: .vertical)
-                    }
+                } label: {
+                    Text("Test alert notifications").textButtonStyle(true)
+                }
+                #endif
+                Spacer()
+            }
+            VStack {
+                NavigationLink(destination: SignInView()) {
+                    Text("Accedi").textButtonStyle(true, width: 200, padding: .vertical)
+                }
+                NavigationLink(destination: CreateAccountView().environmentObject(classes)) {
+                    Text("Crea account").textButtonStyle(true, width: 200, padding: .vertical)
                 }
             }
-            .navigationTitle("")
         }
-        .environmentObject(classes)
+        .navigationTitle("")
     }
 }
 

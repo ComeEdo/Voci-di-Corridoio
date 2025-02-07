@@ -380,7 +380,6 @@ class UserManager: ObservableObject {
                 self.role = Roles.from(logInData.roleId)
                 
                 //salvare user e token in locale
-                
                 self.isAuthenticated = true
                 
                 return .gotUser(username: logInData.user.username)
