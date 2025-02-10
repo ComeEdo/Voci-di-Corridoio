@@ -141,11 +141,14 @@ enum LoginError: Error, Notifiable {
 
 enum AuthError: Error, Notifiable {
     case unauthorized(message: String)
+    case forbidden(message: String)
     
     var notification: MainNotification.NotificationStructure {
         switch self {
         case .unauthorized(let message):
-            return MainNotification.NotificationStructure(title: "Errore", message: "Non autoricizzato:\n\(message)", type: .error)
+            return MainNotification.NotificationStructure(title: "Errore", message: "Non autorizzato:\n\(message)", type: .error)
+        case .forbidden(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Accesso negato:\n\(message)", type: .error)
         }
     }
 }

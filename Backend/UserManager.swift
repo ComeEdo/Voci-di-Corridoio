@@ -37,6 +37,29 @@ class ApiResponseData<T: Codable>: ApiResponse {
     }
 }
 
+class ApiResponseAuthData<T: Codable>: ApiResponseData<T> {
+    let auth: AuthData?
+    
+    init(success: Bool, message: String, data: T?, auth: AuthData) {
+        self.auth = auth
+        super.init(success: success, message: message, data: data)
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        auth = try container.decodeIfPresent(AuthData.self, forKey: .auth)
+        try super.init(from: decoder)
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case auth
+    }
+}
+
+struct AuthData: Codable {
+    let logOut: Bool?
+}
+
 struct DataFieldRegistration: Codable {
     let username: String?
     let email: String?
@@ -45,6 +68,10 @@ struct DataFieldRegistration: Codable {
 struct DataFieldCheckUsername: Codable {
     let exists: Bool
     let username: String?
+}
+
+struct NewToken: Codable {
+    let token: String?
 }
 
 enum Roles: Int {
@@ -134,6 +161,7 @@ class UserManager: ObservableObject {
         static let fetchAvailableClasses = "/classes/registration"
         static let SSLCertificate = "/downloads/certificates"
         static let logUser = "/auth/loginUser"
+        static let newAuthToken = "/auth/refreshAuthToken"
         
         private init() {}
     }
@@ -164,7 +192,6 @@ class UserManager: ObservableObject {
 //        }
     }
     
-    // Register a user
     @MainActor
     func registerUser(user: RegistrationData) async throws -> RegistrationNotification {
         guard let url = URL(string: "\(URN)\(APIEndpoints.register)") else {
@@ -232,7 +259,7 @@ class UserManager: ObservableObject {
     }
     
     @MainActor
-    func loginUser(email: String, password: String) async throws -> LoginNotification {
+    func logInUser(email: String, password: String) async throws -> LoginNotification {
         guard let url = URL(string: "\(URN)\(APIEndpoints.login)") else {
             throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.login)")
         }
@@ -263,23 +290,10 @@ class UserManager: ObservableObject {
                 guard let logInData = apiResponse.data else {
                     throw Errors.JSONError(message: "non sono riuscito a decodificare i dati")
                 }
-                
                 guard try await isAuth(logInData.authToken) else {
                     throw AuthError.unauthorized(message: apiResponse.message)
                 }
-                //
-                //                print("token approved")
-                //
-                //                try saveTokenToKeychain(token: logInData.token)
-                //                currentUser = logInData.user
                 self.authToken = logInData.authToken
-                //                self.isAuthenticated = true
-                //                ForEach(logInData.roleGroups, id: \.roleId ) { username in
-                ////                    print(username)
-                //                    ForEach(username.users, id: \.id) { user in
-                //                        print(user.description)
-                //                    }
-                //                }
                 return LoginNotification.success(users: logInData.roleGroups)
             case 400:
                 throw Codes.code400(message: apiResponse.message)
@@ -316,7 +330,7 @@ class UserManager: ObservableObject {
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
             
-            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponse) = try checkResponse(data: data, response: response)
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseAuthData<Bool>) = try checkResponse(data: data, response: response)
             let statusCode = httpResponse.statusCode
             
             switch statusCode {
@@ -327,6 +341,52 @@ class UserManager: ObservableObject {
                 throw Codes.code400(message: apiResponse.message)
             case 401:
                 throw AuthError.unauthorized(message: apiResponse.message)
+            case 403:
+                throw AuthError.forbidden(message: apiResponse.message)
+            default:
+                throw Errors.unknownError(message: apiResponse.message)
+            }
+        } catch {
+            throw mapError(error)
+        }
+    }
+    
+    @MainActor
+    func getNewAuthToken() async throws {
+        guard let url = URL(string: "\(URN)\(APIEndpoints.newAuthToken)") else {
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.newAuthToken)")
+        }
+        guard let token = authToken else {
+            throw AuthError.unauthorized(message: "Token is nil")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseAuthData<NewToken>) = try checkResponse(data: data, response: response)
+            let statusCode = httpResponse.statusCode
+            
+            switch statusCode {
+            case 200:
+                guard let newToken = apiResponse.data?.token else {
+                    throw Errors.JSONError(message: "è tutto rotto")
+                }
+                guard try await isAuth(newToken) else {
+                    throw AuthError.unauthorized(message: apiResponse.message)
+                }
+                self.authToken = newToken
+                NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "Success", message: "New token.", type: .success))
+            case 400:
+                throw Codes.code400(message: apiResponse.message)
+            case 401:
+                throw AuthError.unauthorized(message: apiResponse.message)
+            case 403:
+                throw AuthError.forbidden(message: apiResponse.message)
             default:
                 throw Errors.unknownError(message: apiResponse.message)
             }
@@ -362,7 +422,7 @@ class UserManager: ObservableObject {
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
             
-            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<LoginUser>) = try checkResponse(data: data, response: response)
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseAuthData<LoginUser>) = try checkResponse(data: data, response: response)
             let statusCode = httpResponse.statusCode
             
             switch statusCode {
@@ -371,9 +431,9 @@ class UserManager: ObservableObject {
                     throw Errors.JSONError(message: "è tutto rotto")
                 }
                 
-//                guard /*try await isAuth(logInData.authToken)*/false else {
-//                    throw AuthError.unauthorized(message: apiResponse.message)     //cambiare il messaggio
-//                }
+                //                guard /*try await isAuth(logInData.authToken)*/false else {
+                //                    throw AuthError.unauthorized(message: apiResponse.message)     //cambiare il messaggio
+                //                }
                 
                 self.currentUser = logInData.user
                 self.userToken = logInData.userToken
@@ -387,6 +447,8 @@ class UserManager: ObservableObject {
                 throw Codes.code400(message: apiResponse.message)
             case 401:
                 throw AuthError.unauthorized(message: apiResponse.message)
+            case 403:
+                throw AuthError.forbidden(message: apiResponse.message)
             case 404:
                 if apiResponse.success {
                     throw LoginError.userNotFound
@@ -457,4 +519,45 @@ class UserManager: ObservableObject {
            ]
            SecItemDelete(keychainQuery as CFDictionary)
        }
+}
+
+
+struct TokenValidator {
+    static func isTokenRefreshable(authToken: String) -> Bool {
+        guard let issuedAt = extractIssuedAt(from: authToken) else {
+            return false
+        }
+        
+        let currentTime = Date()
+        let oneDayInSeconds: TimeInterval = 24 * 60 * 60
+        let timeSinceIssue = currentTime.timeIntervalSince(issuedAt)
+        
+        return timeSinceIssue >= oneDayInSeconds
+    }
+    
+    private static func extractIssuedAt(from token: String) -> Date? {
+        let segments = token.split(separator: ".")
+        guard segments.count == 3,
+              let payloadData = base64UrlDecode(String(segments[1])),
+              let json = try? JSONSerialization.jsonObject(with: payloadData, options: []) as? [String: Any],
+              let iat = json["iat"] as? TimeInterval else {
+            return nil
+        }
+        print(iat)
+        print(Date(timeIntervalSince1970: iat))
+        return Date(timeIntervalSince1970: iat)
+    }
+    
+    private static func base64UrlDecode(_ base64: String) -> Data? {
+        var base64 = base64
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        
+        let paddingLength = 4 - (base64.count % 4)
+        if paddingLength < 4 {
+            base64.append(String(repeating: "=", count: paddingLength))
+        }
+        
+        return Data(base64Encoded: base64)
+    }
 }

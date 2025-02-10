@@ -127,7 +127,7 @@ struct SignInView: View {
         Task {
             //ordine esecuzione 2
             do {
-                let alert = try await userManager.loginUser(email: email, password: password)
+                let alert = try await userManager.logInUser(email: email, password: password)
                 if case .success(let users) = alert {
                     guard !users.allSatisfy({ $0.users.isEmpty }) else {
                         throw LoginError.userNotFound

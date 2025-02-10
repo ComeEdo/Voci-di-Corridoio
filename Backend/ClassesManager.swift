@@ -82,6 +82,10 @@ func mapError(_ error: Error) -> Error {
         return error
     case let error as ServerError:
         return error
+    case let error as ClassesError:
+        return error
+    case let error as AuthError:
+        return error
     default:
         return Errors.unknownError(message: error.localizedDescription)
     }
@@ -116,10 +120,11 @@ func SSLAlert(_ error: ServerError) {
     }
 }
 
-func checkResponse<T: Codable>(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, ApiResponseData<T>) {
+func checkResponse<T: Codable, V: ApiResponseData<T>>(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, V) {
     guard let httpResponse = response as? HTTPURLResponse else {
         throw URLError(.badServerResponse)
     }
+    
     if httpResponse.statusCode == 503 {
         if let responseString = String(data: data, encoding: .utf8) {
             let patterns = [
@@ -134,8 +139,18 @@ func checkResponse<T: Codable>(data: Data, response: URLResponse?) throws -> (HT
             }
         }
     }
-    return (httpResponse, try JSONDecoder().decode(ApiResponseData<T>.self, from: data))
+    
+    let apiResponse = try JSONDecoder().decode(V.self, from: data)
+    
+    if let authResponse = apiResponse as? ApiResponseAuthData<T>, let auth = authResponse.auth {
+        
+        if let logOut = auth.logOut, logOut {
+            UserManager.shared.logoutUser()
+        }
+    }
+    return (httpResponse, apiResponse)
 }
+
 
 func checkResponse(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, ApiResponse) {
     guard let httpResponse = response as? HTTPURLResponse else {

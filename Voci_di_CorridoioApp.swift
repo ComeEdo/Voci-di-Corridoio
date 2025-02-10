@@ -33,6 +33,26 @@ struct Voci_di_CorridoioApp: App {
                             } label: {
                                 Text("Log out").textButtonStyle(true)
                             }
+                            Button {
+                                Task {
+                                    do {
+                                        try await userManager.getNewAuthToken()
+                                    } catch let error as ServerError {
+                                        if error == .sslError {
+                                            SSLAlert(error.notification)
+                                        } else {
+                                            notificationManager.showAlert(error.notification)
+                                        }
+                                    } catch let error as Notifiable {
+                                        notificationManager.showAlert(error.notification)
+                                    } catch {
+                                        print(error.localizedDescription)
+                                        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                                    }
+                                }
+                            } label: {
+                                Text("New token").textButtonStyle(true)
+                            }
                         }
                     }
                 } else {

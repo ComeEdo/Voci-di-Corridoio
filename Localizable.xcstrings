@@ -93,6 +93,9 @@
     "Accesso" : {
 
     },
+    "Accesso negato:\n%@" : {
+
+    },
     "admin" : {
 
     },
@@ -439,6 +442,12 @@
     "Nessuna Connessione Internet" : {
 
     },
+    "New token" : {
+
+    },
+    "New token." : {
+
+    },
     "No users in this role" : {
 
     },
@@ -462,7 +471,7 @@
         }
       }
     },
-    "Non autoricizzato:\n%@" : {
+    "Non autorizzato:\n%@" : {
 
     },
     "Non è stato trovato trovato nessun utente alle seguenti credenziali, contattaci." : {
