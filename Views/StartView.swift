@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct StartView: View {
-    @EnvironmentObject private var notificationManager: NotificationManager
     @StateObject private var classes: ClassesManager = ClassesManager()
     
     init() {}
@@ -21,14 +20,14 @@ struct StartView: View {
                 #if DEBUG
                 Button {
                     for i in 1...10 {
-                        notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
+                        NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
                     }
                 } label: {
                     Text("Test bottom notifications").textButtonStyle(true)
                 }
                 Button {
                     for i in 1...3 {
-                        notificationManager.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
+                        NotificationManager.shared.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
                     }
                 } label: {
                     Text("Test alert notifications").textButtonStyle(true)
@@ -52,6 +51,5 @@ struct StartView: View {
 #Preview {
     StartView()
         .foregroundStyle(Color.accentColor)
-        .environmentObject(NotificationManager.shared)
         .environmentObject(UserManager.shared)
 }

@@ -5,9 +5,7 @@
 //  Created by Edoardo Frezzotti on 10/01/25.
 //
 
-import Foundation
 import SwiftUI
-import UIKit
 
 protocol Notifiable {
     var notification: MainNotification.NotificationStructure { get }
@@ -16,7 +14,9 @@ protocol Notifiable {
 
 extension Notifiable {
     var description: String {
-        "\(notification.title)\n\n\(notification.message)"
+        let title = String(localized: notification.title)
+        let message = String(localized: notification.message)
+        return "\(title)\n\n\(message)"
     }
 }
 
@@ -117,7 +117,7 @@ enum LoginNotification: Notifiable {
         case .success:
             return MainNotification.NotificationStructure(title: "Successo", message: "Sei stato loggato con successo!", type: .success)
         case .gotUser(let username):
-            return MainNotification.NotificationStructure(title: "Success", message: "\(username) sei stato loggato!", type: .success)
+            return MainNotification.NotificationStructure(title: "Success", message: "\(username) sei stato selezionato!", type: .success)
         }
     }
 }
@@ -173,6 +173,17 @@ extension URLError: Notifiable {
             return MainNotification.NotificationStructure(title: "URL Non Valido", message: "L'URL fornito non è valido.", type: .error)
         default:
             return MainNotification.NotificationStructure(title: "Errore Sconosciuto", message: "Si è verificato un errore sconosciuto. Riprova.", type: .error)
+        }
+    }
+}
+
+enum KeychainError: Error, Notifiable {
+    case unableToSave(what: String)
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .unableToSave(let what):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Non sono riuscito a salavare \(what) nel portachiavi", type: .error)
         }
     }
 }

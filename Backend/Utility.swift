@@ -149,6 +149,19 @@ struct Utility {
         }
         return ResultLocalized(result: false, message: "Password non valida.")
     }
+    
+    static func setupAlert(_ alert: MainNotification.NotificationStructure) {
+        NotificationManager.shared.showAlert(alert)
+    }
+    static func setupAlert(_ error: Error) {
+        NotificationManager.shared.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+    }
+    static func setupBottom(_ alert: MainNotification.NotificationStructure) {
+        NotificationManager.shared.showBottom(alert)
+    }
+    static func setupBottom(_ error: Error) {
+        NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+    }
 }
 
 struct DividerText: View {

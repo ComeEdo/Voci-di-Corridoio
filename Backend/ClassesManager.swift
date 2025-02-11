@@ -26,9 +26,9 @@ class ClassesManager: ObservableObject {
             } catch let error as ServerError {
                 SSLAlert(error)
             } catch let error as Notifiable {
-                NotificationManager.shared.showBottom(error.notification)
+                Utility.setupBottom(error.notification)
             } catch {
-                NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                Utility.setupBottom(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
             }
         }
     }
@@ -116,7 +116,7 @@ func SSLAlert(_ error: ServerError) {
     if error == .sslError {
         SSLAlert(error.notification)
     } else {
-        NotificationManager.shared.showBottom(error.notification)
+        Utility.setupBottom(error.notification)
     }
 }
 
@@ -143,11 +143,31 @@ func checkResponse<T: Codable, V: ApiResponseData<T>>(data: Data, response: URLR
     let apiResponse = try JSONDecoder().decode(V.self, from: data)
     
     if let authResponse = apiResponse as? ApiResponseAuthData<T>, let auth = authResponse.auth {
-        
         if let logOut = auth.logOut, logOut {
             UserManager.shared.logoutUser()
         }
+    } else if let userResponse = apiResponse as? ApiResponseUserData<T> {
+        if let logOut = userResponse.user?.logOut, logOut {
+            UserManager.shared.logoutUser()
+        }
+        if let updateToken = userResponse.user?.updateToken, updateToken {
+            if let userId = UserManager.shared.currentUser?.id {
+                Task {
+                    do {
+                        let alert = try await UserManager.shared.getUserAndToken(userId)
+                        Utility.setupBottom(alert.notification)
+                    } catch let error as ServerError {
+                        SSLAlert(error)
+                    } catch let error as Notifiable {
+                        print(error.description)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+        }
     }
+    
     return (httpResponse, apiResponse)
 }
 

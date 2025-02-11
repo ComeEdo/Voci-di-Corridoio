@@ -60,6 +60,30 @@ struct AuthData: Codable {
     let logOut: Bool?
 }
 
+class ApiResponseUserData<T: Codable>: ApiResponseData<T> {
+    let user: UserData?
+    
+    init(success: Bool, message: String, data: T?, user: UserData) {
+        self.user = user
+        super.init(success: success, message: message, data: data)
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        user = try container.decode(UserData.self, forKey: .user)
+        try super.init(from: decoder)
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case user
+    }
+}
+
+struct UserData: Codable {
+    let logOut: Bool?
+    let updateToken: Bool?
+}
+
 struct DataFieldRegistration: Codable {
     let username: String?
     let email: String?
@@ -160,36 +184,41 @@ class UserManager: ObservableObject {
         static let checkUsername = "/check/username"
         static let fetchAvailableClasses = "/classes/registration"
         static let SSLCertificate = "/downloads/certificates"
-        static let logUser = "/auth/loginUser"
+        static let userAndToken = "/auth/getTokenAndUser"
         static let newAuthToken = "/auth/refreshAuthToken"
+        static let user = "/user/isUserTokenValid"
+        static let newUserToken = "/user/refreshUserToken"
         
         private init() {}
     }
     
     private init() {
         self.URN = "https://\(server):\(port)/api"
-//        if let token = getTokenFromKeychain() {
-//            isAuthenticated = true
-//            Task {
-//                do {
-//                    print("siuuu")
-//                    if try await isAuth("token") {
-//                        //tirare fuori il user
-//                        authToken = "token"
-//                        print("boh3")
-//                    } else {
-//                        print("boh2")
-////                        logoutUser()
-//                    }
-//                } catch let error as Notifiable {
-//                    print("boh1")
-//                    NotificationManager.shared.showBottom(error.notification)
-//                } catch {
-//                    print("boh")
-//                    NotificationManager.shared.showBottom(.init(title: "sium", message: "Errore: \(error.localizedDescription)", type: .error))
-//                }
-//            }
-//        }
+        if let token = getTokenFromKeychain(), let userPersistance = UserPersistance.retrieveUserPersistance() {
+            currentUser = userPersistance.user
+            role = userPersistance.role
+            isAuthenticated = true
+            Task {
+                do {
+                    guard try await isAuth(token) else {
+                        return
+                    }
+                    Task {
+                        await MainActor.run {
+                            self.authToken = token
+                        }
+                        let alert = try await getUserAndToken(userPersistance.user.id)
+                        Utility.setupBottom(alert.notification)
+                    }
+                } catch let error as ServerError {
+                    SSLAlert(error)
+                } catch let error as Notifiable {
+                    Utility.setupBottom(error.notification)
+                } catch {
+                    Utility.setupBottom(error)
+                }
+            }
+        }
     }
     
     @MainActor
@@ -335,7 +364,41 @@ class UserManager: ObservableObject {
             
             switch statusCode {
             case 200:
-                NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "Success", message: "Token is valid.", type: .success))
+                Utility.setupBottom(MainNotification.NotificationStructure(title: "Success", message: "Auth token is valid.", type: .success))
+                return true
+            case 400:
+                throw Codes.code400(message: apiResponse.message)
+            case 401:
+                throw AuthError.unauthorized(message: apiResponse.message)
+            case 403:
+                throw AuthError.forbidden(message: apiResponse.message)
+            default:
+                throw Errors.unknownError(message: apiResponse.message)
+            }
+        } catch {
+            throw mapError(error)
+        }
+    }
+    
+    func isUser(_ token: String) async throws -> Bool {
+        guard let url = URL(string: "\(URN)\(APIEndpoints.user)") else {
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.user)")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseUserData<Bool>) = try checkResponse(data: data, response: response)
+            let statusCode = httpResponse.statusCode
+            
+            switch statusCode {
+            case 200:
+                Utility.setupBottom(MainNotification.NotificationStructure(title: "Success", message: "User token is valid.", type: .success))
                 return true
             case 400:
                 throw Codes.code400(message: apiResponse.message)
@@ -380,7 +443,7 @@ class UserManager: ObservableObject {
                     throw AuthError.unauthorized(message: apiResponse.message)
                 }
                 self.authToken = newToken
-                NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "Success", message: "New token.", type: .success))
+                Utility.setupBottom(MainNotification.NotificationStructure(title: "Success", message: "New auth token.", type: .success))
             case 400:
                 throw Codes.code400(message: apiResponse.message)
             case 401:
@@ -396,9 +459,53 @@ class UserManager: ObservableObject {
     }
     
     @MainActor
-    func logInUser(_ id: UUID) async throws -> LoginNotification {
-        guard let url = URL(string: "\(URN)\(APIEndpoints.logUser)") else {
-            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.logUser)")
+    func getNewUserToken() async throws {
+        guard let url = URL(string: "\(URN)\(APIEndpoints.newUserToken)") else {
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.newUserToken)")
+        }
+        guard let token = userToken else {
+            throw AuthError.unauthorized(message: "Token is nil")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseUserData<NewToken>) = try checkResponse(data: data, response: response)
+            let statusCode = httpResponse.statusCode
+            
+            switch statusCode {
+            case 200:
+                guard let newToken = apiResponse.data?.token else {
+                    throw Errors.JSONError(message: "è tutto rotto")
+                }
+                guard try await isUser(newToken) else {
+                    throw AuthError.unauthorized(message: apiResponse.message)
+                }
+                self.userToken = newToken
+                Utility.setupBottom(MainNotification.NotificationStructure(title: "Success", message: "New user token.", type: .success))
+            case 400:
+                throw Codes.code400(message: apiResponse.message)
+            case 401:
+                throw AuthError.unauthorized(message: apiResponse.message)
+            case 403:
+                throw AuthError.forbidden(message: apiResponse.message)
+            default:
+                throw Errors.unknownError(message: apiResponse.message)
+            }
+        } catch {
+            throw mapError(error)
+        }
+    }
+    
+    @MainActor
+    func getUserAndToken(_ id: UUID) async throws -> LoginNotification {
+        guard let url = URL(string: "\(URN)\(APIEndpoints.userAndToken)") else {
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.userAndToken)")
         }
         guard let token = authToken else {
             throw AuthError.unauthorized(message: "Token is nil")
@@ -430,16 +537,18 @@ class UserManager: ObservableObject {
                 guard let logInData = apiResponse.data else {
                     throw Errors.JSONError(message: "è tutto rotto")
                 }
-                
-                //                guard /*try await isAuth(logInData.authToken)*/false else {
-                //                    throw AuthError.unauthorized(message: apiResponse.message)     //cambiare il messaggio
-                //                }
+                guard try await isUser(logInData.userToken) else {
+                    throw AuthError.unauthorized(message: apiResponse.message)
+                }
                 
                 self.currentUser = logInData.user
                 self.userToken = logInData.userToken
-                self.role = Roles.from(logInData.roleId)
+                let role = Roles.from(logInData.roleId)
+                self.role = role
                 
-                //salvare user e token in locale
+                try saveTokenToKeychain(token: token)
+                UserPersistance.saveUserPersistance(userPersistance: UserPersistance(user: logInData.user, role: role))
+                
                 self.isAuthenticated = true
                 
                 return .gotUser(username: logInData.user.username)
@@ -480,7 +589,7 @@ class UserManager: ObservableObject {
            // Add new token
            let status = SecItemAdd(keychainQuery as CFDictionary, nil)
            if status != errSecSuccess {
-               throw NSError(domain: "KeychainError", code: Int(status), userInfo: [NSLocalizedDescriptionKey: "Failed to save token to Keychain."])
+               throw KeychainError.unableToSave(what: "token")
            }
        }
 

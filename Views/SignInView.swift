@@ -18,7 +18,6 @@ struct SignInView: View {
     private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
 
     @EnvironmentObject private var userManager: UserManager
-    @EnvironmentObject private var notificationManager: NotificationManager
 
     private var functions: Utility = Utility.shared
 
@@ -140,40 +139,30 @@ struct SignInView: View {
                         isShowingUserSelector = true
                     }
                 } else {
-                    setupAlert(alert.notification)
+                    Utility.setupAlert(alert.notification)
                 }
             } catch let error as ServerError {
                 if error == .sslError {
                     SSLAlert(error.notification)
                 } else {
-                    setupAlert(error.notification)
+                    Utility.setupAlert(error.notification)
                 }
             } catch let error as LoginError {
                 if error == .userNotFound {
-                    setupBottom(error.notification)
+                    Utility.setupBottom(error.notification)
                 } else {
-                    setupAlert(error.notification)
+                    Utility.setupAlert(error.notification)
                 }
             } catch let error as Notifiable {
-                setupAlert(error.notification)
+                Utility.setupAlert(error.notification)
             } catch {
                 print(error.localizedDescription)
-                setupAlert(error)
+                Utility.setupAlert(error)
             }
             //ordine esecuzione 3
             isOperationFinished = true
         }
         //ordine esecuzione 1
-    }
-
-    private func setupAlert(_ alert: MainNotification.NotificationStructure) {
-        notificationManager.showAlert(alert)
-    }
-    private func setupAlert(_ error: Error) {
-        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
-    }
-    private func setupBottom(_ alert: MainNotification.NotificationStructure) {
-        notificationManager.showBottom(alert)
     }
 
     private func getFocus() -> Field? {
@@ -193,15 +182,15 @@ struct SignInView: View {
     func logInUser(_ userUUID: UUID) {
         Task {
             do {
-                let alert = try await userManager.logInUser(userUUID)
+                let alert = try await userManager.getUserAndToken(userUUID)
                 exit()
-                setupBottom(alert.notification)
+                Utility.setupBottom(alert.notification)
             } catch let error as ServerError {
                 SSLAlert(error)
             } catch let error as Notifiable {
-                setupAlert(error.notification)
+                Utility.setupAlert(error.notification)
             } catch {
-                setupAlert(error)
+                Utility.setupAlert(error)
             }
             isOperationFinished = true
         }

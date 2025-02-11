@@ -9,9 +9,9 @@ import SwiftUI
 
 @main
 struct Voci_di_CorridoioApp: App {
-    let persistenceController = PersistenceController.shared
-    @StateObject private var notificationManager = NotificationManager.shared
+//    let persistenceController = PersistenceController.shared
     @StateObject private var userManager = UserManager.shared
+    @StateObject private var notificationManager = NotificationManager.shared
     
     var body: some Scene {
         WindowGroup {
@@ -20,10 +20,12 @@ struct Voci_di_CorridoioApp: App {
                     ZStack {
                         ColorGradient()
                         VStack {
-                            Text("Authenticated")
+                            Text("Authenticated").body()
+                            Text(UserManager.shared.currentUser?.username ?? "user").body()
+                            Text(UserManager.shared.currentUser?.id.uuidString ?? "id").body()
                             Button {
                                 for i in 1...10 {
-                                    notificationManager.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
+                                    NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
                                 }
                             } label: {
                                 Text("Test bottom notifications").textButtonStyle(true)
@@ -41,17 +43,37 @@ struct Voci_di_CorridoioApp: App {
                                         if error == .sslError {
                                             SSLAlert(error.notification)
                                         } else {
-                                            notificationManager.showAlert(error.notification)
+                                            Utility.setupAlert(error.notification)
                                         }
                                     } catch let error as Notifiable {
-                                        notificationManager.showAlert(error.notification)
+                                        Utility.setupAlert(error.notification)
                                     } catch {
                                         print(error.localizedDescription)
-                                        notificationManager.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                                        Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
                                     }
                                 }
                             } label: {
-                                Text("New token").textButtonStyle(true)
+                                Text("New auth token").textButtonStyle(true)
+                            }
+                            Button {
+                                Task {
+                                    do {
+                                        try await userManager.getNewUserToken()
+                                    } catch let error as ServerError {
+                                        if error == .sslError {
+                                            SSLAlert(error.notification)
+                                        } else {
+                                            Utility.setupAlert(error.notification)
+                                        }
+                                    } catch let error as Notifiable {
+                                        Utility.setupAlert(error.notification)
+                                    } catch {
+                                        print(error.localizedDescription)
+                                        Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                                    }
+                                }
+                            } label: {
+                                Text("New user token").textButtonStyle(true)
                             }
                         }
                     }
@@ -64,6 +86,5 @@ struct Voci_di_CorridoioApp: App {
             .foregroundStyle(Color.accentColor)
         }
         .environmentObject(userManager)
-        .environmentObject(notificationManager)
     }
 }

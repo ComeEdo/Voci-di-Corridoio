@@ -54,9 +54,6 @@
         }
       }
     },
-    "%@ sei stato loggato!" : {
-
-    },
     "%@ sei stato registrato con successo!" : {
       "localizations" : {
         "en" : {
@@ -66,6 +63,9 @@
           }
         }
       }
+    },
+    "%@ sei stato selezionato!" : {
+
     },
     "%@ valido." : {
       "localizations" : {
@@ -103,6 +103,9 @@
 
     },
     "Apostrofo non valido." : {
+
+    },
+    "Auth token is valid." : {
 
     },
     "Authenticated" : {
@@ -442,10 +445,16 @@
     "Nessuna Connessione Internet" : {
 
     },
-    "New token" : {
+    "New auth token" : {
 
     },
-    "New token." : {
+    "New auth token." : {
+
+    },
+    "New user token" : {
+
+    },
+    "New user token." : {
 
     },
     "No users in this role" : {
@@ -475,6 +484,9 @@
 
     },
     "Non è stato trovato trovato nessun utente alle seguenti credenziali, contattaci." : {
+
+    },
+    "Non sono riuscito a salavare %@ nel portachiavi" : {
 
     },
     "Non sono state trovate classi" : {
@@ -630,9 +642,6 @@
     "Timeout Richiesta" : {
 
     },
-    "Token is valid." : {
-
-    },
     "URL Non Supportato" : {
 
     },
@@ -653,6 +662,9 @@
 
     },
     "User Details" : {
+
+    },
+    "User token is valid." : {
 
     },
     "Username: %@" : {

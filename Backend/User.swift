@@ -79,12 +79,46 @@ struct LoginUser: Codable {
             self.user = try container.decode(User.self, forKey: .user)
         }
     }
+}
+
+struct UserPersistance: Codable {
+    let user: User
+    let role: Roles
+    
+    init(user: User, role: Roles) {
+        self.user = user
+        self.role = role
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case role
+        case user
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.role = Roles(rawValue: try container.decode(Int.self, forKey: .role))!
+        
+        switch Roles.isType(role.rawValue) {
+        case is Student.Type:
+            self.user = try container.decode(Student.self, forKey: .user)
+        case is Teacher.Type:
+            self.user = try container.decode(Teacher.self, forKey: .user)
+        case is Admin.Type:
+            self.user = try container.decode(Admin.self, forKey: .user)
+        case is Principal.Type:
+            self.user = try container.decode(Principal.self, forKey: .user)
+        case is Secretariat.Type:
+            self.user = try container.decode(Secretariat.self, forKey: .user)
+        default:
+            self.user = try container.decode(User.self, forKey: .user)
+        }
+    }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(userToken, forKey: .userToken)
-        try container.encode(roleId, forKey: .roleId)
+        try container.encode(role.rawValue, forKey: .role)
         
         switch user {
         case let student as Student:
@@ -100,6 +134,24 @@ struct LoginUser: Codable {
         default:
             try container.encode(user, forKey: .user)
         }
+    }
+    
+    static func saveUserPersistance(userPersistance: UserPersistance) {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(userPersistance) {
+            print(String(data: encoded, encoding: .utf8)!)
+            UserDefaults.standard.set(encoded, forKey: "UserPersistance")
+        }
+    }
+
+    static func retrieveUserPersistance() -> UserPersistance? {
+        if let savedUserData = UserDefaults.standard.object(forKey: "UserPersistance") as? Data {
+            let decoder = JSONDecoder()
+            if let loadedUserPersistance = try? decoder.decode(UserPersistance.self, from: savedUserData) {
+                return loadedUserPersistance
+            }
+        }
+        return nil
     }
 }
 
@@ -148,7 +200,7 @@ class Student: User {
     var classe: Classs
     var studyFieldName: String
     
-    init(id: UUID, name: String, surname: String, username: String, role: Roles, classe: Classs, studyFieldName: String) {
+    init(id: UUID, name: String, surname: String, username: String, classe: Classs, studyFieldName: String) {
         self.classe = classe
         self.studyFieldName = studyFieldName
         super.init(id: id, name: name, surname: surname, username: username)
@@ -159,6 +211,13 @@ class Student: User {
         self.classe = try container.decode(Classs.self, forKey: .classe)
         self.studyFieldName = try container.decode(String.self, forKey: .studyFieldName)
         try super.init(from: decoder)
+    }
+    
+    override func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(classe, forKey: .classe)
+        try container.encode(studyFieldName, forKey: .studyFieldName)
+        try super.encode(to: encoder)
     }
     
     private enum CodingKeys: String, CodingKey {
