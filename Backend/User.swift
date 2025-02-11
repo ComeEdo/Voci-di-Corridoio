@@ -139,7 +139,6 @@ struct UserPersistance: Codable {
     static func saveUserPersistance(userPersistance: UserPersistance) {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(userPersistance) {
-            print(String(data: encoded, encoding: .utf8)!)
             UserDefaults.standard.set(encoded, forKey: "UserPersistance")
         }
     }

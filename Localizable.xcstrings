@@ -135,6 +135,9 @@
     "Certificato Del Server Non Valido" : {
 
     },
+    "Certificato non valido." : {
+
+    },
     "Class: %@ (ID: %@)" : {
       "localizations" : {
         "it" : {

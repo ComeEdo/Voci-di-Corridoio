@@ -476,13 +476,15 @@ struct CreateAccountView: View {
                         reason = "\(apiResponse.message)"
                         isValidUsername = true
                     }
-                } catch let error as URLError {
-                    if isSSLError(error) {
-                        SSLAlert(ServerError.sslError.notification)
+                } catch let error as ServerError {
+                    if error == .sslError {
+                        SSLAlert(error.notification)
+                        reason = "Certificato non valido."
                     } else {
+                        Utility.setupBottom(error.notification)
                         reason = "Errore di rete: \(error.localizedDescription)."
-                        isValidUsername = true
                     }
+                    isValidUsername = true
                 } catch let error as DecodingError {
                     reason = "Si è verificato un errore JSON: \(error.localizedDescription)."
                     isValidUsername = true

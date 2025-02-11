@@ -203,13 +203,11 @@ class UserManager: ObservableObject {
                     guard try await isAuth(token) else {
                         return
                     }
-                    Task {
-                        await MainActor.run {
-                            self.authToken = token
-                        }
-                        let alert = try await getUserAndToken(userPersistance.user.id)
-                        Utility.setupBottom(alert.notification)
+                    await MainActor.run {
+                        self.authToken = token
                     }
+                    let alert = try await getUserAndToken(userPersistance.user.id)
+                    Utility.setupBottom(alert.notification)
                 } catch let error as ServerError {
                     SSLAlert(error)
                 } catch let error as Notifiable {
@@ -259,8 +257,6 @@ class UserManager: ObservableObject {
             
             let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<DataFieldRegistration>) = try checkResponse(data: data, response: response)
             let statusCode = httpResponse.statusCode
-            print("Success: \(apiResponse.success)")
-            print("Message: \(apiResponse.message)")
             
             switch statusCode {
             case 201:

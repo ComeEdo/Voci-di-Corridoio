@@ -9,7 +9,6 @@ import SwiftUI
 
 @main
 struct Voci_di_CorridoioApp: App {
-//    let persistenceController = PersistenceController.shared
     @StateObject private var userManager = UserManager.shared
     @StateObject private var notificationManager = NotificationManager.shared
     
