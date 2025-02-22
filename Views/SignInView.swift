@@ -13,9 +13,7 @@ struct SignInView: View {
         case password
     }
 
-    @Environment(\.presentationMode) private var presentationMode
-
-    private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
+    @Environment(\.dismiss) private var dismiss
 
     @EnvironmentObject private var userManager: UserManager
 
@@ -49,7 +47,6 @@ struct SignInView: View {
                     passwordView()
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .scrollIndicators(.never)
                 .padding(.horizontal, 30)
                 buttonView()
                     .padding(keyboardHeight == 0 ? 0 : 10)
@@ -183,7 +180,7 @@ struct SignInView: View {
         Task {
             do {
                 let alert = try await userManager.getUserAndToken(userUUID)
-                exit()
+                dismiss()
                 Utility.setupBottom(alert.notification)
             } catch let error as ServerError {
                 SSLAlert(error)

@@ -14,6 +14,16 @@
         }
       }
     },
+    "%@\n%@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        }
+      }
+    },
     "%@ è già in uso." : {
       "localizations" : {
         "en" : {
@@ -99,6 +109,9 @@
     "admin" : {
 
     },
+    "ao" : {
+
+    },
     "Apostrofi non valido." : {
 
     },
@@ -177,6 +190,15 @@
     "Controlla la tua connessione internet e riprova." : {
 
     },
+    "Copied!" : {
+
+    },
+    "Copy to Clipboard" : {
+
+    },
+    "Corpo" : {
+
+    },
     "Crea account" : {
       "localizations" : {
         "en" : {
@@ -198,6 +220,9 @@
       }
     },
     "Dati ricevuti vuoti" : {
+
+    },
+    "DUX" : {
 
     },
     "È stato trovato un conflitto: %@" : {
@@ -291,6 +316,9 @@
           }
         }
       }
+    },
+    "Home" : {
+
     },
     "Host Non Trovato" : {
 
@@ -421,6 +449,9 @@
     "Log out" : {
 
     },
+    "LUX" : {
+
+    },
     "Manca qualcosa" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -432,7 +463,13 @@
         }
       }
     },
+    "Materie" : {
+
+    },
     "matto" : {
+
+    },
+    "MEA" : {
 
     },
     "Name: %@ %@" : {
@@ -528,10 +565,48 @@
         }
       }
     },
+    "Post" : {
+
+    },
     "preside" : {
 
     },
     "professore" : {
+
+    },
+    "Professori" : {
+
+    },
+    "Profilo" : {
+
+    },
+    "Questa selezione non è disponibile" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This user isn’t available"
+          }
+        }
+      }
+    },
+    "Questo utente non è disponibile" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This selector isn’t available"
+          }
+        }
+      }
+    },
+    "Recensire" : {
+
+    },
+    "Reinit" : {
+
+    },
+    "Retry" : {
 
     },
     "Richiesta fallita: %@" : {
@@ -601,6 +676,9 @@
     "Sei stato loggato con successo!" : {
 
     },
+    "Seleziona" : {
+
+    },
     "Si è verificato un errore JSON: %@." : {
       "localizations" : {
         "en" : {
@@ -623,6 +701,9 @@
     "Study Field: %@" : {
 
     },
+    "subject" : {
+
+    },
     "Success" : {
 
     },
@@ -642,7 +723,16 @@
     "Test bottom notifications" : {
 
     },
+    "This video isn’t available" : {
+
+    },
     "Timeout Richiesta" : {
+
+    },
+    "Timetable" : {
+
+    },
+    "Titolo" : {
 
     },
     "URL Non Supportato" : {
@@ -684,6 +774,9 @@
       }
     },
     "Voci di Corridoio" : {
+
+    },
+    "ww" : {
 
     }
   },

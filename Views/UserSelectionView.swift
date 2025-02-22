@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct UserSelectorView: View {
-    @Environment(\.presentationMode) private var presentationMode
-    
-    private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
+    @Environment(\.dismiss) private var dismiss
     
     let response: [LoginResponse.RoleGroup]
     let onDismiss: (UUID) -> Void
@@ -30,8 +28,14 @@ struct UserSelectorView: View {
     var body: some View {
         ZStack {
             ColorGradient()
+            VStack {
+                GradientView(style: .black, height: 100, startPoint: .top).opacity(0.6)
+                Spacer()
+            }
+            .ignoresSafeArea(edges: .top)
+            .zIndex(30)
             TitleOnView("Seleziona Utente")
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
                     ForEach(response, id: \.roleId) { roleGroup in
                         Section(header: Text(roleTitle(for: roleGroup.roleId))
@@ -78,7 +82,7 @@ struct UserSelectorView: View {
                         if let userUUID = selectedUser?.id {
                             onDismiss(userUUID)
                         }
-                        exit()
+                        dismiss()
                     } label: {
                         Text("Confirm").textButtonStyle(selectedUser != nil)
                     }
@@ -87,7 +91,6 @@ struct UserSelectorView: View {
                 }
                 .padding()
             }
-            .scrollIndicators(.hidden)
         }
         .toolbarBackground(.hidden)
     }

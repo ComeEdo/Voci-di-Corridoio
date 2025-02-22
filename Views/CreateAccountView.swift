@@ -17,9 +17,7 @@ struct CreateAccountView: View {
         case repeatedPassword
     }
     
-    @Environment(\.presentationMode) private var presentationMode
-    
-    private var exit: () -> Void { return { presentationMode.wrappedValue.dismiss() } }
+    @Environment(\.dismiss) private var dismiss
     
     @EnvironmentObject private var userManager: UserManager
     @EnvironmentObject private var classes: ClassesManager
@@ -63,7 +61,6 @@ struct CreateAccountView: View {
                     repeatedPasswordView()
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .scrollIndicators(.never)
                 .padding(.horizontal, 30)
                 buttonView()
                     .padding(keyboardHeight == 0 ? 0 : 10)
@@ -302,7 +299,7 @@ struct CreateAccountView: View {
                 usernameCheckTask?.cancel()
                 let alert = try await userManager.registerUser(user: user)
                 if case .success = alert {
-                    exit()
+                    dismiss()
                 } else if case .failureUsername(let username) = alert {
                     avoidUsernames.append(username)
                     isValidUsername = isUsernameValid()

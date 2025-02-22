@@ -69,7 +69,7 @@ extension View {
             .fontWeight(.bold)
             .frame(width: width)
             .padding(padding)
-            .background(.tint, in: RoundedRectangle(cornerRadius: 20))
+            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 20))
             .foregroundColor(isEnabled ? Color.white : Color.secondary)
     }
     
@@ -167,6 +167,61 @@ private struct RotatingModifier: ViewModifier {
                 withAnimation(Animation.easeInOut(duration: 1)) {
                     rotation = 0
                 }
+            }
+    }
+}
+
+
+extension View {
+    func navigationDestination(in namespace: Namespace.ID, selectedUser: Binding<User?>, navigationPath: Binding<[NavigationNode]>) -> some View {
+        self.modifier(NavigationDestination(namespace: namespace, selectedUser: selectedUser, navigationPath: navigationPath))
+    }
+
+    func transitionSource(id: UUID, namespace: Namespace.ID) -> some View {
+        self.modifier(TransitionSourceModifier(id: id, namespace: namespace))
+    }
+}
+
+private struct NavigationDestination: ViewModifier {
+    var namespace: Namespace.ID
+    @Binding var selectedUser: User?
+    @Binding var navigationPath: [NavigationNode]
+    
+    func body(content: Content) -> some View {
+        content
+            .navigationDestination(for: NavigationNode.self) { node in
+                switch node {
+                case .user(let id):
+                    if let user = TimetableManager.shared.users.first(where: { $0.id == id }) {
+                        UserDetailView(user: user, selectedUser: $selectedUser, navigationPath: $navigationPath).navigationTransition(.zoom(sourceID: user.id, in: namespace))
+                    } else {
+                        ContentUnavailableView("Questo utente non è disponibile", systemImage: "person")
+                    }
+                case .subject(let id):
+                    if true {
+                        
+                    }
+                case .home(let id):
+                    if let home = Selectors.selectors.first(where: { $0.id == id }) {
+                        ReviewDetailView(selector: home, namespace: namespace).navigationTransition(.zoom(sourceID: home.id, in: namespace))
+                    } else {
+                        ContentUnavailableView("Questa selezione non è disponibile", systemImage: "person")
+                    }
+                }
+            }
+    }
+}
+
+private struct TransitionSourceModifier: ViewModifier {
+    var id: UUID
+    var namespace: Namespace.ID
+    
+    func body(content: Content) -> some View {
+        content
+            .matchedTransitionSource(id: id, in: namespace) { src in
+                src
+                    .clipShape(.rect(cornerRadius: 45, style: .continuous))
+                    .background(Color.accent)
             }
     }
 }

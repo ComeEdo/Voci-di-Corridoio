@@ -49,7 +49,14 @@ struct StartView: View {
 }
 
 #Preview {
-    StartView()
-        .foregroundStyle(Color.accentColor)
-        .environmentObject(UserManager.shared)
+    @Previewable @StateObject var userManager = UserManager.shared
+    @Previewable @StateObject var notificationManager = NotificationManager.shared
+    
+    NavigationStack {
+        StartView()
+    }
+    .addAlerts()
+    .addBottomNotifications()
+    .foregroundStyle(Color.accentColor)
+    .environmentObject(userManager)
 }

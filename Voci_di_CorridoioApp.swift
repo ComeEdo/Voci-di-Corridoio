@@ -16,66 +16,7 @@ struct Voci_di_CorridoioApp: App {
         WindowGroup {
             NavigationStack {
                 if userManager.isAuthenticated {
-                    ZStack {
-                        ColorGradient()
-                        VStack {
-                            Text("Authenticated").body()
-                            Text(UserManager.shared.currentUser?.username ?? "user").body()
-                            Text(UserManager.shared.currentUser?.id.uuidString ?? "id").body()
-                            Button {
-                                for i in 1...10 {
-                                    NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
-                                }
-                            } label: {
-                                Text("Test bottom notifications").textButtonStyle(true)
-                            }
-                            Button {
-                                userManager.logoutUser()
-                            } label: {
-                                Text("Log out").textButtonStyle(true)
-                            }
-                            Button {
-                                Task {
-                                    do {
-                                        try await userManager.getNewAuthToken()
-                                    } catch let error as ServerError {
-                                        if error == .sslError {
-                                            SSLAlert(error.notification)
-                                        } else {
-                                            Utility.setupAlert(error.notification)
-                                        }
-                                    } catch let error as Notifiable {
-                                        Utility.setupAlert(error.notification)
-                                    } catch {
-                                        print(error.localizedDescription)
-                                        Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
-                                    }
-                                }
-                            } label: {
-                                Text("New auth token").textButtonStyle(true)
-                            }
-                            Button {
-                                Task {
-                                    do {
-                                        try await userManager.getNewUserToken()
-                                    } catch let error as ServerError {
-                                        if error == .sslError {
-                                            SSLAlert(error.notification)
-                                        } else {
-                                            Utility.setupAlert(error.notification)
-                                        }
-                                    } catch let error as Notifiable {
-                                        Utility.setupAlert(error.notification)
-                                    } catch {
-                                        print(error.localizedDescription)
-                                        Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
-                                    }
-                                }
-                            } label: {
-                                Text("New user token").textButtonStyle(true)
-                            }
-                        }
-                    }
+                    AppView()
                 } else {
                     StartView()
                 }

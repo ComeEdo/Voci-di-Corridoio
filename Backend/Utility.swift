@@ -23,6 +23,38 @@ struct ColorGradient: View {
     }
 }
 
+struct GradientView: View {
+    
+    let style: any ShapeStyle
+    
+    var direction: Axis = .vertical
+    
+    var height: CGFloat? = nil
+    
+    var width: CGFloat? = nil
+    
+    /// The start point of the gradient.
+    ///
+    /// This value can be `.top` or .`bottom`.
+    let startPoint: UnitPoint
+    
+    var endPoint: UnitPoint {
+        if direction == .horizontal {
+            return startPoint == .leading ? .trailing : .leading
+        } else {
+            return startPoint == .top ? .bottom : .top
+        }
+    }
+    
+    var body: some View {
+        Rectangle()
+            .fill(AnyShapeStyle(style))
+            .frame(width: width, height: height)
+            .mask( LinearGradient(gradient: Gradient(colors: [.black, .clear]), startPoint: startPoint, endPoint: endPoint) )
+    }
+    
+}
+
 struct ResultLocalized {
     let result: Bool
     let message: LocalizedStringResource
@@ -231,7 +263,7 @@ public struct VScrollView<Content>: View where Content: View {
     
     public var body: some View {
         GeometryReader { geometry in
-            ScrollView(.vertical) {
+            ScrollView(.vertical, showsIndicators: false) {
                 ZStack {
                     GeometryReader { innerGeometry in
                         EmptyView()

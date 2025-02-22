@@ -152,11 +152,55 @@ struct UserPersistance: Codable {
         }
         return nil
     }
+    
+    static func deleteUserPersistance() {
+        UserDefaults.standard.removeObject(forKey: "UserPersistance")
+    }
 }
 
-class User: CustomStringConvertible, Equatable, Comparable, Codable, Identifiable {
+struct Timetable: Codable {
+    let TimetableEntrys: [TimetableEntry]
+    
+    enum CodingKeys: String, CodingKey {
+        case TimetableEntrys = "timetable"
+    }
+}
+
+struct TimetableEntry: Codable, Hashable {
+    let id: UUID
+    let weekDay: String
+    let startTime: String
+    let endTime: String
+    let subjectIds: [Teacher.Subject]
+    let teachers: [Teacher]?
+
+    // Custom decoding to remove null values
+    enum CodingKeys: String, CodingKey {
+        case id, weekDay, startTime, endTime, subjectIds, teachers
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        id = try container.decode(UUID.self, forKey: .id)
+        weekDay = try container.decode(String.self, forKey: .weekDay)
+        startTime = try container.decode(String.self, forKey: .startTime)
+        endTime = try container.decode(String.self, forKey: .endTime)
+        let subjectIntIds = try container.decode([Int].self, forKey: .subjectIds)
+        self.subjectIds = subjectIntIds.compactMap { Teacher.Subject.from($0) }
+        
+        teachers = try container.decodeIfPresent([Teacher].self, forKey: .teachers)
+    }
+}
+
+
+class User: CustomStringConvertible, Equatable, Comparable, Codable, Identifiable, Hashable {
     static func == (lhs: User, rhs: User) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
     
     var description: String {
@@ -230,6 +274,75 @@ class Student: User {
 }
 
 class Teacher: User {
+    enum Subject: Int, Codable {
+        case matematica         = 1
+        case lettere            = 2
+        case informatica        = 3
+        case tpsit              = 4
+        case inglese            = 5
+        case educazioneFisica   = 6
+        case religione          = 7
+        case sistemiEReti       = 8
+        case gpoi               = 9
+        case tutor              = 10
+        case ricreazione        = 11
+        case informaticaLab     = 12
+        case sistemiERetiLab    = 13
+        case tpsitLab           = 14
+        case gpoiLab            = 15
+        case automazione        = 16
+        case cnc                = 17
+        
+        static func from(_ id: Int) -> Subject {
+            return Subject(rawValue: id) ?? .ricreazione
+        }
+
+        var name: String {
+            switch self {
+            case .matematica: return "Matematica"
+            case .lettere: return "Lettere"
+            case .informatica: return "Informatica"
+            case .tpsit: return "TPSIT"
+            case .inglese: return "Inglese"
+            case .educazioneFisica: return "Educazione fisica"
+            case .religione: return "Religione"
+            case .sistemiEReti: return "Sistemi e Reti"
+            case .gpoi: return "G.P.O.I"
+            case .tutor: return "Tutor"
+            case .ricreazione: return "Ricreazione"
+            case .informaticaLab: return "Informatica Lab"
+            case .sistemiERetiLab: return "Sistemi e Reti Lab"
+            case .tpsitLab: return "TPSIT Lab"
+            case .gpoiLab: return "G.P.O.I Lab"
+            case .automazione: return "Automazione"
+            case .cnc: return "CNC"
+            }
+        }
+
+        var description: String {
+            switch self {
+            case .matematica: return "Studio dei numeri, delle equazioni e delle funzioni."
+            case .lettere: return "Studi letterari, la grammatica e la cultura delle lingue."
+            case .informatica: return "Studio dei concetti e delle tecniche dell'informatica."
+            case .tpsit: return "Tecnologie per la produzione di sistemi informatici e telematici."
+            case .inglese: return "Studio della lingua e cultura inglese."
+            case .educazioneFisica: return "Attività fisica e sportiva per il benessere."
+            case .religione: return "Studio delle tradizioni religiose e della loro cultura."
+            case .sistemiEReti: return "Studio delle infrastrutture e dei sistemi informatici."
+            case .gpoi: return "Gestione e organizzazione di sistemi informatici e reti."
+            case .tutor: return "Attività di supporto e assistenza agli studenti."
+            case .ricreazione: return "Momento di svago e gioco."
+            case .informaticaLab: return "Laboratorio per l'applicazione pratica dei concetti di informatica."
+            case .sistemiERetiLab: return "Laboratorio per l'applicazione pratica delle infrastrutture e dei sistemi informatici e delle reti."
+            case .tpsitLab: return "Laboratorio per l'applicazione pratica delle tecnologie per la produzione di sistemi informatici e telematici."
+            case .gpoiLab: return "Laboratorio per l'applicazione pratica della gestione di sistemi informatici e reti."
+            case .automazione: return "Studio dei processi automatizzati e della loro applicazione industriale."
+            case .cnc: return "Studio e gestione delle macchine a controllo numerico per la produzione industriale."
+            }
+        }
+    }
+
+    
     override var description: String {
         return super.description + "\nRole: Teacher"
     }

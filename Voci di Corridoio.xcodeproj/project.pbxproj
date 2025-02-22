@@ -61,9 +61,14 @@
 		DB371E942D365C3500BA210F /* Exceptions for "Views" folder in "Voci di Corridoio" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				AppView.swift,
 				CreateAccountView.swift,
+				CreatePostView.swift,
+				HomeTab.swift,
+				ProfileTab.swift,
 				SignInView.swift,
 				StartView.swift,
+				Testing.swift,
 				UserSelectionView.swift,
 				ViewExtensions.swift,
 			);
@@ -83,9 +88,14 @@
 		DBA0CFAF2D404AAB005CF62F /* Exceptions for "Views" folder in "Voci di Corridoio pre iOS 18" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				AppView.swift,
 				CreateAccountView.swift,
+				CreatePostView.swift,
+				HomeTab.swift,
+				ProfileTab.swift,
 				SignInView.swift,
 				StartView.swift,
+				Testing.swift,
 				UserSelectionView.swift,
 				ViewExtensions.swift,
 			);

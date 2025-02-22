@@ -70,7 +70,7 @@ class ApiResponseUserData<T: Codable>: ApiResponseData<T> {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        user = try container.decode(UserData.self, forKey: .user)
+        user = try container.decodeIfPresent(UserData.self, forKey: .user)
         try super.init(from: decoder)
     }
     
@@ -98,7 +98,7 @@ struct NewToken: Codable {
     let token: String?
 }
 
-enum Roles: Int {
+enum Roles: Int, Codable {
     
     case user = 0
     case admin = 1
@@ -172,6 +172,7 @@ class UserManager: ObservableObject {
     @Published private(set) var userToken: String? = nil
     @Published private(set) var currentUser: User? = nil
     @Published private(set) var role: Roles? = nil
+    @Published private(set) var isAuthLoading: Bool = false
     
     let server = "levoci.local"
     let port = 443
@@ -188,6 +189,7 @@ class UserManager: ObservableObject {
         static let newAuthToken = "/auth/refreshAuthToken"
         static let user = "/user/isUserTokenValid"
         static let newUserToken = "/user/refreshUserToken"
+        static let timetable = "/user/getTimetable"
         
         private init() {}
     }
@@ -195,16 +197,48 @@ class UserManager: ObservableObject {
     private init() {
         self.URN = "https://\(server):\(port)/api"
         if let token = getTokenFromKeychain(), let userPersistance = UserPersistance.retrieveUserPersistance() {
+            isAuthLoading = true
             currentUser = userPersistance.user
             role = userPersistance.role
+            authToken = token
             isAuthenticated = true
             Task {
                 do {
                     guard try await isAuth(token) else {
                         return
                     }
-                    await MainActor.run {
-                        self.authToken = token
+                    let alert = try await getUserAndToken(userPersistance.user.id)
+                    Utility.setupBottom(alert.notification)
+                } catch let error as ServerError {
+                    SSLAlert(error)
+                } catch let error as Notifiable {
+                    Utility.setupBottom(error.notification)
+                } catch {
+                    Utility.setupBottom(error)
+                }
+                await MainActor.run {
+                    isAuthLoading = false
+                }
+            }
+        }
+    }
+    
+    func waitUntilAuthLoadingCompletes() async {
+        while isAuthLoading {
+            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
+        }
+    }
+    
+    func reInit() {
+        if let token = getTokenFromKeychain(), let userPersistance = UserPersistance.retrieveUserPersistance() {
+            currentUser = userPersistance.user
+            role = userPersistance.role
+            authToken = token
+            isAuthenticated = true
+            Task {
+                do {
+                    guard try await isAuth(token) else {
+                        return
                     }
                     let alert = try await getUserAndToken(userPersistance.user.id)
                     Utility.setupBottom(alert.notification)
@@ -569,61 +603,106 @@ class UserManager: ObservableObject {
             throw mapError(error)
         }
     }
-
-
-       // Save token to Keychain
-       func saveTokenToKeychain(token: String) throws {
-           let keychainQuery: [String: Any] = [
-               kSecClass as String: kSecClassGenericPassword,
-               kSecAttrAccount as String: "authToken",
-               kSecValueData as String: token.data(using: .utf8) ?? Data()
-           ]
-
-           // Delete existing token if it exists
-           SecItemDelete(keychainQuery as CFDictionary)
-
-           // Add new token
-           let status = SecItemAdd(keychainQuery as CFDictionary, nil)
-           if status != errSecSuccess {
-               throw KeychainError.unableToSave(what: "token")
-           }
-       }
-
-       // Retrieve token from Keychain
-       func getTokenFromKeychain() -> String? {
-           let keychainQuery: [String: Any] = [
-               kSecClass as String: kSecClassGenericPassword,
-               kSecAttrAccount as String: "authToken",
-               kSecReturnData as String: true,
-               kSecMatchLimit as String: kSecMatchLimitOne
-           ]
-
-           var item: CFTypeRef?
-           let status = SecItemCopyMatching(keychainQuery as CFDictionary, &item)
-
-           guard status == errSecSuccess, let data = item as? Data else {
-               return nil
-           }
-
-           return String(data: data, encoding: .utf8)
-       }
-
-       // Logout user
-       func logoutUser() {
-           // Clear authentication data
-           self.currentUser = nil
-           self.authToken = nil
-           self.userToken = nil
-           self.role = nil
-           self.isAuthenticated = false
-
-           // Remove token from Keychain
-           let keychainQuery: [String: Any] = [
-               kSecClass as String: kSecClassGenericPassword,
-               kSecAttrAccount as String: "authToken"
-           ]
-           SecItemDelete(keychainQuery as CFDictionary)
-       }
+    
+    
+    // Save token to Keychain
+    func saveTokenToKeychain(token: String) throws {
+        let keychainQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "authToken",
+            kSecValueData as String: token.data(using: .utf8) ?? Data()
+        ]
+        
+        // Delete existing token if it exists
+        SecItemDelete(keychainQuery as CFDictionary)
+        
+        // Add new token
+        let status = SecItemAdd(keychainQuery as CFDictionary, nil)
+        if status != errSecSuccess {
+            throw KeychainError.unableToSave(what: "token")
+        }
+    }
+    
+    // Retrieve token from Keychain
+    func getTokenFromKeychain() -> String? {
+        let keychainQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "authToken",
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        
+        var item: CFTypeRef?
+        let status = SecItemCopyMatching(keychainQuery as CFDictionary, &item)
+        
+        guard status == errSecSuccess, let data = item as? Data else {
+            return nil
+        }
+        
+        return String(data: data, encoding: .utf8)
+    }
+    
+    // Logout user
+    func logoutUser() {
+        // Clear authentication data
+        self.currentUser = nil
+        self.authToken = nil
+        self.userToken = nil
+        self.role = nil
+        self.isAuthenticated = false
+        
+        UserPersistance.deleteUserPersistance()
+        
+        // Remove token from Keychain
+        let keychainQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "authToken"
+        ]
+        SecItemDelete(keychainQuery as CFDictionary)
+    }
+    
+    @MainActor
+    func getTimetable() async throws -> Timetable {
+        guard let url = URL(string: "\(URN)\(APIEndpoints.timetable)") else {
+            throw Errors.invalidURL(message: "\(URN)\(APIEndpoints.timetable)")
+        }
+        guard let token = userToken else {
+            throw AuthError.unauthorized(message: "Token is nil")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseUserData<Timetable>) = try checkResponse(data: data, response: response)
+            let statusCode = httpResponse.statusCode
+            
+            switch statusCode {
+            case 200:
+                guard let timetable = apiResponse.data else {
+                    throw Errors.JSONError(message: "è tutto rotto")
+                }
+//                Utility.setupAlert(MainNotification.NotificationStructure(title: "Success", message: "unpacked.", type: .success))
+                return timetable
+            case 400:
+                throw Codes.code400(message: apiResponse.message)
+            case 401:
+                throw AuthError.unauthorized(message: apiResponse.message)
+            case 403:
+                throw AuthError.forbidden(message: apiResponse.message)
+            case 500:
+                throw Codes.code500(message: apiResponse.message)
+            default:
+                throw Errors.unknownError(message: apiResponse.message)
+            }
+        } catch {
+            throw mapError(error)
+        }
+    }
 }
 
 
