@@ -57,7 +57,7 @@ jobs:
         build-mode: ${{ matrix.build-mode }}
 
     - name: Build the project
-      run: xcodebuild -project "Voci di Corridoio.xcodeproj" -scheme "Voci di Corridoio" -configuration Debug build
+      run: xcodebuild -project "Voci di Corridoio.xcodeproj" -scheme "Voci di Corridoio"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
