@@ -12,35 +12,35 @@ struct SignInView: View {
         case mail
         case password
     }
-
+    
     @Environment(\.dismiss) private var dismiss
-
+    
+    @EnvironmentObject private var keyboardManager: KeyboardManager
     @EnvironmentObject private var userManager: UserManager
-
+    
     private var functions: Utility = Utility.shared
-
+    
     @State private var isOperationFinished: Bool = true
-
+    
     @State private var email: String = "frezzotti.edoardo.stud@itisgalileiroma.it"
     @State private var password: String = "aa"
-
+    
     @FocusState private var focusedField: Field?
-
-    @State private var keyboardHeight: CGFloat = .zero
+    
     @State private var scroll: CGFloat = .zero
-
-    @State private var users: [LoginResponse.RoleGroup]? = nil
+    
+    @State private var users: [LogInResponse.RoleGroup]? = nil
     @State private var isShowingUserSelector = false
-
+    
     init() {}
-
+    
     var body: some View {
         ZStack {
             ColorGradient().zIndex(0)
             TitleOnView("Accesso")
             VStack(spacing: 0) {
                 VScrollView($scroll, spacing: 20) {
-                    if keyboardHeight != 0  {
+                    if !keyboardManager.isZero  {
                         Spacer()
                     }
                     emailView()
@@ -48,9 +48,10 @@ struct SignInView: View {
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .padding(.horizontal, 30)
+                .scrollClipDisabled()
                 buttonView()
-                    .padding(keyboardHeight == 0 ? 0 : 10)
-                    .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
+                    .padding(keyboardManager.isZero ? 0 : 10)
+                    .offset(y: keyboardManager.isZero ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
         }
         .navigationDestination(isPresented: $isShowingUserSelector) {
@@ -62,7 +63,6 @@ struct SignInView: View {
             }
         }
         .navigationTitle("")
-        .getKeyboardYAxis($keyboardHeight)
         .toolbarBackground(.hidden)
         .navigationBarBackButtonHidden(!isOperationFinished)
         .toolbar {
@@ -75,7 +75,7 @@ struct SignInView: View {
             }
         }
     }
-
+    
     private func emailView() -> some View {
         VStack {
             HStack {
@@ -91,7 +91,7 @@ struct SignInView: View {
             DividerText(result: functions.mailChecker(email), empty: email.isEmpty)
         }
     }
-
+    
     private func passwordView() -> some View {
         VStack {
             HStack {
@@ -107,7 +107,7 @@ struct SignInView: View {
             DividerText(result: functions.passwordChecker(password), empty: password.isEmpty)
         }
     }
-
+    
     private func buttonView() -> some View {
         VStack {
             Button(action: handleLogin) {
@@ -116,21 +116,22 @@ struct SignInView: View {
             .disabled(!isFormValid() || !isOperationFinished)
         }
     }
-
+    
     private func handleLogin() {
         focusedField = nil
         isOperationFinished = false
         Task {
+            defer { isOperationFinished = true }
             //ordine esecuzione 2
             do {
                 let alert = try await userManager.logInUser(email: email, password: password)
                 if case .success(let users) = alert {
-                    guard !users.allSatisfy({ $0.users.isEmpty }) else {
+                    guard !users.allSatisfy({ $0.userModels.isEmpty }) else {
                         throw LoginError.userNotFound
                     }
-                    let allUsers = users.flatMap { $0.users }
-                    if allUsers.count == 1, let singleUser = allUsers.first {
-                        return logInUser(singleUser.id)
+                    let allUsers = users.flatMap { $0.userModels }
+                    if allUsers.count == 1, let singleUserId = allUsers.first?.user.id {
+                        return logInUser(singleUserId)
                     } else {
                         self.users = users
                         isShowingUserSelector = true
@@ -138,30 +139,22 @@ struct SignInView: View {
                 } else {
                     Utility.setupAlert(alert.notification)
                 }
-            } catch let error as ServerError {
-                if error == .sslError {
-                    SSLAlert(error.notification)
-                } else {
-                    Utility.setupAlert(error.notification)
-                }
             } catch let error as LoginError {
                 if error == .userNotFound {
                     Utility.setupBottom(error.notification)
                 } else {
                     Utility.setupAlert(error.notification)
                 }
-            } catch let error as Notifiable {
-                Utility.setupAlert(error.notification)
             } catch {
-                print(error.localizedDescription)
-                Utility.setupAlert(error)
+                if let err = mapError(error) {
+                    Utility.setupAlert(err.notification)
+                }
             }
             //ordine esecuzione 3
-            isOperationFinished = true
         }
         //ordine esecuzione 1
     }
-
+    
     private func getFocus() -> Field? {
         if !functions.mailChecker(email).result {
             return .mail
@@ -171,25 +164,23 @@ struct SignInView: View {
         }
         return nil
     }
-
+    
     private func isFormValid() -> Bool {
         return functions.mailChecker(email).result && functions.passwordChecker(password).result
     }
-
+    
     func logInUser(_ userUUID: UUID) {
         Task {
+            defer { isOperationFinished = true }
             do {
-                let alert = try await userManager.getUserAndToken(userUUID)
+                let alert = try await userManager.getAuthUserAndToken(userUUID)
                 dismiss()
                 Utility.setupBottom(alert.notification)
-            } catch let error as ServerError {
-                SSLAlert(error)
-            } catch let error as Notifiable {
-                Utility.setupAlert(error.notification)
             } catch {
-                Utility.setupAlert(error)
+                if let err = mapError(error) {
+                    Utility.setupAlert(err.notification)
+                }
             }
-            isOperationFinished = true
         }
     }
 }

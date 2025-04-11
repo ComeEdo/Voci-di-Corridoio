@@ -1,0 +1,228 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Views/CreateAccountView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": ""
+      },
+      {
+        "comment": "",
+        "key": "Nome",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 91
+        }
+      },
+      {
+        "comment": "",
+        "key": "Valido.",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 357
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apostrofi non valido.",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 355
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apostrofo non valido.",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 352
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contiene caratteri non validi.",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 346
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cognome",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nome utente",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "Classe",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 163
+        }
+      },
+      {
+        "comment": "",
+        "key": "Classe",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 169
+        }
+      },
+      {
+        "comment": "",
+        "key": "Email",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 193
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 209
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ripeti password",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 225
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password valida.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 337
+        }
+      },
+      {
+        "comment": "",
+        "key": "Le password sono diverse.",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 339
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crea account",
+        "location": {
+          "startingColumn": 51,
+          "startingLine": 240
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ è troppo lungo.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 379
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ è troppo corto.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 375
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ è già in uso.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 371
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ non è valido, poi usare solo . _.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 367
+        }
+      },
+      {
+        "comment": "",
+        "key": "È vuoto.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 362
+        }
+      },
+      {
+        "comment": "",
+        "key": "URL non valido: %@/check-username.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 398
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 411
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ valido.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 438
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore sconosciuto.",
+        "location": {
+          "startingColumn": 69,
+          "startingLine": 422
+        }
+      },
+      {
+        "comment": "",
+        "key": "Richiesta fallita: %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 423
+        }
+      },
+      {
+        "comment": "",
+        "key": "Richiesta fallita: %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 420
+        }
+      },
+      {
+        "comment": "",
+        "key": "Certificato non valido.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 470
+        }
+      }
+    ]
+  },
+  "version": 1
+}

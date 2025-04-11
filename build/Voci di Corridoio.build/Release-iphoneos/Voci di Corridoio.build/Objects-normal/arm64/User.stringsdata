@@ -1,0 +1,296 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Backend/User.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Matematica",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 113
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lettere",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "Informatica",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "TPSIT",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 116
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inglese",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "Educazione fisica",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 118
+        }
+      },
+      {
+        "comment": "",
+        "key": "Religione",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sistemi e Reti",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "G.P.O.I",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tutor",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ricreazione",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 123
+        }
+      },
+      {
+        "comment": "",
+        "key": "Informatica Lab",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sistemi e Reti Lab",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "TPSIT Lab",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "G.P.O.I Lab",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "Automazione",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 128
+        }
+      },
+      {
+        "comment": "",
+        "key": "CNC",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 129
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studio dei numeri, delle equazioni e delle funzioni.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 135
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studi letterari, la grammatica e la cultura delle lingue.",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 136
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studio dei concetti e delle tecniche dell'informatica.",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tecnologie per la produzione di sistemi informatici e telematici.",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 138
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studio della lingua e cultura inglese.",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "Attività fisica e sportiva per il benessere.",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studio delle tradizioni religiose e della loro cultura.",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 141
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studio delle infrastrutture e dei sistemi informatici.",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 142
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gestione e organizzazione di sistemi informatici e reti.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 143
+        }
+      },
+      {
+        "comment": "",
+        "key": "Attività di supporto e assistenza agli studenti.",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 144
+        }
+      },
+      {
+        "comment": "",
+        "key": "Momento di svago e gioco.",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 145
+        }
+      },
+      {
+        "comment": "",
+        "key": "Laboratorio per l'applicazione pratica dei concetti di informatica.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Laboratorio per l'applicazione pratica delle infrastrutture e dei sistemi informatici e delle reti.",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 147
+        }
+      },
+      {
+        "comment": "",
+        "key": "Laboratorio per l'applicazione pratica delle tecnologie per la produzione di sistemi informatici e telematici.",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 148
+        }
+      },
+      {
+        "comment": "",
+        "key": "Laboratorio per l'applicazione pratica della gestione di sistemi informatici e reti.",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 149
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studio dei processi automatizzati e della loro applicazione industriale.",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "Studio e gestione delle macchine a controllo numerico per la produzione industriale.",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "DAJE",
+        "location": {
+          "startingColumn": 122,
+          "startingLine": 91
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 33
+        }
+      }
+    ]
+  },
+  "version": 1
+}

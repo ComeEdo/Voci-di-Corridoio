@@ -13,11 +13,13 @@ struct CreatePostView: View {
     @State private var selectedUser: User? = nil
     
     @Namespace private var namespace
-    @State private var navigationPath = [NavigationNode]()
+    @State private var navigationPath: [NavigationSelectionNode] = []
     
     @StateObject private var timetableManager = TimetableManager.shared
+    @StateObject private var notificationManager = NotificationManager.shared
     
-    let onDismiss: () -> Void
+    let onDismiss: () -> Void   //probabilmente non serve
+    @Environment(\.dismiss) private var dismiss
     
     init(_ onDismiss: @escaping () -> Void = {}) {
         self.onDismiss = onDismiss
@@ -27,7 +29,7 @@ struct CreatePostView: View {
         NavigationStack(path: $navigationPath) {
             VStack {
                 HStack(alignment: .bottom) {
-                    Button(action: onDismiss) {
+                    Button { dismiss() } label: {
                         Image(systemName: "xmark").font(.system(size: 50, weight: .light))
                     }.offset(y: -3)
                     Spacer()
@@ -40,10 +42,9 @@ struct CreatePostView: View {
                 }
                 .padding(.bottom, 3)
                 ScrollView(showsIndicators: false) {
-                    Text("\(selectedUser)")
                     bb(namespace: namespace)
-                        .environmentObject(timetableManager)
                         .navigationDestination(in: namespace, selectedUser: $selectedUser, navigationPath: $navigationPath)
+                        .environmentObject(timetableManager)
                     TextField("", text: $title, prompt: Text("Titolo").textColor(), axis: .vertical)
                         .foregroundStyle(Color.white)
                         .font(.system(size: 30, weight: .bold))
@@ -53,7 +54,11 @@ struct CreatePostView: View {
                         .font(.system(size: 20, weight: .bold))
                         .padding()
                 }.scrollDismissesKeyboard(.interactively)
-            }.navigationTitle("")
+            }
+            .navigationTitle("Recensione \(timetableManager.timetable?.classe.name ?? "")")
+        }
+        .onAppear() {
+            timetableManager.fetchUsers() // forse da spostare ma funziona
         }
     }
 }
@@ -61,12 +66,14 @@ struct CreatePostView: View {
 #Preview {
     @Previewable @StateObject var userManager = UserManager.shared
     @Previewable @StateObject var notificationManager = NotificationManager.shared
+    @Previewable @StateObject var keyboardManager = KeyboardManager.shared
     
     NavigationStack {
         CreatePostView()
     }
-    .addAlerts()
-    .addBottomNotifications()
+    .addAlerts(notificationManager)
+    .addBottomNotifications(notificationManager)
     .foregroundStyle(Color.accentColor)
     .environmentObject(userManager)
+    .environmentObject(keyboardManager)
 }

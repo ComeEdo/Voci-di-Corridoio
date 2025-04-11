@@ -7,29 +7,23 @@
 
 import SwiftUI
 
-enum NavigationNode: Equatable, Hashable, Identifiable {
+enum NavigationSelectionNode: Hashable {
     case home(UUID)
     case user(UUID)
     case subject(UUID)
-    
-    var id: UUID {
-        switch self {
-        case .user(let id): id
-        case .subject(let id): id
-        case .home(let id): id
-        }
-    }
+    case timetable(UUID)
 }
+
 struct Selectors {
-    static let selectors = [Selectorr(image: Image(decorative: "ProfImage"), title: "Professori", node: .user(UUID())), Selectorr(image: Image(decorative: "SubjectImage"), title: "Materie", node: .subject(UUID()))]
+    static let selectors = [Selectorr(image: Image(decorative: "ProfImage"), title: "Professori", node: .user(UUID())), Selectorr(image: Image(decorative: "SubjectImage"), title: "Materie", node: .subject(UUID())), Selectorr(image: Image(decorative: "TimetableImage"), title: "Orario", node: .timetable(UUID()))]
     
     struct Selectorr: Identifiable {
         let id: UUID
         let image: Image
         let title: LocalizedStringResource
-        let node: NavigationNode
+        let node: NavigationSelectionNode
         
-        init(image: Image, title: LocalizedStringResource, node: NavigationNode) {
+        init(image: Image, title: LocalizedStringResource, node: NavigationSelectionNode) {
             self.image = image
             self.title = title
             self.id = UUID()
@@ -42,6 +36,8 @@ struct UsersListView: View {
     private let title: LocalizedStringResource
     private let namespace: Namespace.ID
     
+    @EnvironmentObject private var timetableManager: TimetableManager
+    
     init(title: LocalizedStringResource, namespace: Namespace.ID) {
         self.title = title
         self.namespace = namespace
@@ -51,9 +47,10 @@ struct UsersListView: View {
         Section {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 20) {
-                    ForEach(TimetableManager.shared.users) { user in
-                        NavigationLink(value: NavigationNode.user(user.id)) {
-                            PosterCard(image: Image(decorative: "using"), surname: user.surname, name: user.name).hoverEffect()
+                    ForEach(timetableManager.users) { user in
+                        NavigationLink(value: NavigationSelectionNode.user(user.id)) {
+                            PosterCard(image: Image(decorative: "using"), surname: user.surname, name: user.name)
+                                .hoverEffect()
                                 .padding(.bottom, 10)
                         }
                         .frame(height: 300)
@@ -75,6 +72,8 @@ struct ReviewSelectionView: View {
     private let title: LocalizedStringResource
     private let namespace: Namespace.ID
     
+    @EnvironmentObject private var timetableManager: TimetableManager
+    
     init(title: LocalizedStringResource, namespace: Namespace.ID) {
         self.title = title
         self.namespace = namespace
@@ -83,10 +82,12 @@ struct ReviewSelectionView: View {
     var body: some View {
         Section {
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 20) {
+                LazyHStack(spacing: 20) {
                     ForEach(Selectors.selectors) { selector in
-                        NavigationLink(value: NavigationNode.home(selector.id)) {
-                            SelectorCard(image: selector.image, title: selector.title).hoverEffect().padding(.bottom, 10)
+                        NavigationLink(value: NavigationSelectionNode.home(selector.id)) {
+                            SelectorCard(image: selector.image, title: selector.title)
+                                .hoverEffect()
+                                .padding(.bottom, 10)
                         }
                         .frame(height: 180)
                         .accessibilityLabel(String(localized: selector.title))
@@ -95,7 +96,7 @@ struct ReviewSelectionView: View {
                 }.padding(.leading)
             }
         } header: {
-            Text(title)
+            Text(String(localized: title) + " " + (timetableManager.timetable?.classe.name ?? "classe"))
                 .title(30)
                 .padding(.horizontal)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
@@ -116,9 +117,14 @@ struct bb: View {
             if timetableManager.isLoading {
                 ProgressView()
             } else if timetableManager.users.isEmpty {
-                ContentUnavailableView("This video isn’t available", systemImage: "list.and.film")
-                Button("Retry") {
-                    timetableManager.fetchUsers()
+                ContentUnavailableView {
+                    Label("Operazione fallita", systemImage: "cup.and.heat.waves")
+                } description: {
+                    Text("Non è stato possibile caricare gli utenti")
+                } actions: {
+                    Button("Retry") {
+                        timetableManager.fetchUsers()
+                    }
                 }
             } else {
                 ReviewSelectionView(title: "Recensire", namespace: namespace)
@@ -129,10 +135,10 @@ struct bb: View {
 
 struct UserDetailView: View {
     @Binding private var selectedUser: User?
-    @Binding private var navigationPath: [NavigationNode]
+    @Binding private var navigationPath: [NavigationSelectionNode]
     private let user: User
     
-    init(user: User, selectedUser: Binding<User?>, navigationPath: Binding<[NavigationNode]>) {
+    init(user: User, selectedUser: Binding<User?>, navigationPath: Binding<[NavigationSelectionNode]>) {
         self.user = user
         self._selectedUser = selectedUser
         self._navigationPath = navigationPath
@@ -169,20 +175,25 @@ struct UserDetailView: View {
 struct ReviewDetailView: View {
     private let selector: Selectors.Selectorr
     private var namespace: Namespace.ID
+
+    @EnvironmentObject private var timetableManager: TimetableManager
     
     init(selector: Selectors.Selectorr, namespace: Namespace.ID) {
         self.selector = selector
         self.namespace = namespace
     }
+    
     var body: some View {
         ScrollView {
             switch selector.node {
             case .user:
-                UsersListView(title: selector.title, namespace: namespace)
+                UsersListView(title: selector.title, namespace: namespace).environmentObject(timetableManager)
             case .subject:
                 Text("subject")
             case .home:
                 ReviewSelectionView(title: selector.title, namespace: namespace)
+            case .timetable(_):
+                Text("timetable")
             }
         }
         .navigationTitle(String(localized: selector.title))
@@ -253,16 +264,30 @@ class TimetableManager: ObservableObject {
     @Published private(set) var users: [User] = []
     @Published private(set) var isLoading: Bool = false
     
-    //    func getAllTeachers(from timetableEntries: Set<TimetableEntry>) -> [Teacher] {
-    //        let uniqueTeachers = Set(timetableEntries.compactMap { $0.teachers }.flatMap { $0 })
-    //        return Array(uniqueTeachers)
-    //    }
+    private var currentTask: Task<Void, Never>?
+    
+    private init() {}
+    
+    func fetchUsers() {
+        guard currentTask == nil, let student = UserManager.shared.mainUser?.user as? Student, student.classe != timetable?.classe else { return }
         
-    //    func getUniqueTeachers(from entry: TimetableEntry) -> [Teacher] {
-    //        guard let teachers = entry.teachers else { return [] }
-    //        let uniqueTeachers = Array(Set(teachers))
-    //        return uniqueTeachers
-    //    }
+        currentTask = Task {
+            await MainActor.run {
+                isLoading = true
+            }
+            do {
+                try await getUsers()
+            } catch {
+                if let err = mapError(error) {
+                    Utility.setupAlert(err.notification)
+                }
+            }
+            await MainActor.run {
+                isLoading = false
+            }
+            currentTask = nil
+        }
+    }
     
     @MainActor
     private func getUsers() async throws {
@@ -270,11 +295,6 @@ class TimetableManager: ObservableObject {
         self.timetable = timetable
         users = getAllTeachers(from: timetable)
     }
-    
-//    private func getAllTeachers(from timetable: Timetable) -> [Teacher] {
-//        let allTeachers = timetable.TimetableEntrys.flatMap { $0.teachers ?? [] }
-//        return Array(Set(allTeachers))
-//    }
     
     private func getAllTeachers(from timetable: Timetable) -> [Teacher] {
         var seen = Set<Teacher>()
@@ -291,33 +311,19 @@ class TimetableManager: ObservableObject {
         return orderedTeachers
     }
     
-    func fetchUsers() {
-        Task {
-            await MainActor.run {
-                isLoading = true
-            }
-            await UserManager.shared.waitUntilAuthLoadingCompletes()
-            do {
-                try await getUsers()
-            } catch let error as ServerError {
-                if error == .sslError {
-                    SSLAlert(error.notification)
-                } else {
-                    Utility.setupAlert(error.notification)
-                }
-            } catch let error as Notifiable {
-                Utility.setupAlert(error.notification)
-            } catch {
-                print(error.localizedDescription)
-                Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
-            }
-            await MainActor.run {
-                isLoading = false
-            }
-        }
-    }
+    //    func getAllTeachers(from timetableEntries: Set<TimetableEntry>) -> [Teacher] {
+    //        let uniqueTeachers = Set(timetableEntries.compactMap { $0.teachers }.flatMap { $0 })
+    //        return Array(uniqueTeachers)
+    //    }
     
-    private init() {
-        fetchUsers()
-    }
+    //    func getUniqueTeachers(from entry: TimetableEntry) -> [Teacher] {
+    //        guard let teachers = entry.teachers else { return [] }
+    //        let uniqueTeachers = Array(Set(teachers))
+    //        return uniqueTeachers
+    //    }
+    
+    //    private func getAllTeachers(from timetable: Timetable) -> [Teacher] {
+    //        let allTeachers = timetable.TimetableEntrys.flatMap { $0.teachers ?? [] }
+    //        return Array(Set(allTeachers))
+    //    }
 }

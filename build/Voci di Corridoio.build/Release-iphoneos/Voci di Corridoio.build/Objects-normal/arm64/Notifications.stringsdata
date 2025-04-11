@@ -1,0 +1,600 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Notifications/Notifications.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Il server è offline.\nRiprova più tardi.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 33
+        }
+      },
+      {
+        "comment": "",
+        "key": "Risposta inaspettata. Riprova più tardi.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 33
+        }
+      },
+      {
+        "comment": "",
+        "key": "Certificato Del Server Non Valido",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Il nostro certificato è self-signed, iOS non apprezza.\nPer usare Voci Di Corridoio devi installarlo.\nScaricalo a https://%@%@",
+        "location": {
+          "startingColumn": 112,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Successo",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sei stato loggato con successo!",
+        "location": {
+          "startingColumn": 87,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "Successo %@",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 123
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ sei stato selezionato!",
+        "location": {
+          "startingColumn": 117,
+          "startingLine": 123
+        }
+      },
+      {
+        "comment": "",
+        "key": "Successo",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ sei stato registrato con successo!",
+        "location": {
+          "startingColumn": 87,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'username %@ è già in uso.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'email %@ è già in uso.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'username %@ e la email %@ sono già in uso.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'email non è stata verificata, controlla la tua casella postale.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 158
+        }
+      },
+      {
+        "comment": "",
+        "key": "Le credenziali non sono corrette.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 158
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "Non è stato trovato trovato nessun utente alle seguenti credenziali, contattaci.",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Richiesta non completa: %@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "È stato trovato un conflitto: %@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 54
+        }
+      },
+      {
+        "comment": "",
+        "key": "Risorsa non trovata: %@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 54
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Richiesta troppo grande: %@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "C'è stato un errore del server: %@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "Risposta del server non valida: %@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore riscontrato:\n%@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore JSON riscontrato:\n%@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'URL %@ non è valido",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "Dati ricevuti vuoti",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 109
+        }
+      },
+      {
+        "comment": "",
+        "key": "Non sono state trovate classi",
+        "location": {
+          "startingColumn": 98,
+          "startingLine": 109
+        }
+      },
+      {
+        "comment": "",
+        "key": "Importazione fallita",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Non è stato possibile importare l'imagine selezionata.",
+        "location": {
+          "startingColumn": 99,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Imagine errata",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'imagine selezionata non è valida.",
+        "location": {
+          "startingColumn": 93,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "Immagine già presente",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 141
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'immagine selezionata è già presente.",
+        "location": {
+          "startingColumn": 101,
+          "startingLine": 141
+        }
+      },
+      {
+        "comment": "",
+        "key": "Immagine non trovata",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 143
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'immagine selezionata non è stata trovata.",
+        "location": {
+          "startingColumn": 99,
+          "startingLine": 143
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "Non autorizzato:\n%@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 174
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accesso negato:\n%@",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 174
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nessuna Connessione Internet",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 184
+        }
+      },
+      {
+        "comment": "",
+        "key": "Controlla la tua connessione internet e riprova.",
+        "location": {
+          "startingColumn": 107,
+          "startingLine": 184
+        }
+      },
+      {
+        "comment": "",
+        "key": "Timeout Richiesta",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 186
+        }
+      },
+      {
+        "comment": "",
+        "key": "La richiesta ha impiegato troppo tempo. Riprova più tardi.",
+        "location": {
+          "startingColumn": 96,
+          "startingLine": 186
+        }
+      },
+      {
+        "comment": "",
+        "key": "Host Non Trovato",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 188
+        }
+      },
+      {
+        "comment": "",
+        "key": "Impossibile trovare l'host. Controlla l'URL o riprova più tardi.",
+        "location": {
+          "startingColumn": 95,
+          "startingLine": 188
+        }
+      },
+      {
+        "comment": "",
+        "key": "Impossibile Connettersi all'Host",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 190
+        }
+      },
+      {
+        "comment": "",
+        "key": "Impossibile connettersi all'host. Controlla il server o la tua rete.",
+        "location": {
+          "startingColumn": 111,
+          "startingLine": 190
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore del Server",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "Il server ha risposto con un errore. Riprova più tardi.",
+        "location": {
+          "startingColumn": 96,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "URL Non Supportato",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 194
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'URL fornito non è valido.",
+        "location": {
+          "startingColumn": 97,
+          "startingLine": 194
+        }
+      },
+      {
+        "comment": "",
+        "key": "URL Non Valido",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 196
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'URL fornito non è valido.",
+        "location": {
+          "startingColumn": 93,
+          "startingLine": 196
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore Sconosciuto",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 198
+        }
+      },
+      {
+        "comment": "",
+        "key": "Si è verificato un errore sconosciuto. Riprova.",
+        "location": {
+          "startingColumn": 97,
+          "startingLine": 198
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 66,
+          "startingLine": 209
+        }
+      },
+      {
+        "comment": "",
+        "key": "Non sono riuscito a salavare %@ nel portachiavi",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 209
+        }
+      }
+    ]
+  },
+  "version": 1
+}

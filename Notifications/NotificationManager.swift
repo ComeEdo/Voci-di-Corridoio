@@ -6,22 +6,58 @@
 //
 
 import SwiftUI
-import Combine
 
 class NotificationManager: ObservableObject {
     static let shared = NotificationManager()
     
-    private(set) var AlertViewsQueue: [AlertNotification] = []
-    private(set) var AlertShowing: AlertNotification?
+    struct IsNotificationActive: Codable, DefaultPersistenceProtocol {
+        static var 🔑: DefaultPersistence.Saves = .isNotificationActive
+        
+        var isAlertActive: Bool
+        var isBottomActive: Bool
+        
+        init() {
+            self.isAlertActive = true
+            self.isBottomActive = true
+        }
+        
+        mutating func reset() {
+            self.isAlertActive = true
+            self.isBottomActive = true
+            
+        }
+    }
+    
+    @Published var isNotificationActive: IsNotificationActive {
+        didSet {
+            DefaultPersistence.save(for: isNotificationActive)
+        }
+    }
+    
+    @Published private(set) var AlertViewsQueue: [AlertNotification] = []
+    @Published private(set) var AlertShowing: AlertNotification?
     private var isAlertWaiting = false
     
-    private(set) var BottomViewsQueue: [BottomNotification] = []
-    private(set) var BottomShowing: BottomNotification?
+    @Published private(set) var BottomViewsQueue: [BottomNotification] = []
+    @Published private(set) var BottomShowing: BottomNotification?
     private var isBottomWaiting = false
     
-    private init() {}
+    private init() {
+        isNotificationActive = DefaultPersistence.retrieve() ?? IsNotificationActive()
+    }
     
-    func showBottom(_ notification: MainNotification.NotificationStructure, duration: TimeInterval = 6, onDismiss: @escaping () -> Void = {} ) {
+    func reset() {
+        while isAlertWaiting {}
+        AlertViewsQueue = []
+        
+        while isBottomWaiting {}
+        BottomViewsQueue = []
+        
+        isNotificationActive.reset()
+        DefaultPersistence.delete(type: IsNotificationActive.self)
+    }
+    
+    func showBottom(_ notification: MainNotification.NotificationStructure, duration: TimeInterval = 6, onDismiss: @escaping () -> Void = {}) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if self.BottomShowing == nil && self.isBottomWaiting == false {
@@ -29,7 +65,6 @@ class NotificationManager: ObservableObject {
                     onDismiss()
                     self.nextBottom()
                 }
-                objectWillChange.send()
             } else {
                 self.BottomViewsQueue.append(BottomNotification(notification: notification, duration: duration) {
                     onDismiss()
@@ -40,20 +75,16 @@ class NotificationManager: ObservableObject {
     }
     
     private func nextBottom() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, self.BottomShowing != nil else { return }
-            guard !self.BottomViewsQueue.isEmpty else {
-                self.BottomShowing = nil
-                return objectWillChange.send()
-            }
-            self.isBottomWaiting = true
-            self.BottomShowing = nil
-            objectWillChange.send()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                self.BottomShowing = self.BottomViewsQueue.removeFirst()
-                self.objectWillChange.send()
-                self.isBottomWaiting = false
-            }
+        guard self.BottomShowing != nil else { return }
+        guard !BottomViewsQueue.isEmpty else {
+            BottomShowing = nil
+            return
+        }
+        self.isBottomWaiting = true
+        self.BottomShowing = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            self.BottomShowing = self.BottomViewsQueue.removeFirst()
+            self.isBottomWaiting = false
         }
     }
     
@@ -65,9 +96,6 @@ class NotificationManager: ObservableObject {
                     onDismiss()
                     self.nextAlert()
                 }
-                withAnimation {
-                    self.objectWillChange.send()
-                }
             } else {
                 self.AlertViewsQueue.append(AlertNotification(notification: notification, dismissButtonTitle: dismissButtonTitle) {
                     onDismiss()
@@ -78,55 +106,48 @@ class NotificationManager: ObservableObject {
     }
     
     private func nextAlert() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, self.AlertShowing != nil else { return }
-            guard !self.AlertViewsQueue.isEmpty else {
-                self.AlertShowing = nil
-                return self.objectWillChange.send()
-            }
-            self.isAlertWaiting = true
+        guard self.AlertShowing != nil else { return }
+        guard !self.AlertViewsQueue.isEmpty else {
             self.AlertShowing = nil
-            self.objectWillChange.send()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                self.AlertShowing = self.AlertViewsQueue.removeFirst()
-                withAnimation {
-                    self.objectWillChange.send()
-                }
-                self.isAlertWaiting = false
-            }
+            return
+        }
+        self.isAlertWaiting = true
+        self.AlertShowing = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            self.AlertShowing = self.AlertViewsQueue.removeFirst()
+            self.isAlertWaiting = false
         }
     }
 }
 
 extension View {
-    func addAlerts() -> some View {
+    func addAlerts(_ notificationManager: NotificationManager) -> some View {
         self.overlay {
-            if let alertView = NotificationManager.shared.AlertShowing {
+            if notificationManager.isNotificationActive.isAlertActive, let alertView = notificationManager.AlertShowing {
                 ZStack {
                     AlertNotificationView(alertView)
                     #if DEBUG
                     HStack {
                         Spacer()
-                        Text("\(NotificationManager.shared.AlertViewsQueue.count)")
+                        Text("\(notificationManager.AlertViewsQueue.count)")
                     }.padding()
                     #endif
                 }
             }
         }
     }
-    func addBottomNotifications() -> some View {
-        self.overlay {
-            if let bottomView = NotificationManager.shared.BottomShowing {
+    func addBottomNotifications(_ notificationManager: NotificationManager) -> some View {
+        return self.overlay {
+            if notificationManager.isNotificationActive.isBottomActive, let bottomView = notificationManager.BottomShowing {
                 ZStack {
                     BottomNotificationView(bottomView)
                     #if DEBUG
                     HStack {
-                        Text("\(NotificationManager.shared.BottomViewsQueue.count)")
+                        Text("\(notificationManager.BottomViewsQueue.count)")
                         Spacer()
                     }.padding()
                     #endif
                 }
-                
             }
         }
     }

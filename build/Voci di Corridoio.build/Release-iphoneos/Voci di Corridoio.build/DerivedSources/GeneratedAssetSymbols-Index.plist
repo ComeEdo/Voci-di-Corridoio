@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>colors</key>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameAccentColor</string>
+			<key>relativePath</key>
+			<string>./AccentColor.colorset</string>
+			<key>swiftSymbol</key>
+			<string>accent</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameGradientBottom</string>
+			<key>relativePath</key>
+			<string>./GradientBottom.colorset</string>
+			<key>swiftSymbol</key>
+			<string>gradientBottom</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameGradientTop</string>
+			<key>relativePath</key>
+			<string>./GradientTop.colorset</string>
+			<key>swiftSymbol</key>
+			<string>gradientTop</string>
+		</dict>
+	</array>
+	<key>images</key>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameProfImage</string>
+			<key>relativePath</key>
+			<string>./ProfImage.imageset</string>
+			<key>swiftSymbol</key>
+			<string>prof</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSubjectImage</string>
+			<key>relativePath</key>
+			<string>./SubjectImage.imageset</string>
+			<key>swiftSymbol</key>
+			<string>subject</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameTimetableImage</string>
+			<key>relativePath</key>
+			<string>./TimetableImage.imageset</string>
+			<key>swiftSymbol</key>
+			<string>timetable</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameUsing</string>
+			<key>relativePath</key>
+			<string>./using.imageset</string>
+			<key>swiftSymbol</key>
+			<string>using</string>
+		</dict>
+	</array>
+	<key>symbols</key>
+	<array/>
+</dict>
+</plist>

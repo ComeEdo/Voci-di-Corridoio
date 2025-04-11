@@ -7,56 +7,72 @@
 
 import SwiftUI
 
+enum AuthenticationPath: Hashable {
+    case CreateAccount
+    case SignIn
+}
+
 struct StartView: View {
     @StateObject private var classes: ClassesManager = ClassesManager()
+    @State private var path: [AuthenticationPath] = []
     
     init() {}
     
     var body: some View {
-        ZStack {
-            ColorGradient()
-            VStack {
-                Text("Voci di Corridoio").title(40, .heavy)
-                #if DEBUG
-                Button {
-                    for i in 1...10 {
-                        NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
+        NavigationStack(path: $path) {
+            ZStack {
+                ColorGradient()
+                VStack {
+                    Text("Voci di Corridoio").title(40, .heavy)
+                    #if DEBUG
+                    Button {
+                        for i in 1...10 {
+                            Utility.setupBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info))
+                        }
+                    } label: {
+                        Text("Test bottom notifications").textButtonStyle(true)
                     }
-                } label: {
-                    Text("Test bottom notifications").textButtonStyle(true)
-                }
-                Button {
-                    for i in 1...3 {
-                        NotificationManager.shared.showAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
+                    Button {
+                        for i in 1...3 {
+                            Utility.setupAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
+                        }
+                    } label: {
+                        Text("Test alert notifications").textButtonStyle(true)
                     }
-                } label: {
-                    Text("Test alert notifications").textButtonStyle(true)
+                    #endif
+                    Spacer()
                 }
-                #endif
-                Spacer()
+                VStack {
+                    NavigationLink(value:  AuthenticationPath.SignIn) {
+                        Text("Accedi").textButtonStyle(true, width: 200, padding: .vertical)
+                    }
+                    NavigationLink(value: AuthenticationPath.CreateAccount) {
+                        Text("Crea account").textButtonStyle(true, width: 200, padding: .vertical)
+                    }
+                }
             }
-            VStack {
-                NavigationLink(destination: SignInView()) {
-                    Text("Accedi").textButtonStyle(true, width: 200, padding: .vertical)
-                }
-                NavigationLink(destination: CreateAccountView().environmentObject(classes)) {
-                    Text("Crea account").textButtonStyle(true, width: 200, padding: .vertical)
+            .navigationTitle("")
+            .navigationDestination(for: AuthenticationPath.self) { path in
+                switch path {
+                case .CreateAccount: CreateAccountView().environmentObject(classes)
+                case .SignIn: SignInView()
                 }
             }
         }
-        .navigationTitle("")
     }
 }
 
 #Preview {
     @Previewable @StateObject var userManager = UserManager.shared
     @Previewable @StateObject var notificationManager = NotificationManager.shared
+    @Previewable @StateObject var keyboardManager = KeyboardManager.shared
     
     NavigationStack {
         StartView()
     }
-    .addAlerts()
-    .addBottomNotifications()
+    .addAlerts(notificationManager)
+    .addBottomNotifications(notificationManager)
     .foregroundStyle(Color.accentColor)
     .environmentObject(userManager)
+    .environmentObject(keyboardManager)
 }

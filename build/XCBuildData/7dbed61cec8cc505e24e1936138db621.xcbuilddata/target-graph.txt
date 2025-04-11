@@ -1,0 +1,2 @@
+Target dependency graph (1 target)
+Target 'Voci di Corridoio' in project 'Voci di Corridoio' (no dependencies)

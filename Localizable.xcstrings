@@ -100,16 +100,16 @@
         }
       }
     },
-    "Accesso" : {
-
-    },
     "Accesso negato:\n%@" : {
 
     },
-    "admin" : {
+    "Admin" : {
 
     },
-    "ao" : {
+    "Alerts" : {
+
+    },
+    "Anulla" : {
 
     },
     "Apostrofi non valido." : {
@@ -118,22 +118,26 @@
     "Apostrofo non valido." : {
 
     },
-    "Auth token is valid." : {
+    "Apple" : {
+
+    },
+    "Attività di supporto e assistenza agli studenti." : {
+
+    },
+    "Attività fisica e sportiva per il benessere." : {
 
     },
     "Authenticated" : {
 
     },
-    "Benvenuto" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welcome"
-          }
-        }
-      }
+    "Automazione" : {
+
+    },
+    "Banana" : {
+
+    },
+    "Bottom notifications" : {
+
     },
     "C'è stato un errore del server: %@" : {
       "localizations" : {
@@ -162,6 +166,12 @@
       }
     },
     "Classe" : {
+
+    },
+    "Classe: %@" : {
+
+    },
+    "CNC" : {
 
     },
     "Cognome" : {
@@ -193,7 +203,7 @@
     "Copied!" : {
 
     },
-    "Copy to Clipboard" : {
+    "Copy to Clipboard the URN" : {
 
     },
     "Corpo" : {
@@ -222,9 +232,6 @@
     "Dati ricevuti vuoti" : {
 
     },
-    "DUX" : {
-
-    },
     "È stato trovato un conflitto: %@" : {
       "localizations" : {
         "en" : {
@@ -244,6 +251,15 @@
           }
         }
       }
+    },
+    "edit" : {
+
+    },
+    "Educazione fisica" : {
+
+    },
+    "Elimina immagine" : {
+
     },
     "Email" : {
       "shouldTranslate" : false
@@ -281,9 +297,6 @@
     "Errore del Server" : {
 
     },
-    "Errore di rete: %@." : {
-
-    },
     "Errore JSON riscontrato:\n%@" : {
       "localizations" : {
         "en" : {
@@ -317,6 +330,24 @@
         }
       }
     },
+    "Fotocamera" : {
+
+    },
+    "Fruits" : {
+
+    },
+    "G.P.O.I" : {
+
+    },
+    "G.P.O.I Lab" : {
+
+    },
+    "Gallery" : {
+
+    },
+    "Gestione e organizzazione di sistemi informatici e reti." : {
+
+    },
     "Home" : {
 
     },
@@ -339,6 +370,38 @@
     "Il server ha risposto con un errore. Riprova più tardi." : {
 
     },
+    "Il token dell'utente è valido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User token is valid."
+          }
+        }
+      }
+    },
+    "Il token di autenticazione è valido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth token is valid."
+          }
+        }
+      }
+    },
+    "Imagine errata" : {
+
+    },
+    "Immagine già presente" : {
+
+    },
+    "Immagine non trovata" : {
+
+    },
+    "Importazione fallita" : {
+
+    },
     "Impossibile Connettersi all'Host" : {
 
     },
@@ -346,6 +409,7 @@
 
     },
     "Impossibile interpretare la risposta: %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -356,6 +420,18 @@
       }
     },
     "Impossibile trovare l'host. Controlla l'URL o riprova più tardi." : {
+
+    },
+    "Indietro" : {
+
+    },
+    "Informatica" : {
+
+    },
+    "Informatica Lab" : {
+
+    },
+    "Inglese" : {
 
     },
     "L'email %@ è già in uso." : {
@@ -390,6 +466,15 @@
           }
         }
       }
+    },
+    "L'imagine selezionata non è valida." : {
+
+    },
+    "L'immagine selezionata è già presente." : {
+
+    },
+    "L'immagine selezionata non è stata trovata." : {
+
     },
     "L'URL %@ non è valido" : {
       "localizations" : {
@@ -433,6 +518,18 @@
     "La richiesta ha impiegato troppo tempo. Riprova più tardi." : {
 
     },
+    "Laboratorio per l'applicazione pratica dei concetti di informatica." : {
+
+    },
+    "Laboratorio per l'applicazione pratica della gestione di sistemi informatici e reti." : {
+
+    },
+    "Laboratorio per l'applicazione pratica delle infrastrutture e dei sistemi informatici e delle reti." : {
+
+    },
+    "Laboratorio per l'applicazione pratica delle tecnologie per la produzione di sistemi informatici e telematici." : {
+
+    },
     "Le credenziali non sono corrette." : {
 
     },
@@ -446,22 +543,26 @@
         }
       }
     },
+    "Lettere" : {
+
+    },
+    "Libreria foto" : {
+
+    },
     "Log out" : {
 
     },
-    "LUX" : {
+    "Lorem ipsum dolor sit amet" : {
 
     },
-    "Manca qualcosa" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Something is missing."
-          }
-        }
-      }
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." : {
+
+    },
+    "Matematica" : {
+
+    },
+    "Materia: %@" : {
+
     },
     "Materie" : {
 
@@ -469,7 +570,10 @@
     "matto" : {
 
     },
-    "MEA" : {
+    "Modifica" : {
+
+    },
+    "Momento di svago e gioco." : {
 
     },
     "Name: %@ %@" : {
@@ -483,18 +587,6 @@
       }
     },
     "Nessuna Connessione Internet" : {
-
-    },
-    "New auth token" : {
-
-    },
-    "New auth token." : {
-
-    },
-    "New user token" : {
-
-    },
-    "New user token." : {
 
     },
     "No users in this role" : {
@@ -523,6 +615,12 @@
     "Non autorizzato:\n%@" : {
 
     },
+    "Non è stato possibile caricare gli utenti" : {
+
+    },
+    "Non è stato possibile importare l'imagine selezionata." : {
+
+    },
     "Non è stato trovato trovato nessun utente alle seguenti credenziali, contattaci." : {
 
     },
@@ -530,6 +628,35 @@
 
     },
     "Non sono state trovate classi" : {
+
+    },
+    "Nuovo token di autenticazione." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New auth token."
+          }
+        }
+      }
+    },
+    "Nuovo token utente." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New user token."
+          }
+        }
+      }
+    },
+    "Operazione fallita" : {
+
+    },
+    "Orange" : {
+
+    },
+    "Orario" : {
 
     },
     "Password" : {
@@ -568,10 +695,10 @@
     "Post" : {
 
     },
-    "preside" : {
+    "Preside" : {
 
     },
-    "professore" : {
+    "Professore" : {
 
     },
     "Professori" : {
@@ -580,12 +707,15 @@
     "Profilo" : {
 
     },
+    "Questa materia non è disponibile" : {
+
+    },
     "Questa selezione non è disponibile" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This user isn’t available"
+            "value" : "This selection isn’t available"
           }
         }
       }
@@ -595,15 +725,21 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This selector isn’t available"
+            "value" : "This user isn’t available"
           }
         }
       }
+    },
+    "Recensione %@" : {
+
     },
     "Recensire" : {
 
     },
     "Reinit" : {
+
+    },
+    "Religione" : {
 
     },
     "Retry" : {
@@ -628,6 +764,12 @@
           }
         }
       }
+    },
+    "Richiesta troppo grande: %@" : {
+
+    },
+    "Ricreazione" : {
+
     },
     "Ripeti password" : {
       "localizations" : {
@@ -655,6 +797,12 @@
     "Risposta inaspettata. Riprova più tardi." : {
 
     },
+    "Ritaglia" : {
+
+    },
+    "Ritaglia immagine" : {
+
+    },
     "Role: %@" : {
 
     },
@@ -670,16 +818,39 @@
     "Role: User" : {
 
     },
-    "segreteria" : {
+    "Ruolo" : {
+
+    },
+    "Salva" : {
+
+    },
+    "Segreteria" : {
 
     },
     "Sei stato loggato con successo!" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You got logged in successfully!"
+          }
+        }
+      }
     },
     "Seleziona" : {
 
     },
+    "Server" : {
+
+    },
+    "Server %@" : {
+
+    },
+    "Server Domain" : {
+
+    },
     "Si è verificato un errore JSON: %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -692,19 +863,67 @@
     "Si è verificato un errore sconosciuto. Riprova." : {
 
     },
+    "Sistemi e Reti" : {
+
+    },
+    "Sistemi e Reti Lab" : {
+
+    },
     "SIUM%lld" : {
 
     },
+    "spacchettato." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unpacked."
+          }
+        }
+      }
+    },
     "studente" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "student"
+          }
+        }
+      }
+    },
+    "Studente" : {
+
+    },
+    "Studi letterari, la grammatica e la cultura delle lingue." : {
+
+    },
+    "Studio dei concetti e delle tecniche dell'informatica." : {
+
+    },
+    "Studio dei numeri, delle equazioni e delle funzioni." : {
+
+    },
+    "Studio dei processi automatizzati e della loro applicazione industriale." : {
+
+    },
+    "Studio della lingua e cultura inglese." : {
+
+    },
+    "Studio delle infrastrutture e dei sistemi informatici." : {
+
+    },
+    "Studio delle tradizioni religiose e della loro cultura." : {
+
+    },
+    "Studio e gestione delle macchine a controllo numerico per la produzione industriale." : {
 
     },
     "Study Field: %@" : {
 
     },
     "subject" : {
-
-    },
-    "Success" : {
 
     },
     "Successo" : {
@@ -717,22 +936,44 @@
         }
       }
     },
+    "Successo %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success %@"
+          }
+        }
+      }
+    },
+    "Tecnologie per la produzione di sistemi informatici e telematici." : {
+
+    },
     "Test alert notifications" : {
 
     },
     "Test bottom notifications" : {
 
     },
-    "This video isn’t available" : {
+    "Timeout Richiesta" : {
 
     },
-    "Timeout Richiesta" : {
+    "timetable" : {
 
     },
     "Timetable" : {
 
     },
     "Titolo" : {
+
+    },
+    "TPSIT" : {
+
+    },
+    "TPSIT Lab" : {
+
+    },
+    "Tutor" : {
 
     },
     "URL Non Supportato" : {
@@ -751,16 +992,13 @@
         }
       }
     },
-    "user" : {
-
-    },
     "User Details" : {
 
     },
-    "User token is valid." : {
+    "Username: %@" : {
 
     },
-    "Username: %@" : {
+    "Utente" : {
 
     },
     "Valido." : {
@@ -774,9 +1012,6 @@
       }
     },
     "Voci di Corridoio" : {
-
-    },
-    "ww" : {
 
     }
   },

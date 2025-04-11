@@ -1,0 +1,112 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Backend/Utility.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "L'email non è valida.",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "Email istituzionale valida.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "Email dello studente valida.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 86
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'email non è disponibile.",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password non valida.",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 182
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password valida.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 180
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password non disponibile.",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 177
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 92,
+          "startingLine": 189
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@",
+        "location": {
+          "startingColumn": 111,
+          "startingLine": 189
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 93,
+          "startingLine": 195
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@",
+        "location": {
+          "startingColumn": 112,
+          "startingLine": 195
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 315
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 317
+        }
+      }
+    ]
+  },
+  "version": 1
+}

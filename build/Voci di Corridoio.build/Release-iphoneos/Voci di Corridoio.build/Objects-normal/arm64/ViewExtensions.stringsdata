@@ -1,0 +1,136 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Views/ViewExtensions.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 207
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 225
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 245
+        }
+      },
+      {
+        "comment": "",
+        "key": "Errore",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 263
+        }
+      },
+      {
+        "comment": "",
+        "key": "Operazione fallita",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 196
+        }
+      },
+      {
+        "comment": "",
+        "key": "Questo utente non è disponibile",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 198
+        }
+      },
+      {
+        "comment": "",
+        "key": "Indietro",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 203
+        }
+      },
+      {
+        "comment": "",
+        "key": "Operazione fallita",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 214
+        }
+      },
+      {
+        "comment": "",
+        "key": "Questa materia non è disponibile",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 216
+        }
+      },
+      {
+        "comment": "",
+        "key": "Indietro",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "Operazione fallita",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 234
+        }
+      },
+      {
+        "comment": "",
+        "key": "Questa selezione non è disponibile",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 236
+        }
+      },
+      {
+        "comment": "",
+        "key": "Indietro",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 241
+        }
+      },
+      {
+        "comment": "",
+        "key": "Operazione fallita",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 252
+        }
+      },
+      {
+        "comment": "",
+        "key": "Questa materia non è disponibile",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 254
+        }
+      },
+      {
+        "comment": "",
+        "key": "Indietro",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 259
+        }
+      }
+    ]
+  },
+  "version": 1
+}

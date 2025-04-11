@@ -1,0 +1,40 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Views/StartView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 54
+        }
+      },
+      {
+        "comment": "",
+        "key": "Voci di Corridoio",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 26
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accedi",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crea account",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 50
+        }
+      }
+    ]
+  },
+  "version": 1
+}

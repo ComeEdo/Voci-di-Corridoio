@@ -7,46 +7,86 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DB371E682D365C2800BA210F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB371E552D365C2800BA210F /* Persistence.swift */; };
+		DB04F42B2DA95A5F00E3ACCA /* Voci_di_Corridoio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */; };
+		DB04F42C2DA95A5F00E3ACCA /* Voci_di_CorridoioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */; };
+		DB04F42F2DA95A5F00E3ACCA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DB371E512D365C2800BA210F /* .gitignore */; };
+		DB04F4302DA95A5F00E3ACCA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DB371E972D36645F00BA210F /* README.md */; };
+		DB04F4312DA95A5F00E3ACCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB371E522D365C2800BA210F /* Assets.xcassets */; };
+		DB04F4322DA95A5F00E3ACCA /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DB371E542D365C2800BA210F /* Localizable.xcstrings */; };
+		DB04F4582DA97ACF00E3ACCA /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = DB04F4572DA97ABA00E3ACCA /* LICENSE.txt */; };
+		DB04F4592DA97ACF00E3ACCA /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = DB04F4572DA97ABA00E3ACCA /* LICENSE.txt */; };
 		DB371E692D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */; };
 		DB371E6A2D365C2800BA210F /* Voci_di_CorridoioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */; };
 		DB371E6C2D365C2800BA210F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DB371E512D365C2800BA210F /* .gitignore */; };
 		DB371E6D2D365C2800BA210F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB371E522D365C2800BA210F /* Assets.xcassets */; };
 		DB371E6F2D365C2800BA210F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DB371E542D365C2800BA210F /* Localizable.xcstrings */; };
 		DB371E982D36646400BA210F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DB371E972D36645F00BA210F /* README.md */; };
-		DBA0CF8F2D404A06005CF62F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB371E552D365C2800BA210F /* Persistence.swift */; };
-		DBA0CF902D404A06005CF62F /* Voci_di_Corridoio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */; };
-		DBA0CF912D404A06005CF62F /* Voci_di_CorridoioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */; };
-		DBA0CF942D404A06005CF62F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DB371E512D365C2800BA210F /* .gitignore */; };
-		DBA0CF952D404A06005CF62F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DB371E972D36645F00BA210F /* README.md */; };
-		DBA0CF962D404A06005CF62F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB371E522D365C2800BA210F /* Assets.xcassets */; };
-		DBA0CF972D404A06005CF62F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DB371E542D365C2800BA210F /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DB04F4362DA95A5F00E3ACCA /* Voci di Corridoio copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Voci di Corridoio copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB04F4372DA95A5F00E3ACCA /* Voci di Corridoio copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Voci di Corridoio copy-Info.plist"; path = "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Voci di Corridoio copy-Info.plist"; sourceTree = "<absolute>"; };
+		DB04F4572DA97ABA00E3ACCA /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		DB060AE22D365B4E00865ABB /* Voci di Corridoio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Voci di Corridoio.xcodeproj"; path = "Voci di Corridoio/Voci di Corridoio.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		DB371E512D365C2800BA210F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		DB371E522D365C2800BA210F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DB371E532D365C2800BA210F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB371E542D365C2800BA210F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		DB371E552D365C2800BA210F /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		DB371E562D365C2800BA210F /* Voci_di_Corridoio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Voci_di_Corridoio.entitlements; sourceTree = SOURCE_ROOT; };
 		DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voci_di_CorridoioApp.swift; sourceTree = "<group>"; };
 		DB371E592D365C2800BA210F /* Voci_di_Corridoio.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Voci_di_Corridoio.xcdatamodel; sourceTree = "<group>"; };
 		DB371E972D36645F00BA210F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DB6B08F92D3842C200EA18D5 /* Voci di Corridoio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Voci di Corridoio.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBA0CF9B2D404A06005CF62F /* Voci di Corridoio pre iOS 18.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Voci di Corridoio pre iOS 18.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBA0CF9C2D404A07005CF62F /* Voci di Corridoio pre iOS 18-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Voci di Corridoio pre iOS 18-Info.plist"; path = "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Voci di Corridoio pre iOS 18-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DB04F43A2DA95AB700E3ACCA /* Exceptions for "Preview Content" folder in "Voci di Corridoio copy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Preview Assets.xcassets",
+			);
+			target = DB04F4282DA95A5F00E3ACCA /* Voci di Corridoio copy */;
+		};
+		DB04F4552DA95ADC00E3ACCA /* Exceptions for "Backend" folder in "Voci di Corridoio copy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ClassesManager.swift,
+				HapticFeedback.swift,
+				NetworkTypes.swift,
+				User.swift,
+				UserManager.swift,
+				UserModel.swift,
+				Utility.swift,
+			);
+			target = DB04F4282DA95A5F00E3ACCA /* Voci di Corridoio copy */;
+		};
+		DB04F4562DA95ADC00E3ACCA /* Exceptions for "Views" folder in "Voci di Corridoio copy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppView.swift,
+				ContentVieww.swift,
+				CreateAccountView.swift,
+				CreatePostView.swift,
+				HomeTab.swift,
+				ProfileTab.swift,
+				ProfileView.swift,
+				SignInView.swift,
+				StartView.swift,
+				Testing.swift,
+				UserSelectionView.swift,
+				ViewExtensions.swift,
+			);
+			target = DB04F4282DA95A5F00E3ACCA /* Voci di Corridoio copy */;
+		};
 		DB371E922D365C3500BA210F /* Exceptions for "Backend" folder in "Voci di Corridoio" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ClassesManager.swift,
 				HapticFeedback.swift,
+				NetworkTypes.swift,
 				User.swift,
 				UserManager.swift,
+				UserModel.swift,
 				Utility.swift,
 			);
 			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
@@ -62,10 +102,12 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AppView.swift,
+				ContentVieww.swift,
 				CreateAccountView.swift,
 				CreatePostView.swift,
 				HomeTab.swift,
 				ProfileTab.swift,
+				ProfileView.swift,
 				SignInView.swift,
 				StartView.swift,
 				Testing.swift,
@@ -74,40 +116,6 @@
 			);
 			target = DBE900B52CDB76CB009A986A /* Voci di Corridoio */;
 		};
-		DBA0CFAA2D404AA3005CF62F /* Exceptions for "Backend" folder in "Voci di Corridoio pre iOS 18" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				ClassesManager.swift,
-				HapticFeedback.swift,
-				User.swift,
-				UserManager.swift,
-				Utility.swift,
-			);
-			target = DBA0CF8D2D404A06005CF62F /* Voci di Corridoio pre iOS 18 */;
-		};
-		DBA0CFAF2D404AAB005CF62F /* Exceptions for "Views" folder in "Voci di Corridoio pre iOS 18" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				AppView.swift,
-				CreateAccountView.swift,
-				CreatePostView.swift,
-				HomeTab.swift,
-				ProfileTab.swift,
-				SignInView.swift,
-				StartView.swift,
-				Testing.swift,
-				UserSelectionView.swift,
-				ViewExtensions.swift,
-			);
-			target = DBA0CF8D2D404A06005CF62F /* Voci di Corridoio pre iOS 18 */;
-		};
-		DBA0CFB12D404AB2005CF62F /* Exceptions for "Preview Content" folder in "Voci di Corridoio pre iOS 18" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Preview Assets.xcassets",
-			);
-			target = DBA0CF8D2D404A06005CF62F /* Voci di Corridoio pre iOS 18 */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -115,7 +123,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				DB371E922D365C3500BA210F /* Exceptions for "Backend" folder in "Voci di Corridoio" target */,
-				DBA0CFAA2D404AA3005CF62F /* Exceptions for "Backend" folder in "Voci di Corridoio pre iOS 18" target */,
+				DB04F4552DA95ADC00E3ACCA /* Exceptions for "Backend" folder in "Voci di Corridoio copy" target */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -129,7 +137,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				DB371E932D365C3500BA210F /* Exceptions for "Preview Content" folder in "Voci di Corridoio" target */,
-				DBA0CFB12D404AB2005CF62F /* Exceptions for "Preview Content" folder in "Voci di Corridoio pre iOS 18" target */,
+				DB04F43A2DA95AB700E3ACCA /* Exceptions for "Preview Content" folder in "Voci di Corridoio copy" target */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -138,7 +146,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				DB371E942D365C3500BA210F /* Exceptions for "Views" folder in "Voci di Corridoio" target */,
-				DBA0CFAF2D404AAB005CF62F /* Exceptions for "Views" folder in "Voci di Corridoio pre iOS 18" target */,
+				DB04F4562DA95ADC00E3ACCA /* Exceptions for "Views" folder in "Voci di Corridoio copy" target */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -146,7 +154,7 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		DBA0CF922D404A06005CF62F /* Frameworks */ = {
+		DB04F42D2DA95A5F00E3ACCA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -177,8 +185,8 @@
 				DB6B08F92D3842C200EA18D5 /* Voci di Corridoio.app */,
 				DB371E562D365C2800BA210F /* Voci_di_Corridoio.entitlements */,
 				DB371E972D36645F00BA210F /* README.md */,
+				DB04F4572DA97ABA00E3ACCA /* LICENSE.txt */,
 				DB371E532D365C2800BA210F /* Info.plist */,
-				DB371E552D365C2800BA210F /* Persistence.swift */,
 				DB371E582D365C2800BA210F /* Voci_di_CorridoioApp.swift */,
 				DB371E522D365C2800BA210F /* Assets.xcassets */,
 				DB371E542D365C2800BA210F /* Localizable.xcstrings */,
@@ -187,21 +195,21 @@
 				DB371E7D2D365C3500BA210F /* Preview Content */,
 				DB371E822D365C3500BA210F /* Views */,
 				DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */,
-				DBA0CF9B2D404A06005CF62F /* Voci di Corridoio pre iOS 18.app */,
-				DBA0CF9C2D404A07005CF62F /* Voci di Corridoio pre iOS 18-Info.plist */,
+				DB04F4362DA95A5F00E3ACCA /* Voci di Corridoio copy.app */,
+				DB04F4372DA95A5F00E3ACCA /* Voci di Corridoio copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DBA0CF8D2D404A06005CF62F /* Voci di Corridoio pre iOS 18 */ = {
+		DB04F4282DA95A5F00E3ACCA /* Voci di Corridoio copy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DBA0CF982D404A06005CF62F /* Build configuration list for PBXNativeTarget "Voci di Corridoio pre iOS 18" */;
+			buildConfigurationList = DB04F4332DA95A5F00E3ACCA /* Build configuration list for PBXNativeTarget "Voci di Corridoio copy" */;
 			buildPhases = (
-				DBA0CF8E2D404A06005CF62F /* Sources */,
-				DBA0CF922D404A06005CF62F /* Frameworks */,
-				DBA0CF932D404A06005CF62F /* Resources */,
+				DB04F4292DA95A5F00E3ACCA /* Sources */,
+				DB04F42D2DA95A5F00E3ACCA /* Frameworks */,
+				DB04F42E2DA95A5F00E3ACCA /* Resources */,
 			);
 			buildRules = (
 			);
@@ -210,11 +218,11 @@
 			fileSystemSynchronizedGroups = (
 				DB371E7B2D365C3500BA210F /* Notifications */,
 			);
-			name = "Voci di Corridoio pre iOS 18";
+			name = "Voci di Corridoio copy";
 			packageProductDependencies = (
 			);
 			productName = "Voci di Corridoio";
-			productReference = DBA0CF9B2D404A06005CF62F /* Voci di Corridoio pre iOS 18.app */;
+			productReference = DB04F4362DA95A5F00E3ACCA /* Voci di Corridoio copy.app */;
 			productType = "com.apple.product-type.application";
 		};
 		DBE900B52CDB76CB009A986A /* Voci di Corridoio */ = {
@@ -276,20 +284,21 @@
 			projectRoot = "";
 			targets = (
 				DBE900B52CDB76CB009A986A /* Voci di Corridoio */,
-				DBA0CF8D2D404A06005CF62F /* Voci di Corridoio pre iOS 18 */,
+				DB04F4282DA95A5F00E3ACCA /* Voci di Corridoio copy */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		DBA0CF932D404A06005CF62F /* Resources */ = {
+		DB04F42E2DA95A5F00E3ACCA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBA0CF942D404A06005CF62F /* .gitignore in Resources */,
-				DBA0CF952D404A06005CF62F /* README.md in Resources */,
-				DBA0CF962D404A06005CF62F /* Assets.xcassets in Resources */,
-				DBA0CF972D404A06005CF62F /* Localizable.xcstrings in Resources */,
+				DB04F4592DA97ACF00E3ACCA /* LICENSE.txt in Resources */,
+				DB04F42F2DA95A5F00E3ACCA /* .gitignore in Resources */,
+				DB04F4302DA95A5F00E3ACCA /* README.md in Resources */,
+				DB04F4312DA95A5F00E3ACCA /* Assets.xcassets in Resources */,
+				DB04F4322DA95A5F00E3ACCA /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +306,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB04F4582DA97ACF00E3ACCA /* LICENSE.txt in Resources */,
 				DB371E6C2D365C2800BA210F /* .gitignore in Resources */,
 				DB371E982D36646400BA210F /* README.md in Resources */,
 				DB371E6D2D365C2800BA210F /* Assets.xcassets in Resources */,
@@ -307,13 +317,12 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		DBA0CF8E2D404A06005CF62F /* Sources */ = {
+		DB04F4292DA95A5F00E3ACCA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBA0CF8F2D404A06005CF62F /* Persistence.swift in Sources */,
-				DBA0CF902D404A06005CF62F /* Voci_di_Corridoio.xcdatamodeld in Sources */,
-				DBA0CF912D404A06005CF62F /* Voci_di_CorridoioApp.swift in Sources */,
+				DB04F42B2DA95A5F00E3ACCA /* Voci_di_Corridoio.xcdatamodeld in Sources */,
+				DB04F42C2DA95A5F00E3ACCA /* Voci_di_CorridoioApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,7 +330,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB371E682D365C2800BA210F /* Persistence.swift in Sources */,
 				DB371E692D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld in Sources */,
 				DB371E6A2D365C2800BA210F /* Voci_di_CorridoioApp.swift in Sources */,
 			);
@@ -330,7 +338,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		DBA0CF992D404A06005CF62F /* Debug */ = {
+		DB04F4342DA95A5F00E3ACCA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -343,7 +351,7 @@
 				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Voci di Corridoio pre iOS 18-Info.plist";
+				INFOPLIST_FILE = "Voci di Corridoio copy-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = VDC;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -352,13 +360,13 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-Corridoio";
+				PRODUCT_BUNDLE_IDENTIFIER = local.VDC2.VociDiCorridoio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -367,7 +375,7 @@
 			};
 			name = Debug;
 		};
-		DBA0CF9A2D404A06005CF62F /* Release */ = {
+		DB04F4352DA95A5F00E3ACCA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -379,7 +387,7 @@
 				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Voci di Corridoio pre iOS 18-Info.plist";
+				INFOPLIST_FILE = "Voci di Corridoio copy-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = VDC;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -388,14 +396,14 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-Corridoio";
+				PRODUCT_BUNDLE_IDENTIFIER = local.VDC2.VociDiCorridoio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -431,7 +439,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-Corridoio";
+				PRODUCT_BUNDLE_IDENTIFIER = local.VDC.VociDiCorridoio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -468,7 +476,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-DRELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = "scuola.Voci-di-Corridoio";
+				PRODUCT_BUNDLE_IDENTIFIER = local.VDC.VociDiCorridoio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -602,11 +610,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DBA0CF982D404A06005CF62F /* Build configuration list for PBXNativeTarget "Voci di Corridoio pre iOS 18" */ = {
+		DB04F4332DA95A5F00E3ACCA /* Build configuration list for PBXNativeTarget "Voci di Corridoio copy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DBA0CF992D404A06005CF62F /* Debug */,
-				DBA0CF9A2D404A06005CF62F /* Release */,
+				DB04F4342DA95A5F00E3ACCA /* Debug */,
+				DB04F4352DA95A5F00E3ACCA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

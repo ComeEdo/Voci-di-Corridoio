@@ -9,13 +9,13 @@ import SwiftUI
 
 struct BottomNotificationView: View {
     @ObservedObject private var bottom: BottomNotification
+    @EnvironmentObject private var keyboardManager: KeyboardManager
     
     private var defaultOffset: CGFloat = 300
     
     @State private var offsetY: CGFloat = 300
-    @State private var dismissalTimer: Timer?
     
-    private var type: Animation = Animation.bouncy(extraBounce: 0.1)
+    private var animationType: Animation = Animation.bouncy(extraBounce: 0.1)
     
     init(_ notification: BottomNotification) {
         self.bottom = notification
@@ -42,7 +42,7 @@ struct BottomNotificationView: View {
                 .notificationStyle(bottom.notification.type.color)
                 .frame(maxHeight: 101, alignment: .bottom)
                 .padding(15)
-                .offset(y: offsetY)
+                .offset(y: keyboardManager.keyboardHeight != 0 ? offsetY - keyboardManager.keyboardHeight : offsetY)
                 .gesture(dragGesture)
             }
         }
@@ -53,8 +53,8 @@ struct BottomNotificationView: View {
     }
     
     private func showNotification() {
-        withAnimation(self.type) {
-            self.offsetY = 0
+        withAnimation(animationType) {
+            self.offsetY = .zero
         }
         HapticFeedback.trigger(bottom.notification.type.hapticFeedback)
         startTimer()
@@ -62,26 +62,20 @@ struct BottomNotificationView: View {
     
     
     func startTimer() {
-        self.dismissalTimer = Timer.scheduledTimer(withTimeInterval: bottom.duration, repeats: false) { [self] _ in
-            if NotificationManager.shared.BottomShowing?.id == self.bottom.id {
+        Timer.scheduledTimer(withTimeInterval: bottom.duration, repeats: false) { _ in
+            if NotificationManager.shared.BottomShowing == self.bottom {
                 self.dismissNotification()
             }
-            self.cancellationCleanup()
         }
     }
     
     private func dismissNotification() {
-        withAnimation(type) {
+        withAnimation(animationType) {
             offsetY = defaultOffset
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
-            self.bottom.onDismiss()
+        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { _ in
+            bottom.onDismiss()
         }
-    }
-    
-    private func cancellationCleanup() {
-        dismissalTimer?.invalidate()
-        dismissalTimer = nil
     }
     
     // MARK: - Gesture Handling
@@ -93,11 +87,10 @@ struct BottomNotificationView: View {
             }
             .onEnded { value in
                 if value.translation.height >= 20 {
-                    cancellationCleanup()
                     dismissNotification()
                 } else {
-                    withAnimation(type) {
-                        offsetY = 0
+                    withAnimation(animationType) {
+                        offsetY = .zero
                     }
                 }
             }

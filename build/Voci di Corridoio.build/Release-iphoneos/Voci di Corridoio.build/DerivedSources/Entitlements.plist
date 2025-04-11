@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>application-identifier</key>
+	<string>35V38T2Y43.local.VDC.VociDiCorridoio</string>
+	<key>com.apple.developer.team-identifier</key>
+	<string>35V38T2Y43</string>
+	<key>get-task-allow</key>
+	<true/>
+</dict>
+</plist>

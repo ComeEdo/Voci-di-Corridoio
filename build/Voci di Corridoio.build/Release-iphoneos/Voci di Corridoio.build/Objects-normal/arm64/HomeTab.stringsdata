@@ -1,0 +1,144 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Views/HomeTab.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Home",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Authenticated",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Server %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "Server Domain",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 24
+        }
+      },
+      {
+        "comment": "",
+        "key": "SIUM%lld",
+        "location": {
+          "startingColumn": 95,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "matto",
+        "location": {
+          "startingColumn": 116,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "Test bottom notifications",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "SIUM%lld",
+        "location": {
+          "startingColumn": 94,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "matto",
+        "location": {
+          "startingColumn": 115,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "Test alert notifications",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "Log out",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nuovo token di autenticazione.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nuovo token utente.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "Timetable",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reinit",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copied!",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 102
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy to Clipboard the URN",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 102
+        }
+      }
+    ]
+  },
+  "version": 1
+}

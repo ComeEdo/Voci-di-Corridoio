@@ -1,0 +1,96 @@
+{
+  "source": "/Users/edoardofrezzotti/Desktop/Voci di Corridoio/Views/Testing.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Professori",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Materie",
+        "location": {
+          "startingColumn": 180,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Orario",
+        "location": {
+          "startingColumn": 277,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Recensire",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 130
+        }
+      },
+      {
+        "comment": "",
+        "key": "Operazione fallita",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "Non è stato possibile caricare gli utenti",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 123
+        }
+      },
+      {
+        "comment": "",
+        "key": "Retry",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Seleziona",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "subject",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "timetable",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 196
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@\n%@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 219
+        }
+      }
+    ]
+  },
+  "version": 1
+}

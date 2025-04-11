@@ -19,14 +19,15 @@ struct CreateAccountView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @EnvironmentObject private var keyboardManager: KeyboardManager
     @EnvironmentObject private var userManager: UserManager
-    @EnvironmentObject private var classes: ClassesManager
+    @EnvironmentObject private var classesManager: ClassesManager
     
     private var functions: Utility = Utility.shared
     
     @State private var isOperationFinished: Bool = true
     
-    @State private var user: RegistrationData = RegistrationData(email: "edo.stud@itisgalileiroma.it")
+    @State private var user: RegistrationData = RegistrationData()
     
     @State private var isValidUsername: Bool? = false
     @State private var reason: LocalizedStringResource = ""
@@ -40,7 +41,6 @@ struct CreateAccountView: View {
     
     @FocusState private var focusedField: Field?
     
-    @State private var keyboardHeight: CGFloat = .zero
     @State private var scroll: CGFloat = .zero
     
     init() {}
@@ -51,7 +51,7 @@ struct CreateAccountView: View {
             TitleOnView("Crea account")
             VStack(spacing: 0) {
                 VScrollView($scroll, spacing: 20) {
-                    if keyboardHeight != 0  {
+                    if !keyboardManager.isZero  {
                         Spacer()
                     }
                     nameSurname()
@@ -62,12 +62,12 @@ struct CreateAccountView: View {
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .padding(.horizontal, 30)
+                .scrollClipDisabled()
                 buttonView()
-                    .padding(keyboardHeight == 0 ? 0 : 10)
-                    .offset(y: keyboardHeight == 0 ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
+                    .padding(keyboardManager.isZero ? 0 : 10)
+                    .offset(y: keyboardManager.isZero ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
         }
-        .getKeyboardYAxis($keyboardHeight)
         .toolbarBackground(.hidden)
         .navigationBarBackButtonHidden(!isOperationFinished)
         .toolbar {
@@ -92,7 +92,7 @@ struct CreateAccountView: View {
                     .personalFieldStyle($user.name)
                     .focused($focusedField, equals: .name)
                     .submitLabel(.next)
-                    .onChange(of: focusedField) { oldValue, newValue in
+                    .onChange(of: focusedField, initial: false) { oldValue, newValue in
                         if oldValue == .name && newValue != .name {
                             user.name = validateText(user.name)
                         }
@@ -113,7 +113,7 @@ struct CreateAccountView: View {
                     .personalFieldStyle($user.surname)
                     .focused($focusedField, equals: .surname)
                     .submitLabel(.next)
-                    .onChange(of: focusedField) { oldValue, newValue in
+                    .onChange(of: focusedField, initial: false) { oldValue, newValue in
                         if oldValue == .surname && newValue != .surname {
                             user.surname = validateText(user.surname)
                         }
@@ -141,7 +141,7 @@ struct CreateAccountView: View {
                     .passwordFieldStyle($user.username)
                     .focused($focusedField, equals: .username)
                     .submitLabel(.next)
-                    .onChange(of: user.username) {
+                    .onChange(of: user.username, initial: false) {
                         Task {
                             await checkUsernameAvailability(user.username)
                         }
@@ -156,35 +156,13 @@ struct CreateAccountView: View {
         }
     }
     
-    private func extractNumberAndLetter(from value: String) -> (number: Int, letter: String) {
-        let regex = try? NSRegularExpression(pattern: "(\\d*)([a-zA-Z0-9]*)")
-        let match = regex?.firstMatch(in: value, options: [], range: NSRange(value.startIndex..., in: value))
-        
-        if let match = match, let numberRange = Range(match.range(at: 1), in: value), let letterRange = Range(match.range(at: 2), in: value) {
-            let number = Int(value[numberRange]) ?? 0
-            let letter = String(value[letterRange])
-            return (number, letter)
-        } else {
-            return (0, "")
-        }
-    }
-    
     private func classSelectorView() -> some View {
         VStack(spacing: 0) {
             Picker(selection: $user.role) {
                 if case .teacher = user.role {
                     Text("Classe").tag(RegistrationData.RegistrationRole.teacher)
                 }
-                ForEach(classes.classes.sorted { class1, class2 in
-                    let (num1, letter1) = extractNumberAndLetter(from: class1.name)
-                    let (num2, letter2) = extractNumberAndLetter(from: class2.name)
-                    
-                    if num1 != num2 {
-                        return num1 > num2
-                    } else {
-                        return letter1 < letter2
-                    }
-                }, id: \.id) { classItem in
+                ForEach(classesManager.classes.sorted(by: >)) { classItem in
                     Text(classItem.name).tag(RegistrationData.RegistrationRole.student(classGroup: classItem.id))
                 }
             } label: {
@@ -294,6 +272,7 @@ struct CreateAccountView: View {
     private func executeRegisterUser() {
         isOperationFinished = false
         Task {
+            defer { isOperationFinished = true } //ordine esecuzione 4
             //ordine esecuzione 2
             do {
                 usernameCheckTask?.cancel()
@@ -311,20 +290,12 @@ struct CreateAccountView: View {
                     avoidMails.append(mail)
                 }
                 Utility.setupAlert(alert.notification)
-            } catch let error as ServerError {
-                if error == .sslError {
-                    SSLAlert(error.notification)
-                } else {
-                    Utility.setupAlert(error.notification)
-                }
-            } catch let error as Notifiable {
-                Utility.setupAlert(error.notification)
             } catch {
-                print(error.localizedDescription)
-                Utility.setupAlert(error)
+                if let err = mapError(error) {
+                    Utility.setupAlert(err.notification)
+                }
             }
             //ordine esecuzione 3
-            isOperationFinished = true
         }
         //ordine esecuzione 1
     }
@@ -469,24 +440,35 @@ struct CreateAccountView: View {
                         } else {
                             isValidUsername = false
                         }
+                    case 400:
+                        throw Codes.code400(message: apiResponse.message)
+                    case 500:
+                        throw Codes.code500(message: apiResponse.message)
                     default:
-                        reason = "\(apiResponse.message)"
-                        isValidUsername = true
+                        throw Errors.unknownError(message: apiResponse.message)
                     }
-                } catch let error as ServerError {
-                    if error == .sslError {
-                        SSLAlert(error.notification)
-                        reason = "Certificato non valido."
-                    } else {
-                        Utility.setupBottom(error.notification)
-                        reason = "Errore di rete: \(error.localizedDescription)."
-                    }
-                    isValidUsername = true
-                } catch let error as DecodingError {
-                    reason = "Si è verificato un errore JSON: \(error.localizedDescription)."
-                    isValidUsername = true
+//                } catch let error as ServerError {
+//                    if error == .sslError {
+//                        SSLAlert()
+//                        reason = "Certificato non valido."
+//                    } else {
+//                        Utility.setupBottom(error.notification)
+//                        reason = "Errore di rete: \(error.localizedDescription)."
+//                    }
+//                    isValidUsername = true
+//                } catch let error as DecodingError {
+//                    reason = "Si è verificato un errore JSON: \(error.localizedDescription)."
+//                    isValidUsername = true
+//                } catch {
+//                    reason = "Impossibile interpretare la risposta: \(error.localizedDescription)."
+//                    isValidUsername = true
                 } catch {
-                    reason = "Impossibile interpretare la risposta: \(error.localizedDescription)."
+                    if let err = mapError(error) {
+                        Utility.setupAlert(err.notification)
+                        reason = err.notification.message
+                    } else {
+                        reason = "Certificato non valido."
+                    }
                     isValidUsername = true
                 }
             }
@@ -500,10 +482,6 @@ struct CreateAccountView: View {
             .filter { !$0.isEmpty }
             .joined(separator: " ")
     }
-}
-
-#Preview {
-    CreateAccountView()
 }
 
 struct RegistrationData {

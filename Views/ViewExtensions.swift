@@ -73,10 +73,6 @@ extension View {
             .foregroundColor(isEnabled ? Color.white : Color.secondary)
     }
     
-    func getKeyboardYAxis(_ height: Binding<CGFloat>) -> some View {
-        self.modifier(KeyboardPosition(height))
-    }
-    
     func notificationStyle(_ accent: Color? = nil) -> some View {
         self
             .background(RoundedRectangle(cornerRadius: 40, style: .continuous)
@@ -115,40 +111,40 @@ fileprivate struct NoSpaceModifier: ViewModifier {
     }
 }
 
-struct KeyboardPosition: ViewModifier{
-    @Binding private var keyboardHeight: CGFloat
-        
-    init(_ height: Binding<CGFloat>) {
-        self._keyboardHeight = height
+final class KeyboardManager: ObservableObject {
+    static let shared = KeyboardManager()
+    
+    @Published private(set) var keyboardHeight: CGFloat = .zero
+    var isZero: Bool {
+        if keyboardHeight == .zero {
+            return true
+        } else {
+            return false
+        }
     }
     
-    func body(content: Content) -> some View {
-        content
-            .onAppear {
-                addKeyboardObservers()
-            }
-            .onDisappear {
-                removeKeyboardObservers()
-            }
+    private init() {
+        addKeyboardObservers()
     }
-
+    
     private func addKeyboardObservers() {
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
             if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                withAnimation {
-                    keyboardHeight = keyboardFrame.minY
+                DispatchQueue.main.async {
+                    withAnimation {
+                        self.keyboardHeight = keyboardFrame.height
+                    }
                 }
             }
         }
+        
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-            withAnimation {
-                keyboardHeight = .zero
+            DispatchQueue.main.async {
+                withAnimation {
+                    self.keyboardHeight = .zero
+                }
             }
         }
-    }
-    private func removeKeyboardObservers() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
 
@@ -171,9 +167,8 @@ private struct RotatingModifier: ViewModifier {
     }
 }
 
-
 extension View {
-    func navigationDestination(in namespace: Namespace.ID, selectedUser: Binding<User?>, navigationPath: Binding<[NavigationNode]>) -> some View {
+    func navigationDestination(in namespace: Namespace.ID, selectedUser: Binding<User?>, navigationPath: Binding<[NavigationSelectionNode]>) -> some View {
         self.modifier(NavigationDestination(namespace: namespace, selectedUser: selectedUser, navigationPath: navigationPath))
     }
 
@@ -185,27 +180,87 @@ extension View {
 private struct NavigationDestination: ViewModifier {
     var namespace: Namespace.ID
     @Binding var selectedUser: User?
-    @Binding var navigationPath: [NavigationNode]
+    @Binding var navigationPath: [NavigationSelectionNode]
+    
+    @EnvironmentObject private var timetableManager: TimetableManager
     
     func body(content: Content) -> some View {
         content
-            .navigationDestination(for: NavigationNode.self) { node in
+            .navigationDestination(for: NavigationSelectionNode.self) { node in
                 switch node {
                 case .user(let id):
-                    if let user = TimetableManager.shared.users.first(where: { $0.id == id }) {
+                    if let user = timetableManager.users.first(where: { $0.id == id }) {
                         UserDetailView(user: user, selectedUser: $selectedUser, navigationPath: $navigationPath).navigationTransition(.zoom(sourceID: user.id, in: namespace))
                     } else {
-                        ContentUnavailableView("Questo utente non è disponibile", systemImage: "person")
+                        ContentUnavailableView {
+                            Label("Operazione fallita", systemImage: "person")
+                        } description: {
+                            Text("Questo utente non è disponibile")
+                        } actions: {
+                            Button {
+                                guard navigationPath.popLast() != nil else { return }
+                            } label: {
+                                Label("Indietro", systemImage: "chevron.backward")
+                            }
+                        }
+                        .navigationTransition(.zoom(sourceID: id, in: namespace))
+                        .navigationTitle("Errore")
                     }
                 case .subject(let id):
-                    if true {
+                    if false {
                         
+                    } else {
+                        ContentUnavailableView {
+                            Label("Operazione fallita", systemImage: "graduationcap")
+                        } description: {
+                            Text("Questa materia non è disponibile")
+                        } actions: {
+                            Button {
+                                guard navigationPath.popLast() != nil else { return }
+                            } label: {
+                                Label("Indietro", systemImage: "chevron.backward")
+                            }
+                        }
+                        .navigationTransition(.zoom(sourceID: id, in: namespace))
+                        .navigationTitle("Errore")
                     }
                 case .home(let id):
                     if let home = Selectors.selectors.first(where: { $0.id == id }) {
-                        ReviewDetailView(selector: home, namespace: namespace).navigationTransition(.zoom(sourceID: home.id, in: namespace))
+                        ReviewDetailView(selector: home, namespace: namespace)
+                            .environmentObject(timetableManager)
+                            .navigationTransition(.zoom(sourceID: home.id, in: namespace))
                     } else {
-                        ContentUnavailableView("Questa selezione non è disponibile", systemImage: "person")
+                        ContentUnavailableView {
+                            Label("Operazione fallita", systemImage: "filemenu.and.selection")
+                        } description: {
+                            Text("Questa selezione non è disponibile")
+                        } actions: {
+                            Button {
+                                guard navigationPath.popLast() != nil else { return }
+                            } label: {
+                                Label("Indietro", systemImage: "chevron.backward")
+                            }
+                        }
+                        .navigationTransition(.zoom(sourceID: id, in: namespace))
+                        .navigationTitle("Errore")
+                    }
+                case .timetable(let id):
+                    if false {
+                        
+                    } else {
+                        ContentUnavailableView {
+                            Label("Operazione fallita", systemImage: "graduationcap")
+                        } description: {
+                            Text("Questa materia non è disponibile")
+                        } actions: {
+                            Button {
+                                guard navigationPath.popLast() != nil else { return }
+                            } label: {
+                                Label("Indietro", systemImage: "chevron.backward")
+                            }
+                        }
+                        .navigationTransition(.zoom(sourceID: id, in: namespace))
+                        .navigationTitle("Errore")
                     }
                 }
             }

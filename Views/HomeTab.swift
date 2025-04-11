@@ -8,100 +8,98 @@
 import SwiftUI
 
 struct HomeTab: View {
+    @EnvironmentObject private var userManager: UserManager
+    
     @State private var isCopied = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 ColorGradient()
-                VStack {
+                ScrollView {
                     Text("Authenticated").body()
-                    Text(UserManager.shared.currentUser?.username ?? "user").body()
-                    Text(UserManager.shared.currentUser?.id.uuidString ?? "id").body()
+                    Text("Server \(userManager.URN)").body()
+                    Text("imageUUID \(userManager.mainUser?.user.profileImageId)").body()
+                    Text("image \(userManager.mainUser?.profileImage)").body()
+                    Picker("Server Domain", selection: $userManager.domain) {
+                        ForEach(UserManager.ServerDomain.allCases, id: \.self) { domain in
+                            Text(domain.rawValue).tag(domain)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    Text(userManager.mainUser?.user.username ?? "user").body()
+                    Text(userManager.mainUser?.user.id.uuidString ?? "id").body()
                     Button {
                         for i in 1...10 {
-                            NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info), duration: 3)
+                            Utility.setupBottom(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .info))
                         }
                     } label: {
                         Text("Test bottom notifications").textButtonStyle(true)
                     }
                     Button {
-                        UserManager.shared.logoutUser()
+                        for i in 1...3 {
+                            Utility.setupAlert(MainNotification.NotificationStructure(title: "SIUM\(i)", message: "matto", type: .warning))
+                        }
+                    } label: {
+                        Text("Test alert notifications").textButtonStyle(true)
+                    }
+                    Button {
+                        userManager.logoutUser()
                     } label: {
                         Text("Log out").textButtonStyle(true)
                     }
                     Button {
                         Task {
                             do {
-                                try await UserManager.shared.getNewAuthToken()
-                            } catch let error as ServerError {
-                                if error == .sslError {
-                                    SSLAlert(error.notification)
-                                } else {
-                                    Utility.setupAlert(error.notification)
-                                }
-                            } catch let error as Notifiable {
-                                Utility.setupAlert(error.notification)
+                                try await userManager.getNewAuthToken()
                             } catch {
-                                print(error.localizedDescription)
-                                Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                                if let err = mapError(error) {
+                                    Utility.setupAlert(err.notification)
+                                }
                             }
                         }
                     } label: {
-                        Text("New auth token").textButtonStyle(true)
+                        Text("Nuovo token di autenticazione.").textButtonStyle(true)
                     }
                     Button {
                         Task {
                             do {
-                                try await UserManager.shared.getNewUserToken()
-                            } catch let error as ServerError {
-                                if error == .sslError {
-                                    SSLAlert(error.notification)
-                                } else {
-                                    Utility.setupAlert(error.notification)
-                                }
-                            } catch let error as Notifiable {
-                                Utility.setupAlert(error.notification)
+                                try await userManager.getNewUserToken()
                             } catch {
-                                print(error.localizedDescription)
-                                Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                                if let err = mapError(error) {
+                                    Utility.setupAlert(err.notification)
+                                }
                             }
                         }
                     } label: {
-                        Text("New user token").textButtonStyle(true)
+                        Text("Nuovo token utente.").textButtonStyle(true)
                     }
                     Button {
                         Task {
                             do {
                                 try await UserManager.shared.getTimetable()
-                            } catch let error as ServerError {
-                                if error == .sslError {
-                                    SSLAlert(error.notification)
-                                } else {
-                                    Utility.setupAlert(error.notification)
-                                }
-                            } catch let error as Notifiable {
-                                Utility.setupAlert(error.notification)
                             } catch {
-                                print(error.localizedDescription)
-                                Utility.setupAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                                if let err = mapError(error) {
+                                    Utility.setupAlert(err.notification)
+                                }
                             }
                         }
                     } label: {
                         Text("Timetable").textButtonStyle(true)
                     }
                     Button {
-                        UserManager.shared.reInit()
+                        userManager.reInit()
                     } label: {
                         Text("Reinit").textButtonStyle(true)
                     }
                     Button {
-                        UIPasteboard.general.string = UserManager.shared.userToken
+                        UIPasteboard.general.string = userManager.URN
                         isCopied = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
                             isCopied = false
                         }
                     } label: {
-                        Label(isCopied ? "Copied!" : "Copy to Clipboard", systemImage: "doc.on.doc")
+                        Label(isCopied ? "Copied!" : "Copy to Clipboard the URN", systemImage: "doc.on.doc")
                             .fontWeight(.bold)
                             .padding()
                             .background(isCopied ? Color.green :  Color.accentColor, in: RoundedRectangle(cornerRadius: 20))

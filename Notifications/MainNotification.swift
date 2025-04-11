@@ -7,8 +7,14 @@
 
 import SwiftUI
 
-class MainNotification: ObservableObject, Identifiable {
-    struct NotificationStructure: CustomStringConvertible {
+class MainNotification: ObservableObject, Identifiable, Equatable {
+    struct NotificationStructure: CustomStringConvertible, Equatable {
+        static func == (lhs: MainNotification.NotificationStructure, rhs: MainNotification.NotificationStructure) -> Bool {
+            return lhs.title == rhs.title &&
+                lhs.message == rhs.message &&
+                lhs.type == rhs.type
+        }
+        
         let title: LocalizedStringResource
         let message: LocalizedStringResource
         let type: NotificationType
@@ -54,6 +60,10 @@ class MainNotification: ObservableObject, Identifiable {
             case .info: return Color.blue
             }
         }
+    }
+    
+    static func == (lhs: MainNotification, rhs: MainNotification) -> Bool {
+        return lhs.id == rhs.id && lhs.notification == rhs.notification
     }
     
     let notification: NotificationStructure

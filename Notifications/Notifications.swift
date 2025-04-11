@@ -32,7 +32,7 @@ enum ServerError: Error, Notifiable {
         case .unexpectedResponse:
             return MainNotification.NotificationStructure(title: "Errore", message: "Risposta inaspettata. Riprova più tardi.", type: .error)
         case .sslError:
-            return MainNotification.NotificationStructure(title: "Certificato Del Server Non Valido", message: "Il nostro certificato è self-signed, iOS non apprezza.\nPer usare Voci Di Corridoio devi installarlo.\nScaricalo a https://\(UserManager.shared.server)\(UserManager.APIEndpoints.SSLCertificate)", type: .info)
+            return MainNotification.NotificationStructure(title: "Certificato Del Server Non Valido", message: "Il nostro certificato è self-signed, iOS non apprezza.\nPer usare Voci Di Corridoio devi installarlo.\nScaricalo a https://\(UserManager.shared.domain.rawValue)\(UserManager.APIEndpoints.SSLCertificate)", type: .info)
         }
     }
 }
@@ -41,6 +41,7 @@ enum Codes: Error, Notifiable {
     case code400(message: String)
     case code404(message: String)
     case code409(message: String)
+    case code413(message: String)
     case code500(message: String)
     
     var notification: MainNotification.NotificationStructure {
@@ -51,6 +52,8 @@ enum Codes: Error, Notifiable {
             return MainNotification.NotificationStructure(title: "Errore", message: "È stato trovato un conflitto: \(message)", type: .error)
         case .code404(let message):
             return MainNotification.NotificationStructure(title: "Errore", message: "Risorsa non trovata: \(message)", type: .error)
+        case .code413(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Richiesta troppo grande: \(message)", type: .error)
         case .code500(let message):
             return MainNotification.NotificationStructure(title: "Errore", message: "C'è stato un errore del server: \(message)", type: .error)
         }
@@ -61,7 +64,7 @@ enum Errors: Error, Notifiable {
     case invalidResponse(message: String)
     case unknownError(message: String)
     case JSONError(message: String)
-    case invalidURL(message: String)
+    case invalidURL(url: String)
     
     var notification: MainNotification.NotificationStructure {
         switch self {
@@ -71,8 +74,8 @@ enum Errors: Error, Notifiable {
             return MainNotification.NotificationStructure(title: "Errore", message: "Errore riscontrato:\n\(message)", type: .error)
         case .JSONError(let message):
             return MainNotification.NotificationStructure(title: "Errore", message: "Errore JSON riscontrato:\n\(message)", type: .error)
-        case .invalidURL(let message):
-            return MainNotification.NotificationStructure(title: "Errore", message: "L'URL \(message) non è valido", type: .error)
+        case .invalidURL(let url):
+            return MainNotification.NotificationStructure(title: "Errore", message: "L'URL \(url) non è valido", type: .error)
         }
     }
 }
@@ -109,15 +112,35 @@ enum ClassesError: Error, Notifiable {
 }
 
 enum LoginNotification: Notifiable {
-    case success(users: [LoginResponse.RoleGroup])
-    case gotUser(username: String)
+    case success(users: [LogInResponse.RoleGroup])
+    case gotUser(userModel: any UserProtocol)
     
     var notification: MainNotification.NotificationStructure {
         switch self {
         case .success:
             return MainNotification.NotificationStructure(title: "Successo", message: "Sei stato loggato con successo!", type: .success)
-        case .gotUser(let username):
-            return MainNotification.NotificationStructure(title: "Success", message: "\(username) sei stato selezionato!", type: .success)
+        case .gotUser(let userModel):
+            return MainNotification.NotificationStructure(title: "Successo \(userModel.role.description)", message: "\(userModel.user.username) sei stato selezionato!", type: .success)
+        }
+    }
+}
+
+enum TransferError: Error, Notifiable {
+    case importFailed
+    case wrongImage
+    case imageFound
+    case imageNotFound
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .importFailed:
+            return MainNotification.NotificationStructure(title: "Importazione fallita", message: "Non è stato possibile importare l'imagine selezionata.", type: .error)
+        case .wrongImage:
+            return MainNotification.NotificationStructure(title: "Imagine errata", message: "L'imagine selezionata non è valida.", type: .error)
+        case .imageFound:
+            return MainNotification.NotificationStructure(title: "Immagine già presente", message: "L'immagine selezionata è già presente.", type: .error)
+        case .imageNotFound:
+            return MainNotification.NotificationStructure(title: "Immagine non trovata", message: "L'immagine selezionata non è stata trovata.", type: .error)
         }
     }
 }

@@ -7,13 +7,33 @@
 
 import SwiftUI
 
-struct Classs: Codable {
+struct Classs: Codable, Comparable, Identifiable {
     let id: UUID
     let name: String
-}
-
-struct Classes: Codable {
-    let classes: [Classs]
+    
+    static func < (lhs: Classs, rhs: Classs) -> Bool {
+        let left = lhs.extractNumberAndLetter()
+        let right = rhs.extractNumberAndLetter()
+        
+        if left.number != right.number {
+            return left.number < right.number
+        } else {
+            return left.letter > right.letter
+        }
+    }
+    
+    private func extractNumberAndLetter() -> (number: Int, letter: String) {
+        let regex = try? NSRegularExpression(pattern: "(\\d*)([a-zA-Z0-9]*)")
+        let match = regex?.firstMatch(in: name, options: [], range: NSRange(name.startIndex..., in: name))
+        
+        if let match = match, let numberRange = Range(match.range(at: 1), in: name), let letterRange = Range(match.range(at: 2), in: name) {
+            let number = Int(name[numberRange]) ?? 0
+            let letter = String(name[letterRange])
+            return (number, letter)
+        } else {
+            return (0, "")
+        }
+    }
 }
 
 class ClassesManager: ObservableObject {
@@ -23,14 +43,16 @@ class ClassesManager: ObservableObject {
         Task {
             do {
                 try await fetchAvailableClasses()
-            } catch let error as ServerError {
-                SSLAlert(error)
-            } catch let error as Notifiable {
-                Utility.setupBottom(error.notification)
             } catch {
-                Utility.setupBottom(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+                if let err = mapError(error) {
+                    Utility.setupBottom(err.notification)
+                }
             }
         }
+    }
+    
+    struct Classes: Codable {
+        let classes: [Classs]
     }
     
     @MainActor
@@ -41,57 +63,40 @@ class ClassesManager: ObservableObject {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        let (data, response) = try await URLSession.shared.data(for: request)
         
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<Classes>) = try checkResponse(data: data, response: response)
-            
-            let statusCode = httpResponse.statusCode
-            
-            switch statusCode {
-            case 200:
-                if let classes = apiResponse.data?.classes {
-                    self.classes = classes
-                } else {
-                    throw ClassesError.noClassesFound
-                }
-            default:
-                throw Codes.code500(message: apiResponse.message)
-            }
-        } catch {
-            throw mapError(error)
+        let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseData<Classes>) = try checkResponse(response: response, data: data)
+        
+        let statusCode = httpResponse.statusCode
+        
+        switch (statusCode, apiResponse.data?.classes) {
+        case (200, let classes?):
+            self.classes = classes
+        case (200, nil):
+            throw ClassesError.noClassesFound
+        default:
+            throw Codes.code500(message: apiResponse.message)
         }
     }
 }
 
-func mapError(_ error: Error) -> Error {
+func mapError(_ error: Error) -> (Error & Notifiable)? {
     switch error {
     case let error as DecodingError:
         return Errors.JSONError(message: error.localizedDescription)
-    case let error as URLError:
-        if isSSLError(error) {
-            return ServerError.sslError
-        }
-        return error
-    case let error as Codes:
-        return error
-    case let error as Errors:
-        return error
-    case let error as LoginError:
-        return error
-    case let error as ServerError:
-        return error
-    case let error as ClassesError:
-        return error
-    case let error as AuthError:
+    case let error as EncodingError:
+        return Errors.JSONError(message: error.localizedDescription)
+    case let error as URLError where isSSLError(error):
+            SSLAlert()
+            return nil
+    case let error as Error & Notifiable:
         return error
     default:
         return Errors.unknownError(message: error.localizedDescription)
     }
 }
 
-func isSSLError(_ error: Error) -> Bool {
+fileprivate func isSSLError(_ error: Error) -> Bool {
     let nsError = error as NSError
     let errorDomain = NSURLErrorDomain
     let errorCode = -1202
@@ -102,9 +107,9 @@ func isSSLError(_ error: Error) -> Bool {
     return false
 }
 
-func SSLAlert(_ notification: MainNotification.NotificationStructure) {
-    NotificationManager.shared.showAlert(notification) {
-        if let url = URL(string: "https://\(UserManager.shared.server)\(UserManager.APIEndpoints.SSLCertificate)") {
+fileprivate func SSLAlert() {
+    NotificationManager.shared.showAlert(ServerError.sslError.notification) {
+        if let url = URL(string: "https://\(UserManager.shared.domain.rawValue)\(UserManager.APIEndpoints.SSLCertificate)") {
             DispatchQueue.main.async {
                 UIApplication.shared.open(url)
             }
@@ -112,19 +117,7 @@ func SSLAlert(_ notification: MainNotification.NotificationStructure) {
     }
 }
 
-func SSLAlert(_ error: ServerError) {
-    if error == .sslError {
-        SSLAlert(error.notification)
-    } else {
-        Utility.setupBottom(error.notification)
-    }
-}
-
-func checkResponse<T: Codable, V: ApiResponseData<T>>(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, V) {
-    guard let httpResponse = response as? HTTPURLResponse else {
-        throw URLError(.badServerResponse)
-    }
-    
+fileprivate func isServerOffline(data: Data, httpResponse: HTTPURLResponse) throws {
     if httpResponse.statusCode == 503 {
         if let responseString = String(data: data, encoding: .utf8) {
             let patterns = [
@@ -139,6 +132,14 @@ func checkResponse<T: Codable, V: ApiResponseData<T>>(data: Data, response: URLR
             }
         }
     }
+}
+
+func checkResponse<T: Codable, V: ApiResponseData<T>>(response: URLResponse?, data: Data) throws -> (HTTPResponse: HTTPURLResponse, ApiResponse: V) {
+    guard let httpResponse = response as? HTTPURLResponse else {
+        throw URLError(.badServerResponse)
+    }
+    
+    try isServerOffline(data: data, httpResponse: httpResponse)
     
     let apiResponse = try JSONDecoder().decode(V.self, from: data)
     
@@ -149,19 +150,16 @@ func checkResponse<T: Codable, V: ApiResponseData<T>>(data: Data, response: URLR
     } else if let userResponse = apiResponse as? ApiResponseUserData<T> {
         if let logOut = userResponse.user?.logOut, logOut {
             UserManager.shared.logoutUser()
-        }
-        if let updateToken = userResponse.user?.updateToken, updateToken {
-            if let userId = UserManager.shared.currentUser?.id {
+        } else if let updateUserAndToken = userResponse.user?.updateUserAndToken, updateUserAndToken {
+            if let userId = UserManager.shared.mainUser?.user.id {
                 Task {
                     do {
-                        let alert = try await UserManager.shared.getUserAndToken(userId)
+                        let alert = try await UserManager.shared.getAuthUserAndToken(userId)
                         Utility.setupBottom(alert.notification)
-                    } catch let error as ServerError {
-                        SSLAlert(error)
-                    } catch let error as Notifiable {
-                        print(error.description)
                     } catch {
-                        print(error.localizedDescription)
+                        if let err = mapError(error) {
+                            print(err.description)
+                        }
                     }
                 }
             }
@@ -172,23 +170,12 @@ func checkResponse<T: Codable, V: ApiResponseData<T>>(data: Data, response: URLR
 }
 
 
-func checkResponse(data: Data, response: URLResponse?) throws -> (HTTPURLResponse, ApiResponse) {
+func checkResponse(response: URLResponse?, data: Data) throws -> (HTTPResponse: HTTPURLResponse, ApiResponse: ApiResponse) {
     guard let httpResponse = response as? HTTPURLResponse else {
         throw URLError(.badServerResponse)
     }
-    if httpResponse.statusCode == 503 {
-        if let responseString = String(data: data, encoding: .utf8) {
-            let patterns = [
-                "<title>503 Service Unavailable</title>",
-                "<h1>Service Unavailable</h1>",
-                "The server is temporarily unable to service your request"
-            ]
-            for pattern in patterns {
-                if responseString.contains(pattern) {
-                    throw ServerError.serviceUnavailable
-                }
-            }
-        }
-    }
+
+    try isServerOffline(data: data, httpResponse: httpResponse)
+    
     return (httpResponse, try JSONDecoder().decode(ApiResponse.self, from: data))
 }
