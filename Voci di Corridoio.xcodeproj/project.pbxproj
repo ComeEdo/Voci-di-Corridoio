@@ -67,6 +67,22 @@
 				AppView.swift,
 				CreateAccountView.swift,
 				HomeTab.swift,
+				PageView/InfinitePageView.swift,
+				PageView/InfinitePageViewController.swift,
+				PageView/PageControl.swift,
+				PageView/PageView.swift,
+				PageView/PageViewController.swift,
+				PostView/ArgumentSelectionView.swift,
+				PostView/CreatePostView.swift,
+				PostView/CurrentTimeView.swift,
+				PostView/DateScrollMenu.swift,
+				PostView/HeroViews.swift,
+				PostView/PostNavigationController.swift,
+				PostView/Selector.swift,
+				PostView/SubjectSelection.swift,
+				PostView/TimetableManager.swift,
+				PostView/TimetableSelection.swift,
+				PostView/UserSelection.swift,
 				ProfileTab.swift,
 				ProfileView.swift,
 				SignInView.swift,
@@ -103,6 +119,22 @@
 				AppView.swift,
 				CreateAccountView.swift,
 				HomeTab.swift,
+				PageView/InfinitePageView.swift,
+				PageView/InfinitePageViewController.swift,
+				PageView/PageControl.swift,
+				PageView/PageView.swift,
+				PageView/PageViewController.swift,
+				PostView/ArgumentSelectionView.swift,
+				PostView/CreatePostView.swift,
+				PostView/CurrentTimeView.swift,
+				PostView/DateScrollMenu.swift,
+				PostView/HeroViews.swift,
+				PostView/PostNavigationController.swift,
+				PostView/Selector.swift,
+				PostView/SubjectSelection.swift,
+				PostView/TimetableManager.swift,
+				PostView/TimetableSelection.swift,
+				PostView/UserSelection.swift,
 				ProfileTab.swift,
 				ProfileView.swift,
 				SignInView.swift,
@@ -259,7 +291,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					DBE900B52CDB76CB009A986A = {
 						CreatedOnToolsVersion = 16.1;
@@ -352,7 +384,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
-				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Voci di Corridoio copy-Info.plist";
@@ -388,7 +419,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
-				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Voci di Corridoio copy-Info.plist";
@@ -425,7 +455,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
-				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -461,7 +490,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Preview Content\"";
-				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -524,6 +552,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -589,6 +618,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 35V38T2Y43;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
