@@ -17,6 +17,60 @@ extension Text {
     func body(_ size: CGFloat = 18) -> Text {
         self.font(.system(size: size, weight: .semibold))
     }
+    func textTag(_ size: CGFloat? = nil, weight: Font.Weight = .regular) -> some View {
+        self.font(.caption)
+            .fontWeight(weight)
+            .padding(.horizontal, weight.horizontalPadding)
+            .padding(.vertical, weight.verticalPadding)
+            .background(Capsule().stroke(lineWidth: weight.strokeWidth))
+    }
+}
+
+extension Font.Weight {
+    var strokeWidth: CGFloat {
+        switch self {
+        case .ultraLight: return 0.25
+        case .thin: return 0.5
+        case .light: return 0.75
+        case .regular: return 1
+        case .medium: return 1.25
+        case .semibold: return 1.5
+        case .bold: return 1.75
+        case .heavy: return 2
+        case .black: return 2.25
+        default: return 1
+        }
+    }
+    
+    var horizontalPadding: CGFloat {
+        switch self {
+        case .ultraLight: return 4
+        case .thin: return 5
+        case .light: return 6
+        case .regular: return 8
+        case .medium: return 9
+        case .semibold: return 10
+        case .bold: return 11
+        case .heavy: return 12
+        case .black: return 13
+        default: return 8
+        }
+    }
+    
+    var verticalPadding: CGFloat {
+        switch self {
+        case .ultraLight: return 1
+        case .thin: return 1.5
+        case .light: return 2
+        case .regular: return 3
+        case .medium: return 4
+        case .semibold: return 5
+        case .bold: return 6
+        case .heavy: return 7
+        case .black: return 8
+        default: return 3
+        }
+    }
 }
 
 extension View {
@@ -163,120 +217,6 @@ private struct RotatingModifier: ViewModifier {
                 withAnimation(Animation.easeInOut(duration: 1)) {
                     rotation = 0
                 }
-            }
-    }
-}
-
-extension View {
-    func navigationDestination(in namespace: Namespace.ID, selectedUser: Binding<User?>, navigationPath: Binding<[NavigationSelectionNode]>) -> some View {
-        self.modifier(NavigationDestination(namespace: namespace, selectedUser: selectedUser, navigationPath: navigationPath))
-    }
-
-    func transitionSource(id: UUID, namespace: Namespace.ID) -> some View {
-        self.modifier(TransitionSourceModifier(id: id, namespace: namespace))
-    }
-}
-
-private struct NavigationDestination: ViewModifier {
-    var namespace: Namespace.ID
-    @Binding var selectedUser: User?
-    @Binding var navigationPath: [NavigationSelectionNode]
-    
-    @EnvironmentObject private var timetableManager: TimetableManager
-    
-    func body(content: Content) -> some View {
-        content
-            .navigationDestination(for: NavigationSelectionNode.self) { node in
-                switch node {
-                case .user(let id):
-                    if let user = timetableManager.users.first(where: { $0.id == id }) {
-                        UserDetailView(user: user, selectedUser: $selectedUser, navigationPath: $navigationPath).navigationTransition(.zoom(sourceID: user.id, in: namespace))
-                    } else {
-                        ContentUnavailableView {
-                            Label("Operazione fallita", systemImage: "person")
-                        } description: {
-                            Text("Questo utente non è disponibile")
-                        } actions: {
-                            Button {
-                                guard navigationPath.popLast() != nil else { return }
-                            } label: {
-                                Label("Indietro", systemImage: "chevron.backward")
-                            }
-                        }
-                        .navigationTransition(.zoom(sourceID: id, in: namespace))
-                        .navigationTitle("Errore")
-                    }
-                case .subject(let id):
-                    if false {
-                        
-                    } else {
-                        ContentUnavailableView {
-                            Label("Operazione fallita", systemImage: "graduationcap")
-                        } description: {
-                            Text("Questa materia non è disponibile")
-                        } actions: {
-                            Button {
-                                guard navigationPath.popLast() != nil else { return }
-                            } label: {
-                                Label("Indietro", systemImage: "chevron.backward")
-                            }
-                        }
-                        .navigationTransition(.zoom(sourceID: id, in: namespace))
-                        .navigationTitle("Errore")
-                    }
-                case .home(let id):
-                    if let home = Selectors.selectors.first(where: { $0.id == id }) {
-                        ReviewDetailView(selector: home, namespace: namespace)
-                            .environmentObject(timetableManager)
-                            .navigationTransition(.zoom(sourceID: home.id, in: namespace))
-                    } else {
-                        ContentUnavailableView {
-                            Label("Operazione fallita", systemImage: "filemenu.and.selection")
-                        } description: {
-                            Text("Questa selezione non è disponibile")
-                        } actions: {
-                            Button {
-                                guard navigationPath.popLast() != nil else { return }
-                            } label: {
-                                Label("Indietro", systemImage: "chevron.backward")
-                            }
-                        }
-                        .navigationTransition(.zoom(sourceID: id, in: namespace))
-                        .navigationTitle("Errore")
-                    }
-                case .timetable(let id):
-                    if false {
-                        
-                    } else {
-                        ContentUnavailableView {
-                            Label("Operazione fallita", systemImage: "graduationcap")
-                        } description: {
-                            Text("Questa materia non è disponibile")
-                        } actions: {
-                            Button {
-                                guard navigationPath.popLast() != nil else { return }
-                            } label: {
-                                Label("Indietro", systemImage: "chevron.backward")
-                            }
-                        }
-                        .navigationTransition(.zoom(sourceID: id, in: namespace))
-                        .navigationTitle("Errore")
-                    }
-                }
-            }
-    }
-}
-
-private struct TransitionSourceModifier: ViewModifier {
-    var id: UUID
-    var namespace: Namespace.ID
-    
-    func body(content: Content) -> some View {
-        content
-            .matchedTransitionSource(id: id, in: namespace) { src in
-                src
-                    .clipShape(.rect(cornerRadius: 45, style: .continuous))
-                    .background(Color.accent)
             }
     }
 }

@@ -182,7 +182,7 @@ class UserManager: ObservableObject {
             mainUserSubscription = nil
         }
     }
-    @Published private(set) var mainUserSubscription: AnyCancellable?
+    private var mainUserSubscription: AnyCancellable?
     
     @Published private(set) var isAuthLoading: Bool = false
     
@@ -212,6 +212,7 @@ class UserManager: ObservableObject {
         static let newUserToken = "\(user)/refreshUserToken"
         static let timetable = "\(user)/getTimetable"
         static let profileImage = "/profileImage"
+        static let uploadPost = "\(user)/post"
         
         private init() {}
     }
@@ -222,13 +223,16 @@ class UserManager: ObservableObject {
     private init() {
         reInit()
     }
+    deinit {
+        mainUserSubscription?.cancel()
+        mainUserSubscription = nil
+    }
     
     func waitUntilAuthLoadingCompletes() async {
         while isAuthLoading {
-            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
+            try? await Task.sleep(for: .milliseconds(100))
         }
     }
-    
     
     func reInit() {
         if let token = getTokenFromKeychain(), let userPersistance: MainUser = DefaultPersistence.retrieve() {
@@ -241,8 +245,7 @@ class UserManager: ObservableObject {
                     guard try await isAuth(token) else {
                         return
                     }
-                    let alert = try await getAuthUserAndToken(userPersistance.user.id)
-                    Utility.setupBottom(alert.notification)
+                    try await getAuthUserAndToken(userPersistance.user.id)
                 } catch {
                     if let err = mapError(error) {
                         Utility.setupBottom(err.notification)
@@ -340,15 +343,15 @@ class UserManager: ObservableObject {
                 throw AuthError.unauthorized(message: apiResponse.message)
             }
             self.authToken = logInData.authToken
-            Task {
-                for roleGroup in logInData.roleGroups {
-                    for userModel in roleGroup.userModels {
+            let allUserModels = logInData.roleGroups.flatMap { $0.userModels }
+            if allUserModels.count > 1 {
+                Task {
+                    for userModel in allUserModels {
                         do {
                             try await userModel.fetchProfileImage()
                         } catch {
                             if let err = mapError(error) {
                                 Utility.setupBottom(err.notification)
-                                print("Failed to fetch profile image:", err.description)
                             }
                         }
                     }
@@ -391,7 +394,6 @@ class UserManager: ObservableObject {
         
         switch statusCode {
         case 200:
-            Utility.setupBottom(MainNotification.NotificationStructure(title: "Successo", message: "Il token di autenticazione è valido.", type: .success))
             return true
         case 400:
             throw Codes.code400(message: apiResponse.message)
@@ -421,7 +423,6 @@ class UserManager: ObservableObject {
         
         switch statusCode {
         case 200:
-            Utility.setupBottom(MainNotification.NotificationStructure(title: "Successo", message: "Il token dell'utente è valido.", type: .success))
             return true
         case 400:
             throw Codes.code400(message: apiResponse.message)
@@ -468,7 +469,6 @@ class UserManager: ObservableObject {
                 throw AuthError.unauthorized(message: apiResponse.message)
             }
             self.authToken = newToken
-            Utility.setupBottom(MainNotification.NotificationStructure(title: "Successo", message: "Nuovo token di autenticazione.", type: .success))
         case 400:
             throw Codes.code400(message: apiResponse.message)
         case 401:
@@ -515,7 +515,6 @@ class UserManager: ObservableObject {
                 throw AuthError.unauthorized(message: apiResponse.message)
             }
             self.userToken = newToken
-            Utility.setupBottom(MainNotification.NotificationStructure(title: "Successo", message: "Nuovo token utente.", type: .success))
         case 400:
             throw Codes.code400(message: apiResponse.message)
         case 401:
@@ -527,7 +526,7 @@ class UserManager: ObservableObject {
         }
     }
     
-    @MainActor
+    @MainActor @discardableResult
     func getAuthUserAndToken(_ id: UUID) async throws -> LoginNotification {
         guard let url = URL(string: "\(URN)\(APIEndpoints.userAndToken)") else {
             throw Errors.invalidURL(url: "\(URN)\(APIEndpoints.userAndToken)")
@@ -618,7 +617,6 @@ class UserManager: ObservableObject {
         }
     }
     
-    
     // Save token to Keychain
     private func saveTokenToKeychain(token: String) throws {
         let keychainQuery: [String: Any] = [
@@ -665,6 +663,9 @@ class UserManager: ObservableObject {
         ]
         SecItemDelete(keychainQuery as CFDictionary)
         
+        CreatePostOptions.shared.ratingView = .picker
+        DefaultPersistence.delete(type: CreatePostView.RatingView.self)
+        
         DefaultPersistence.delete(type: AppView.Tabs.self)
         DefaultPersistence.delete(type: MainUser.self)
         NotificationManager.shared.reset()
@@ -700,7 +701,6 @@ class UserManager: ObservableObject {
             guard let timetable = apiResponse.data else {
                 throw Errors.JSONError(message: "è tutto rotto")
             }
-            Utility.setupAlert(MainNotification.NotificationStructure(title: "Successo", message: "spacchettato.", type: .success))
             return timetable
         case 400:
             throw Codes.code400(message: apiResponse.message)
@@ -714,8 +714,48 @@ class UserManager: ObservableObject {
             throw Errors.unknownError(message: apiResponse.message)
         }
     }
+    
+    func uploadPost(for postData: PostData) async throws -> PostNotification {
+        guard let url = URL(string: "\(URN)\(APIEndpoints.uploadPost)") else {
+            throw Errors.invalidURL(url: "\(URN)\(APIEndpoints.uploadPost)")
+        }
+        await waitUntilAuthLoadingCompletes()
+        guard let token = userToken else {
+            throw AuthError.unauthorized(message: "Token is nil")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        request.httpBody = try JSONEncoder().encode(postData)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseUserData<Bool>) = try checkResponse(response: response, data: data)
+        let statusCode = httpResponse.statusCode
+        
+        switch statusCode {
+        case 200:
+            if apiResponse.success {
+                return PostNotification.posted
+            } else {
+                return PostNotification.notPosted
+            }
+        case 400:
+            throw Codes.code400(message: apiResponse.message)
+        case 401:
+            throw AuthError.unauthorized(message: apiResponse.message)
+        case 403:
+            throw AuthError.forbidden(message: apiResponse.message)
+        case 500:
+            throw Codes.code500(message: apiResponse.message)
+        default:
+            throw Errors.unknownError(message: apiResponse.message)
+        }
+    }
 }
-
 
 struct TokenValidator {
     static func isTokenRefreshable(authToken: String) -> Bool {

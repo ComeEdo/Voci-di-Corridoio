@@ -23,7 +23,7 @@ struct HomeTab: View {
                     Text("image \(userManager.mainUser?.profileImage)").body()
                     Picker("Server Domain", selection: $userManager.domain) {
                         ForEach(UserManager.ServerDomain.allCases, id: \.self) { domain in
-                            Text(domain.rawValue).tag(domain)
+                            Text(domain.rawValue)
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())

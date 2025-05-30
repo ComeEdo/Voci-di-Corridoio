@@ -12,6 +12,8 @@ struct ProfileTab: View {
     @EnvironmentObject private var tabsManager: TabsManager
     @EnvironmentObject private var notificationManager: NotificationManager
     
+    @ObservedObject private var createPostOptions: CreatePostOptions = CreatePostOptions.shared
+    
     @State private var editMode: EditMode = .active
     
     @State private var items: [String] = (1...Int.random(in: 100...999)).map { "Item \($0)" }
@@ -30,6 +32,13 @@ struct ProfileTab: View {
                     Toggle(isOn: $notificationManager.isNotificationActive.isAlertActive) {
                         Label("Alerts", systemImage: "figure.open.water.swim")
                     }
+                    Picker(selection: createPostOptions.$ratingView) {
+                        ForEach(CreatePostView.RatingView.allCases, id: \.self) { view in
+                                Text(view.description)
+                        }
+                    } label: {
+                        Label("Rating View", systemImage: "star")
+                    }
                     Section {
                         Text("Apple")
                         Text("Banana")
@@ -40,7 +49,7 @@ struct ProfileTab: View {
                     Section {
                         Picker("Server Domain", selection: $userManager.domain) {
                             ForEach(UserManager.ServerDomain.allCases, id: \.self) { domain in
-                                Text(domain.rawValue).tag(domain)
+                                Text(domain.rawValue)
                             }
                         }
                         .pickerStyle(SegmentedPickerStyle())

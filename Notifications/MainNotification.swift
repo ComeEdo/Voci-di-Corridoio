@@ -68,9 +68,9 @@ class MainNotification: ObservableObject, Identifiable, Equatable {
     
     let notification: NotificationStructure
     let id = UUID()
-    let onDismiss: () -> Void
+    let onDismiss: (() -> Void)?
     
-    init(notification: NotificationStructure, onDismiss: @escaping () -> Void) {
+    init(notification: NotificationStructure, onDismiss: (() -> Void)?) {
         self.notification = notification
         self.onDismiss = onDismiss
     }

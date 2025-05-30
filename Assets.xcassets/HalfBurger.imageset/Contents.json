@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "half_burger_160px.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

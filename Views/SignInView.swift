@@ -43,13 +43,13 @@ struct SignInView: View {
                     if !keyboardManager.isZero  {
                         Spacer()
                     }
-                    emailView()
-                    passwordView()
+                    emailView
+                    passwordView
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .padding(.horizontal, 30)
                 .scrollClipDisabled()
-                buttonView()
+                buttonView
                     .padding(keyboardManager.isZero ? 0 : 10)
                     .offset(y: keyboardManager.isZero ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
@@ -76,7 +76,7 @@ struct SignInView: View {
         }
     }
     
-    private func emailView() -> some View {
+    private var emailView: some View {
         VStack {
             HStack {
                 AuthTextField("Email", text: $email)
@@ -92,7 +92,7 @@ struct SignInView: View {
         }
     }
     
-    private func passwordView() -> some View {
+    private var passwordView: some View {
         VStack {
             HStack {
                 AuthTextField("Password", text: $password, isSecure: true)
@@ -108,7 +108,7 @@ struct SignInView: View {
         }
     }
     
-    private func buttonView() -> some View {
+    private var buttonView: some View {
         VStack {
             Button(action: handleLogin) {
                 Text("Accedi").textButtonStyle(isFormValid())

@@ -85,7 +85,45 @@ class Student: User {
 }
 
 class Teacher: User {
-    enum Subjectt: Int, Codable {
+    override var description: String {
+        return super.description + "\nRole: Teacher"
+    }
+}
+
+class Admin: User {}
+class Principal: User {}
+class Secretariat: User {}
+
+struct SubjectModel: Codable, Hashable, Identifiable {
+    let id: UUID = UUID()
+    let subject: Subjects
+    let isLaboratory: Bool
+    
+    init(subject: Subjects, isLaboratory: Bool) {
+        self.subject = subject
+        self.isLaboratory = isLaboratory
+    }
+    init(slef subjectModel: SubjectModel) {
+        self.subject = subjectModel.subject
+        self.isLaboratory = subjectModel.isLaboratory
+    }
+    
+    static func ==(lhs: SubjectModel, rhs: SubjectModel) -> Bool {
+        lhs.subject == rhs.subject &&
+        lhs.isLaboratory == rhs.isLaboratory
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(subject)
+        hasher.combine(isLaboratory)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case subject = "subjectId"
+        case isLaboratory = "isLab"
+    }
+    
+    enum Subjects: Int, Codable {
         case matematica         = 1
         case lettere            = 2
         case informatica        = 3
@@ -97,17 +135,9 @@ class Teacher: User {
         case gpoi               = 9
         case tutor              = 10
         case ricreazione        = 11
-        case informaticaLab     = 12
-        case sistemiERetiLab    = 13
-        case tpsitLab           = 14
-        case gpoiLab            = 15
         case automazione        = 16
         case cnc                = 17
         
-        static func from(_ id: Int) -> Subjectt {
-            return Subjectt(rawValue: id) ?? .ricreazione
-        }
-
         var name: LocalizedStringResource {
             switch self {
             case .matematica: return "Matematica"
@@ -121,15 +151,11 @@ class Teacher: User {
             case .gpoi: return "G.P.O.I"
             case .tutor: return "Tutor"
             case .ricreazione: return "Ricreazione"
-            case .informaticaLab: return "Informatica Lab"
-            case .sistemiERetiLab: return "Sistemi e Reti Lab"
-            case .tpsitLab: return "TPSIT Lab"
-            case .gpoiLab: return "G.P.O.I Lab"
             case .automazione: return "Automazione"
             case .cnc: return "CNC"
             }
         }
-
+        
         var description: LocalizedStringResource {
             switch self {
             case .matematica: return "Studio dei numeri, delle equazioni e delle funzioni."
@@ -143,22 +169,35 @@ class Teacher: User {
             case .gpoi: return "Gestione e organizzazione di sistemi informatici e reti."
             case .tutor: return "Attività di supporto e assistenza agli studenti."
             case .ricreazione: return "Momento di svago e gioco."
-            case .informaticaLab: return "Laboratorio per l'applicazione pratica dei concetti di informatica."
-            case .sistemiERetiLab: return "Laboratorio per l'applicazione pratica delle infrastrutture e dei sistemi informatici e delle reti."
-            case .tpsitLab: return "Laboratorio per l'applicazione pratica delle tecnologie per la produzione di sistemi informatici e telematici."
-            case .gpoiLab: return "Laboratorio per l'applicazione pratica della gestione di sistemi informatici e reti."
             case .automazione: return "Studio dei processi automatizzati e della loro applicazione industriale."
             case .cnc: return "Studio e gestione delle macchine a controllo numerico per la produzione industriale."
             }
         }
-    }
-
-    override var description: String {
-        return super.description + "\nRole: Teacher"
+        
+        private var stringImage: String {
+            switch self {
+            case .matematica: return "Matematica"
+            case .lettere: return "LettereItaliano"
+            case .informatica: return "Informatica"
+            case .tpsit: return "TPSIT"
+            case .inglese: return "Inglese"
+            case .educazioneFisica: return "EducazioneFisica"
+            case .religione: return "Religione"
+            case .sistemiEReti: return "SistemiReti"
+            case .gpoi: return "G.P.O.I"
+            case .tutor: return "Tutor"
+            case .ricreazione: return "Ricreazione"
+            case .automazione: return "Automazione"
+            case .cnc: return "CNC"
+            }
+        }
+        
+        var image: Image {
+            if let uiImage = UIImage(named: stringImage) {
+                Image(uiImage: uiImage)
+            } else {
+                Image("ProfImage")
+            }
+        }
     }
 }
-
-
-class Admin: User {}
-class Principal: User {}
-class Secretariat: User {}

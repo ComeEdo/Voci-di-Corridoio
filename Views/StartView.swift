@@ -63,9 +63,9 @@ struct StartView: View {
 }
 
 #Preview {
-    @Previewable @StateObject var userManager = UserManager.shared
-    @Previewable @StateObject var notificationManager = NotificationManager.shared
-    @Previewable @StateObject var keyboardManager = KeyboardManager.shared
+    @Previewable @ObservedObject var userManager = UserManager.shared
+    @Previewable @ObservedObject var notificationManager = NotificationManager.shared
+    @Previewable @ObservedObject var keyboardManager = KeyboardManager.shared
     
     NavigationStack {
         StartView()
@@ -73,6 +73,7 @@ struct StartView: View {
     .addAlerts(notificationManager)
     .addBottomNotifications(notificationManager)
     .foregroundStyle(Color.accentColor)
+    .accentColor(Color.accent)
     .environmentObject(userManager)
     .environmentObject(keyboardManager)
 }

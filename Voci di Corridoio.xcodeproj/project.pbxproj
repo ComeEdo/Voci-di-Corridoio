@@ -52,6 +52,7 @@
 			membershipExceptions = (
 				ClassesManager.swift,
 				HapticFeedback.swift,
+				Models.swift,
 				NetworkTypes.swift,
 				User.swift,
 				UserManager.swift,
@@ -64,15 +65,28 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AppView.swift,
-				ContentVieww.swift,
 				CreateAccountView.swift,
-				CreatePostView.swift,
 				HomeTab.swift,
+				PageView/InfinitePageView.swift,
+				PageView/InfinitePageViewController.swift,
+				PageView/PageControl.swift,
+				PageView/PageView.swift,
+				PageView/PageViewController.swift,
+				PostView/ArgumentSelectionView.swift,
+				PostView/CreatePostView.swift,
+				PostView/CurrentTimeView.swift,
+				PostView/DateScrollMenu.swift,
+				PostView/HeroViews.swift,
+				PostView/PostNavigationController.swift,
+				PostView/Selector.swift,
+				PostView/SubjectSelection.swift,
+				PostView/TimetableManager.swift,
+				PostView/TimetableSelection.swift,
+				PostView/UserSelection.swift,
 				ProfileTab.swift,
 				ProfileView.swift,
 				SignInView.swift,
 				StartView.swift,
-				Testing.swift,
 				UserSelectionView.swift,
 				ViewExtensions.swift,
 			);
@@ -83,6 +97,7 @@
 			membershipExceptions = (
 				ClassesManager.swift,
 				HapticFeedback.swift,
+				Models.swift,
 				NetworkTypes.swift,
 				User.swift,
 				UserManager.swift,
@@ -102,15 +117,28 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AppView.swift,
-				ContentVieww.swift,
 				CreateAccountView.swift,
-				CreatePostView.swift,
 				HomeTab.swift,
+				PageView/InfinitePageView.swift,
+				PageView/InfinitePageViewController.swift,
+				PageView/PageControl.swift,
+				PageView/PageView.swift,
+				PageView/PageViewController.swift,
+				PostView/ArgumentSelectionView.swift,
+				PostView/CreatePostView.swift,
+				PostView/CurrentTimeView.swift,
+				PostView/DateScrollMenu.swift,
+				PostView/HeroViews.swift,
+				PostView/PostNavigationController.swift,
+				PostView/Selector.swift,
+				PostView/SubjectSelection.swift,
+				PostView/TimetableManager.swift,
+				PostView/TimetableSelection.swift,
+				PostView/UserSelection.swift,
 				ProfileTab.swift,
 				ProfileView.swift,
 				SignInView.swift,
 				StartView.swift,
-				Testing.swift,
 				UserSelectionView.swift,
 				ViewExtensions.swift,
 			);
@@ -119,6 +147,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		DB26F3202DD9E91500AE3BE9 /* Clocks */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Clocks;
+			sourceTree = "<group>";
+		};
 		DB371E732D365C3500BA210F /* Backend */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -197,6 +230,7 @@
 				DB371E572D365C2800BA210F /* Voci_di_Corridoio.xcdatamodeld */,
 				DB04F4362DA95A5F00E3ACCA /* Voci di Corridoio copy.app */,
 				DB04F4372DA95A5F00E3ACCA /* Voci di Corridoio copy-Info.plist */,
+				DB26F3202DD9E91500AE3BE9 /* Clocks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -216,6 +250,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				DB26F3202DD9E91500AE3BE9 /* Clocks */,
 				DB371E7B2D365C3500BA210F /* Notifications */,
 			);
 			name = "Voci di Corridoio copy";
@@ -238,6 +273,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				DB26F3202DD9E91500AE3BE9 /* Clocks */,
 				DB371E7B2D365C3500BA210F /* Notifications */,
 			);
 			name = "Voci di Corridoio";

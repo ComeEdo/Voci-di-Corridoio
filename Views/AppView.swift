@@ -21,7 +21,7 @@ class TabsManager: ObservableObject {
 }
 
 struct AppView: View {
-    enum Tabs: String, Hashable, Codable, DefaultPersistenceProtocol {
+    enum Tabs: String, DefaultPersistenceProtocol {
         case home
         case profile
         case post
@@ -54,7 +54,10 @@ struct AppView: View {
                 }
                 Tab("", systemImage: "photo.artframe.circle.fill", value: Tabs.testPhoto) {
                     if let user = userManager.mainUser {
-                        ProfileView(for: AnyUser(for: user))
+                        NavigationStack {
+                            ProfileView(for: AnyUser(for: user))
+                            Spacer()
+                        }
                     }
                 }
             }
@@ -68,25 +71,27 @@ struct AppView: View {
                 CreatePostView()
                     .addAlerts(notificationManager)
                     .addBottomNotifications(notificationManager)
+                    .accentColor(Color.accent)
             }
         }.environmentObject(tabsManager)
     }
     private func tabSelection() -> Binding<Tabs> {
-        Binding {
-            tabsManager.selection
-        } set: { tappedTab in
-            if tabsManager.selection == tappedTab {
-                tabsManager.notifyTap()
+        Binding<Tabs>(
+            get: { tabsManager.selection },
+            set: { tappedTab in
+                if tabsManager.selection == tappedTab {
+                    tabsManager.notifyTap()
+                }
+                self.tabsManager.selection = tappedTab
             }
-            self.tabsManager.selection = tappedTab
-        }
+        )
     }
 }
 
 #Preview {
-    @Previewable @StateObject var userManager = UserManager.shared
-    @Previewable @StateObject var notificationManager = NotificationManager.shared
-    @Previewable @StateObject var keyboardManager = KeyboardManager.shared
+    @Previewable @ObservedObject var userManager = UserManager.shared
+    @Previewable @ObservedObject var notificationManager = NotificationManager.shared
+    @Previewable @ObservedObject var keyboardManager = KeyboardManager.shared
     
     
     AppView()
@@ -94,6 +99,7 @@ struct AppView: View {
         .addAlerts(notificationManager)
         .addBottomNotifications(notificationManager)
         .foregroundStyle(Color.accentColor)
+        .accentColor(Color.accent)
         .environmentObject(userManager)
         .environmentObject(keyboardManager)
 }

@@ -54,16 +54,16 @@ struct CreateAccountView: View {
                     if !keyboardManager.isZero  {
                         Spacer()
                     }
-                    nameSurname()
-                    usernameClass()
-                    emailView()
-                    passwordView()
-                    repeatedPasswordView()
+                    nameSurname
+                    usernameClass
+                    emailView
+                    passwordView
+                    repeatedPasswordView
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .padding(.horizontal, 30)
                 .scrollClipDisabled()
-                buttonView()
+                buttonView
                     .padding(keyboardManager.isZero ? 0 : 10)
                     .offset(y: keyboardManager.isZero ? scroll.progessionAsitotic(-20, -20) : scroll.progessionAsitotic(-10, -10))
             }
@@ -85,7 +85,7 @@ struct CreateAccountView: View {
         }
     }
     
-    private func nameView() -> some View {
+    private var nameView: some View {
         VStack {
             HStack {
                 AuthTextField("Nome", text: $user.name)
@@ -106,7 +106,7 @@ struct CreateAccountView: View {
         }
     }
     
-    private func surnameView() -> some View {
+    private var surnameView: some View {
         VStack {
             HStack{
                 AuthTextField("Cognome", text: $user.surname)
@@ -127,14 +127,14 @@ struct CreateAccountView: View {
         }
     }
     
-    private func nameSurname() -> some View {
+    private var nameSurname: some View {
         HStack {
-            nameView()
-            surnameView()
+            nameView
+            surnameView
         }
     }
     
-    private func usernameView() -> some View {
+    private var usernameView: some View {
         VStack {
             HStack {
                 AuthTextField("Nome utente", text: $user.username)
@@ -156,7 +156,7 @@ struct CreateAccountView: View {
         }
     }
     
-    private func classSelectorView() -> some View {
+    private var classSelectorView: some View {
         VStack(spacing: 0) {
             Picker(selection: $user.role) {
                 if case .teacher = user.role {
@@ -178,16 +178,16 @@ struct CreateAccountView: View {
         .frame(width: 100)
     }
     
-    private func usernameClass() -> some View {
+    private var usernameClass: some View {
         HStack(alignment: .top) {
-            usernameView()
+            usernameView
             if functions.isValidStudentEmail(user.email) {
-                classSelectorView()
+                classSelectorView
             }
         }
     }
     
-    private func emailView() -> some View {
+    private var emailView: some View {
         VStack {
             HStack {
                 AuthTextField("Email", text: $user.email)
@@ -203,7 +203,7 @@ struct CreateAccountView: View {
         }
     }
     
-    private func passwordView() -> some View {
+    private var passwordView: some View {
         VStack {
             HStack {
                 AuthTextField("Password", text: $user.password, isSecure: true)
@@ -219,7 +219,7 @@ struct CreateAccountView: View {
         }
     }
     
-    private func repeatedPasswordView() -> some View {
+    private var repeatedPasswordView: some View {
         VStack {
             HStack {
                 AuthTextField("Ripeti password", text: $user.repeatedPassword, isSecure: true)
@@ -235,7 +235,7 @@ struct CreateAccountView: View {
         }
     }
     
-    private func buttonView() -> some View {
+    private var buttonView: some View {
         VStack {
             Button(action: handleRegister) { Text("Crea account").textButtonStyle(isFormValid()) }.disabled(!isFormValid() || !isOperationFinished)
         }
@@ -447,21 +447,6 @@ struct CreateAccountView: View {
                     default:
                         throw Errors.unknownError(message: apiResponse.message)
                     }
-//                } catch let error as ServerError {
-//                    if error == .sslError {
-//                        SSLAlert()
-//                        reason = "Certificato non valido."
-//                    } else {
-//                        Utility.setupBottom(error.notification)
-//                        reason = "Errore di rete: \(error.localizedDescription)."
-//                    }
-//                    isValidUsername = true
-//                } catch let error as DecodingError {
-//                    reason = "Si è verificato un errore JSON: \(error.localizedDescription)."
-//                    isValidUsername = true
-//                } catch {
-//                    reason = "Impossibile interpretare la risposta: \(error.localizedDescription)."
-//                    isValidUsername = true
                 } catch {
                     if let err = mapError(error) {
                         Utility.setupAlert(err.notification)

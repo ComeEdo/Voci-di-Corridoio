@@ -185,14 +185,14 @@ struct Utility {
     static func setupAlert(_ alert: MainNotification.NotificationStructure) {
         NotificationManager.shared.showAlert(alert)
     }
-    static func setupAlert(_ error: Error) {
-        NotificationManager.shared.showAlert(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+    static func setupAlert(_ error: Error & Notifiable) {
+        setupAlert(error.notification)
     }
     static func setupBottom(_ alert: MainNotification.NotificationStructure) {
         NotificationManager.shared.showBottom(alert)
     }
-    static func setupBottom(_ error: Error) {
-        NotificationManager.shared.showBottom(MainNotification.NotificationStructure(title: "Errore", message: "\(error.localizedDescription)", type: .error))
+    static func setupBottom(_ error: Error & Notifiable) {
+        setupBottom(error.notification)
     }
 }
 
@@ -333,5 +333,16 @@ extension CGFloat {
         } else {
             return self
         }
+    }
+}
+
+extension Date {
+    func settingTime(from timeSource: Date) -> Date? {
+        let comps = Calendar.current.dateComponents([.hour, .minute, .second], from: timeSource)
+        let hour = comps.hour ?? 0
+        let minute = comps.minute ?? 0
+        let second = comps.second ?? 0
+        
+        return Calendar.current.date(bySettingHour: hour, minute: minute, second: second, of: self)
     }
 }

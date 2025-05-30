@@ -19,9 +19,7 @@ struct AlertNotificationView: View {
             Color.black.opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
-                    DispatchQueue.main.async {
-                        alert.onDismiss()
-                    }
+                    alert.onDismiss?()
                 }
             VStack(spacing: 20) {
                 Text(alert.notification.title)
@@ -31,15 +29,12 @@ struct AlertNotificationView: View {
                     .body()
                     .multilineTextAlignment(.center)
                 Button {
-                    DispatchQueue.main.async {
-                        alert.onDismiss()
-                    }
+                    alert.onDismiss?()
                 } label: {
                     Text(alert.dismissButtonTitle)
                         .textButtonStyle(true)
                 }
-            }
-            .alertStyle()
+            }.alertStyle()
         }.onAppear {
             HapticFeedback.trigger(alert.notification.type.hapticFeedback)
         }

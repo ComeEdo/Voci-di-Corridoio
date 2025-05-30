@@ -19,6 +19,23 @@ protocol UserProtocol: Equatable, Codable, Identifiable, ObservableObject {
     func fetchProfileImage() async throws
 }
 
+class AnyUser: ObservableObject {
+    @Published private(set) var userViewModel: (any UserProtocol)?
+    
+    private var cancellable: AnyCancellable?
+    
+    init<T: UserProtocol>(for userViewModel: T?) {
+        self.userViewModel = userViewModel
+        cancellable = userViewModel?.objectWillChange.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        }
+    }
+    deinit {
+        cancellable?.cancel()
+        cancellable = nil
+    }
+}
+
 @Model
 class UserModel: UserProtocol {
     var id: UUID {
@@ -38,16 +55,7 @@ class UserModel: UserProtocol {
         }
     }
     
-    func updateProfileImage(_ image: UIImage?) {
-        profileImage = image
-        profileImageData = image?.toData()
-    }
-    
-    @Attribute(.ephemeral) private(set) var isFetchingImage: Bool = false
-    
-    private func setIsFetchingImage(_ value: Bool) {
-        isFetchingImage = value
-    }
+    @Transient private(set) var isFetchingImage: Bool = false
     
     init(user: User, role: Roles) {
         self.user = user
@@ -93,7 +101,6 @@ class UserModel: UserProtocol {
     enum CodingKeys: String, CodingKey {
         case role = "roleId"
         case user = "user"
-        case profileImageURL = "ProfileImageURL"
     }
     
     func fetchProfileImage() async throws {
@@ -131,7 +138,7 @@ class UserModel: UserProtocol {
             return self.profileImage = image
         }
         
-        func swichStatusCode(in statusCode: Int,for apiResponse: ApiResponse) throws {
+        func switchStatusCode(in statusCode: Int,for apiResponse: ApiResponse) throws {
             switch statusCode {
             case 400:
                 throw Codes.code400(message: apiResponse.message)
@@ -152,12 +159,12 @@ class UserModel: UserProtocol {
             let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseUserData<Bool>) = try checkResponse(response: response, data: data)
             let statusCode = httpResponse.statusCode
             
-            try swichStatusCode(in: statusCode, for: apiResponse)
+            try switchStatusCode(in: statusCode, for: apiResponse)
         } else {
             let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseAuthData<Bool>) = try checkResponse(response: response, data: data)
             let statusCode = httpResponse.statusCode
             
-            try swichStatusCode(in: statusCode, for: apiResponse)
+            try switchStatusCode(in: statusCode, for: apiResponse)
         }
     }
 }
@@ -185,7 +192,7 @@ class MainUser: UserProtocol, Codable, DefaultPersistenceProtocol {
         return  isDelitingImage || isUploadingImage
     }
     
-    private var maxImageSize: Int = 10 * 1024 * 1024
+    private var maxImageSize: Int = 10 * 1024 * 1024    // 10 MB
     
     init(user: User, role: Roles) {
         self.user = user
@@ -279,7 +286,7 @@ class MainUser: UserProtocol, Codable, DefaultPersistenceProtocol {
             return writeProfileImage(for: image)
         }
         
-        func swichStatusCode(in statusCode: Int,for apiResponse: ApiResponse) throws {
+        func switchStatusCode(in statusCode: Int,for apiResponse: ApiResponse) throws {
             switch statusCode {
             case 400:
                 throw Codes.code400(message: apiResponse.message)
@@ -299,7 +306,7 @@ class MainUser: UserProtocol, Codable, DefaultPersistenceProtocol {
         let (httpResponse, apiResponse): (HTTPURLResponse, ApiResponseUserData<Bool>) = try checkResponse(response: response, data: data)
         let statusCode = httpResponse.statusCode
         
-        try swichStatusCode(in: statusCode, for: apiResponse)
+        try switchStatusCode(in: statusCode, for: apiResponse)
     }
     
     private func deleteProfileImage() async throws {
@@ -431,8 +438,8 @@ class MainUser: UserProtocol, Codable, DefaultPersistenceProtocol {
     }
     
     func setImage(for image: UIImage?, onDismiss: () -> Void = {}) {
-        defer { onDismiss() }
         guard !isModifingImage else { return }
+        defer { onDismiss() }
         switch (image, profileImage) {
         case let (newImage, oldImage) where newImage == oldImage:
             print("⚠️ Image is the same, skipping.")
@@ -481,7 +488,9 @@ class MainUser: UserProtocol, Codable, DefaultPersistenceProtocol {
             try data.write(to: imageInfo.url)
             print("Profile image saved.")
         } catch {
-            Utility.setupAlert(mapError(error) ?? error)
+            if let err = mapError(error) {
+                Utility.setupAlert(err)
+            }
         }
     }
     private func writeProfileImage(from data: Data) {
@@ -498,7 +507,9 @@ class MainUser: UserProtocol, Codable, DefaultPersistenceProtocol {
             try data.write(to: imageInfo.url)
             print("Profile image saved.")
         } catch {
-            Utility.setupAlert(mapError(error) ?? error)
+            if let err = mapError(error) {
+                Utility.setupAlert(err)
+            }
         }
     }
     
@@ -518,24 +529,9 @@ class MainUser: UserProtocol, Codable, DefaultPersistenceProtocol {
             try FileManager.default.removeItem(at: imageInfo.url)
             print("Profile image deleted.")
         } catch {
-            Utility.setupBottom(mapError(error) ?? error)
+            if let err = mapError(error) {
+                Utility.setupBottom(err)
+            }
         }
-    }
-}
-
-class AnyUser: ObservableObject {
-    @Published private(set) var userViewModel: (any UserProtocol)?
-    
-    private var cancellable: AnyCancellable?
-    
-    init<T: UserProtocol>(for userViewModel: T?) {
-        self.userViewModel = userViewModel
-        cancellable = userViewModel?.objectWillChange.sink { [weak self] _ in
-            self?.objectWillChange.send()
-        }
-    }
-    deinit {
-        cancellable?.cancel()
-        cancellable = nil
     }
 }

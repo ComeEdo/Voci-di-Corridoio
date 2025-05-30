@@ -25,15 +25,15 @@ struct CircularProfileImage: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .clipShape(Circle())
                     .frame(height: frame)
+                    .clipShape(Circle())
             } else {
                 DefaultProfileImage(frame: frame)
             }
             if userIdentity.userViewModel?.isFetchingImage ?? false {
                 ProgressView()
             }
-        }
+        }.fixedSize(horizontal: true, vertical: true)
     }
 }
 
@@ -77,42 +77,40 @@ struct ProfileView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                HStack(alignment: .center, spacing: 20) {
-                    CircularProfileImage(userIdentity: viewedUser)
-                    VStack(alignment: .leading, spacing: 10) {
-                        let name = viewedUser.userViewModel?.user.name ?? "Nome"
-                        let surname = viewedUser.userViewModel?.user.surname ?? "Cognome"
-                        Text(name + " " + surname)
-                        Text(viewedUser.userViewModel?.role.description ?? "Ruolo").font(.system(size: 14, weight: .semibold))
-                    }.foregroundColor(.white)
-                    Spacer()
-                }.padding(.horizontal, 20)
-                if let student = viewedUser.userViewModel?.user as? Student {
-                    VStack(alignment: .leading) {
-                        Text("Classe: \(student.classe.name)")
-                        Text("Materia: \(student.studyFieldName)")
-                    }
-                    .padding()
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.white)
+        VStack(alignment: .leading) {
+            HStack(alignment: .center, spacing: 20) {
+                CircularProfileImage(userIdentity: viewedUser)
+                VStack(alignment: .leading, spacing: 10) {
+                    let name = viewedUser.userViewModel?.user.name ?? "Nome"
+                    let surname = viewedUser.userViewModel?.user.surname ?? "Cognome"
+                    Text(name + " " + surname)
+                    Text(viewedUser.userViewModel?.role.description ?? "Ruolo").font(.system(size: 14, weight: .semibold))
+                }.foregroundColor(Color.primary)
+                Spacer()
+            }.padding(.horizontal, 20)
+            if let student = viewedUser.userViewModel?.user as? Student {
+                VStack(alignment: .leading) {
+                    Text("Classe: \(student.classe.name)")
+                    Text("Materia: \(student.studyFieldName)")
                 }
-                if let mainUser = viewedUser.userViewModel as? MainUser {
-                    Button {
-                        userEditing = mainUser
-                    } label: {
-                        Label("edit", systemImage: "pencil").textButtonStyle(true)
-                    }.padding()
-                    Spacer()
-                }
-            }.navigationTitle(viewedUser.userViewModel?.user.username ?? "username")
-        }
-        .sheet(item: $userEditing) { mainUser in
-            ProfileEditing(for: mainUser)
-                .presentationCornerRadius(60)
-                .interactiveDismissDisabled(true)
-        }
+                .padding()
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(Color.primary)
+            }
+            if let mainUser = viewedUser.userViewModel as? MainUser {
+                Button {
+                    userEditing = mainUser
+                } label: {
+                    Label("edit", systemImage: "pencil").textButtonStyle(true)
+                }.padding()
+            }
+        }.navigationTitle(viewedUser.userViewModel?.user.username ?? "username")
+            .sheet(item: $userEditing) { mainUser in
+                ProfileEditing(for: mainUser)
+                    .presentationCornerRadius(60)
+                    .interactiveDismissDisabled(true)
+                    .accentColor(Color.accent)
+            }
     }
 }
 
@@ -126,7 +124,6 @@ class ProfileImagePickerViewModel: ObservableObject {
                     do {
                         if let image = try await selectedItem.loadTransferable(type: Data.self)?.toImage() {
                             imageToCrop.send(image)
-                            print("Image sent to crop")
                         }
                     } catch {
                         if let err = mapError(error) {
@@ -187,11 +184,13 @@ struct ProfileEditing: View {
                 }
                 HStack {
                     Menu {
+                        #if DEBUG
                         Button {
                             print("camera")
                         } label: {
                             Label("Fotocamera", systemImage: "camera")
                         }
+                        #endif
                         Button {
                             showPicker = true
                         } label: {
@@ -403,7 +402,6 @@ struct ZoomableImageView: UIViewRepresentable {
             
             return UIImage(cgImage: cgImage, scale: normalizedImage.scale, orientation: normalizedImage.imageOrientation)
         }
-
         
         @objc private func handleDoubleTap(_ gesture: UITapGestureRecognizer) {
             let zoomStep = maximumZoomScale / 5
@@ -482,23 +480,26 @@ extension UIImage {
 
 
 #Preview("Profile Preview") {
-    @Previewable @StateObject var userManager = UserManager.shared
-    @Previewable @StateObject var notificationManager = NotificationManager.shared
-    @Previewable @StateObject var keyboardManager = KeyboardManager.shared
+    @Previewable @ObservedObject var userManager = UserManager.shared
+    @Previewable @ObservedObject var notificationManager = NotificationManager.shared
+    @Previewable @ObservedObject var keyboardManager = KeyboardManager.shared
     
+    NavigationStack {
         ProfileView(for: AnyUser(for: userManager.mainUser))
-        .environmentObject(notificationManager)
-        .addAlerts(notificationManager)
-        .addBottomNotifications(notificationManager)
-        .foregroundStyle(Color.accentColor)
-        .environmentObject(userManager)
-        .environmentObject(keyboardManager)
+    }
+    .environmentObject(notificationManager)
+    .addAlerts(notificationManager)
+    .addBottomNotifications(notificationManager)
+    .foregroundStyle(Color.accentColor)
+    .accentColor(Color.accent)
+    .environmentObject(userManager)
+    .environmentObject(keyboardManager)
 }
 
 #Preview("Edit Profile Preview") {
-    @Previewable @StateObject var userManager = UserManager.shared
-    @Previewable @StateObject var notificationManager = NotificationManager.shared
-    @Previewable @StateObject var keyboardManager = KeyboardManager.shared
+    @Previewable @ObservedObject var userManager = UserManager.shared
+    @Previewable @ObservedObject var notificationManager = NotificationManager.shared
+    @Previewable @ObservedObject var keyboardManager = KeyboardManager.shared
     
     if let user = userManager.mainUser {
         ProfileEditing(for: user)
@@ -506,23 +507,25 @@ extension UIImage {
             .addAlerts(notificationManager)
             .addBottomNotifications(notificationManager)
             .foregroundStyle(Color.accentColor)
+            .accentColor(Color.accent)
             .environmentObject(userManager)
             .environmentObject(keyboardManager)
     }
 }
 
 #Preview("Image Cropper Preview") {
-    @Previewable @StateObject var userManager = UserManager.shared
-    @Previewable @StateObject var notificationManager = NotificationManager.shared
-    @Previewable @StateObject var keyboardManager = KeyboardManager.shared
+    @Previewable @ObservedObject var userManager = UserManager.shared
+    @Previewable @ObservedObject var notificationManager = NotificationManager.shared
+    @Previewable @ObservedObject var keyboardManager = KeyboardManager.shared
     
     if let image = userManager.mainUser?.profileImage {
         CircularImageCropper(image: image) { croppedImage in }
-        .environmentObject(notificationManager)
-        .addAlerts(notificationManager)
-        .addBottomNotifications(notificationManager)
-        .foregroundStyle(Color.accentColor)
-        .environmentObject(userManager)
-        .environmentObject(keyboardManager)
+            .environmentObject(notificationManager)
+            .addAlerts(notificationManager)
+            .addBottomNotifications(notificationManager)
+            .foregroundStyle(Color.accentColor)
+            .accentColor(Color.accent)
+            .environmentObject(userManager)
+            .environmentObject(keyboardManager)
     }
 }

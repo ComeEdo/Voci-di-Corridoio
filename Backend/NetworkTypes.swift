@@ -76,6 +76,7 @@ struct DefaultPersistence {
         case mainUser = "MainUser"
         case tab = "Tab"
         case isNotificationActive = "IsNotificationActive"
+        case postPicker = "PostPicker"
     }
     
     private init() {}
@@ -134,37 +135,126 @@ extension FileManager {
 }
 
 struct Timetable: Codable {
-    let TimetableEntrys: [TimetableEntry]
+    let TimetableEntries: [TimetableEntry]
     let classe: Classs
     
     enum CodingKeys: String, CodingKey {
-        case TimetableEntrys = "timetable"
+        case TimetableEntries = "timetable"
         case classe = "class"
     }
 }
 
-struct TimetableEntry: Codable {
+struct TimetableEntry: Codable, Identifiable {
     let id: UUID
-    let weekDay: String
-    let startTime: String
-    let endTime: String
-    let subjectIds: [Teacher.Subjectt]
+    let weekDay: WeekDay
+    let startTime: Date
+    let endTime: Date
+    let subjectModels: [SubjectModel]
     let teachers: [Teacher]?
-
-    enum CodingKeys: String, CodingKey {
-        case id, weekDay, startTime, endTime, subjectIds, teachers
+    
+    init(id: UUID = UUID(), weekDay: WeekDay, startTime: Date, endTime: Date, subjectModels: [SubjectModel], teachers: [Teacher]? = nil) {
+        self.id = id
+        self.weekDay = weekDay
+        self.startTime = startTime
+        self.endTime = endTime
+        self.subjectModels = subjectModels
+        self.teachers = teachers
     }
-
+    init?(id: UUID = UUID(), weekDay: WeekDay, startTime: String, endTime: String, subjectModels: [SubjectModel], teachers: [Teacher]? = nil) {
+        self.id = id
+        self.weekDay = weekDay
+        
+        guard let s = TimetableEntry.timeFormatter.date(from: startTime) else {
+            print("Invalid time format for startTime: \(startTime)")
+            return nil
+        }
+        self.startTime = s
+        
+        guard let e = TimetableEntry.timeFormatter.date(from: endTime) else {
+            print("Invalid time format for endTime: \(endTime)")
+            return nil
+        }
+        self.endTime = e
+        
+        self.subjectModels = subjectModels
+        self.teachers = teachers
+    }
+    init(timetableEntry entry: TimetableEntry, date: Date) {
+        self.id = entry.id
+        self.weekDay = entry.weekDay
+        self.startTime = date.settingTime(from: entry.startTime)!
+        self.endTime = date.settingTime(from: entry.endTime)!
+        self.subjectModels = entry.subjectModels
+        self.teachers = entry.teachers
+    }
+    
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm:ss"
+        return f
+    }()
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case weekDay
+        case startTime
+        case endTime
+        case subjectModels = "subjects"
+        case teachers
+    }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         id = try container.decode(UUID.self, forKey: .id)
-        weekDay = try container.decode(String.self, forKey: .weekDay)
-        startTime = try container.decode(String.self, forKey: .startTime)
-        endTime = try container.decode(String.self, forKey: .endTime)
-        let subjectIntIds = try container.decode([Int].self, forKey: .subjectIds)
-        self.subjectIds = subjectIntIds.compactMap { Teacher.Subjectt.from($0) }
+        
+        weekDay = try container.decode(WeekDay.self, forKey: .weekDay)
+        
+        let startStr = try container.decode(String.self, forKey: .startTime)
+        guard let s = TimetableEntry.timeFormatter.date(from: startStr) else {
+            throw DecodingError.dataCorruptedError(forKey: .startTime, in: container, debugDescription: "Invalid time format: \(startStr)")
+        }
+        startTime = s
+        
+        let endStr = try container.decode(String.self, forKey: .endTime)
+        guard let e = TimetableEntry.timeFormatter.date(from: endStr) else {
+            throw DecodingError.dataCorruptedError(forKey: .endTime, in: container, debugDescription: "Invalid time format: \(endStr)")
+        }
+        endTime = e
+        
+        self.subjectModels = try container.decode([SubjectModel].self, forKey: .subjectModels)
         
         teachers = try container.decodeIfPresent([Teacher].self, forKey: .teachers)
+    }
+}
+
+enum WeekDay: String, Codable {
+    case monday = "Monday"
+    case tuesday = "Tuesday"
+    case wednesday = "Wednesday"
+    case thursday = "Thursday"
+    case friday = "Friday"
+    case saturday = "Saturday"
+    case sunday = "Sunday"
+    
+    init?(calendarWeekday: Int) {
+        switch calendarWeekday {
+        case 1:
+            self = .sunday
+        case 2:
+            self = .monday
+        case 3:
+            self = .tuesday
+        case 4:
+            self = .wednesday
+        case 5:
+            self = .thursday
+        case 6:
+            self = .friday
+        case 7:
+            self = .saturday
+        default:
+            return nil
+        }
     }
 }

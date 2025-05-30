@@ -66,8 +66,7 @@ struct UserSelectorView: View {
                                         HapticFeedback.trigger(HapticFeedback.HapticType.impact(style: .heavy))
                                     }
                                     .sheet(item: $sheetUser) { user in
-                                        UserDetailsView(user: user.user)
-                                            .presentationDragIndicator(.visible)
+                                        UserDetailsView(user: user.user).presentationDragIndicator(.visible)
                                     }
                                 }
                             }
@@ -92,6 +91,9 @@ struct UserSelectorView: View {
             }
         }
         .toolbarBackground(.hidden)
+        .onAppear {
+            HapticFeedback.trigger(HapticFeedback.HapticType.impact(style: UIImpactFeedbackGenerator.FeedbackStyle.rigid))
+        }
     }
 }
 

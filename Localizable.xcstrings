@@ -14,12 +14,12 @@
         }
       }
     },
-    "%@\n%@" : {
+    "%@ – %@" : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@\n%2$@"
+            "value" : "%1$@ – %2$@"
           }
         }
       }
@@ -109,6 +109,9 @@
     "Alerts" : {
 
     },
+    "Anonimo" : {
+
+    },
     "Anulla" : {
 
     },
@@ -119,6 +122,9 @@
 
     },
     "Apple" : {
+
+    },
+    "Attenzione" : {
 
     },
     "Attività di supporto e assistenza agli studenti." : {
@@ -218,6 +224,9 @@
           }
         }
       }
+    },
+    "d" : {
+
     },
     "DAJE" : {
       "localizations" : {
@@ -339,12 +348,6 @@
     "G.P.O.I" : {
 
     },
-    "G.P.O.I Lab" : {
-
-    },
-    "Gallery" : {
-
-    },
     "Gestione e organizzazione di sistemi informatici e reti." : {
 
     },
@@ -352,6 +355,9 @@
 
     },
     "Host Non Trovato" : {
+
+    },
+    "Il contenuto è troppo lungo. Massimo %lld caratteri." : {
 
     },
     "Il nostro certificato è self-signed, iOS non apprezza.\nPer usare Voci Di Corridoio devi installarlo.\nScaricalo a https://%@%@" : {
@@ -364,13 +370,23 @@
         }
       }
     },
+    "Il post è stato pubblicato con successo!" : {
+
+    },
+    "Il post non è stato pubblicato. Riprova." : {
+
+    },
     "Il server è offline.\nRiprova più tardi." : {
 
     },
     "Il server ha risposto con un errore. Riprova più tardi." : {
 
     },
+    "Il titolo è troppo lungo. Massimo %lld caratteri." : {
+
+    },
     "Il token dell'utente è valido." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -381,6 +397,7 @@
       }
     },
     "Il token di autenticazione è valido." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -428,10 +445,10 @@
     "Informatica" : {
 
     },
-    "Informatica Lab" : {
+    "Inglese" : {
 
     },
-    "Inglese" : {
+    "L'array è vuoto: %@" : {
 
     },
     "L'email %@ è già in uso." : {
@@ -518,16 +535,7 @@
     "La richiesta ha impiegato troppo tempo. Riprova più tardi." : {
 
     },
-    "Laboratorio per l'applicazione pratica dei concetti di informatica." : {
-
-    },
-    "Laboratorio per l'applicazione pratica della gestione di sistemi informatici e reti." : {
-
-    },
-    "Laboratorio per l'applicazione pratica delle infrastrutture e dei sistemi informatici e delle reti." : {
-
-    },
-    "Laboratorio per l'applicazione pratica delle tecnologie per la produzione di sistemi informatici e telematici." : {
+    "Laboratorio" : {
 
     },
     "Le credenziali non sono corrette." : {
@@ -550,12 +558,6 @@
 
     },
     "Log out" : {
-
-    },
-    "Lorem ipsum dolor sit amet" : {
-
-    },
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." : {
 
     },
     "Matematica" : {
@@ -630,6 +632,9 @@
     "Non sono state trovate classi" : {
 
     },
+    "Non trovato\nProfessore: %@" : {
+
+    },
     "Nuovo token di autenticazione." : {
       "localizations" : {
         "en" : {
@@ -650,6 +655,9 @@
         }
       }
     },
+    "Oggi" : {
+
+    },
     "Operazione fallita" : {
 
     },
@@ -657,6 +665,9 @@
 
     },
     "Orario" : {
+
+    },
+    "Panini" : {
 
     },
     "Password" : {
@@ -695,6 +706,9 @@
     "Post" : {
 
     },
+    "Postato" : {
+
+    },
     "Preside" : {
 
     },
@@ -730,10 +744,10 @@
         }
       }
     },
-    "Recensione %@" : {
+    "Rating View" : {
 
     },
-    "Recensire" : {
+    "Recensione %@" : {
 
     },
     "Reinit" : {
@@ -866,13 +880,11 @@
     "Sistemi e Reti" : {
 
     },
-    "Sistemi e Reti Lab" : {
-
-    },
     "SIUM%lld" : {
 
     },
     "spacchettato." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -923,9 +935,6 @@
     "Study Field: %@" : {
 
     },
-    "subject" : {
-
-    },
     "Successo" : {
       "localizations" : {
         "en" : {
@@ -970,9 +979,6 @@
     "TPSIT" : {
 
     },
-    "TPSIT Lab" : {
-
-    },
     "Tutor" : {
 
     },
@@ -1012,6 +1018,12 @@
       }
     },
     "Voci di Corridoio" : {
+
+    },
+    "Voti" : {
+
+    },
+    "Voto: %@" : {
 
     }
   },

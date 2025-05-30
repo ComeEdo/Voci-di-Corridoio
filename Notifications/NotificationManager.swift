@@ -57,17 +57,17 @@ class NotificationManager: ObservableObject {
         DefaultPersistence.delete(type: IsNotificationActive.self)
     }
     
-    func showBottom(_ notification: MainNotification.NotificationStructure, duration: TimeInterval = 6, onDismiss: @escaping () -> Void = {}) {
+    func showBottom(_ notification: MainNotification.NotificationStructure, duration: TimeInterval = 6, onDismiss: (() -> Void)? = nil) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if self.BottomShowing == nil && self.isBottomWaiting == false {
                 self.BottomShowing = BottomNotification(notification: notification, duration: duration) {
-                    onDismiss()
+                    onDismiss?()
                     self.nextBottom()
                 }
             } else {
                 self.BottomViewsQueue.append(BottomNotification(notification: notification, duration: duration) {
-                    onDismiss()
+                    onDismiss?()
                     self.nextBottom()
                 })
             }
@@ -88,17 +88,17 @@ class NotificationManager: ObservableObject {
         }
     }
     
-    func showAlert(_ notification: MainNotification.NotificationStructure, dismissButtonTitle: LocalizedStringResource = "DAJE", onDismiss: @escaping () -> Void = {} ) {
+    func showAlert(_ notification: MainNotification.NotificationStructure, dismissButtonTitle: LocalizedStringResource = "DAJE", onDismiss: (() -> Void)? = nil ) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if self.AlertShowing == nil && self.isAlertWaiting == false {
                 self.AlertShowing = AlertNotification(notification: notification, dismissButtonTitle: dismissButtonTitle) {
-                    onDismiss()
+                    onDismiss?()
                     self.nextAlert()
                 }
             } else {
                 self.AlertViewsQueue.append(AlertNotification(notification: notification, dismissButtonTitle: dismissButtonTitle) {
-                    onDismiss()
+                    onDismiss?()
                     self.nextAlert()
                 })
             }

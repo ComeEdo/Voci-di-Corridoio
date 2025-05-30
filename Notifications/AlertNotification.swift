@@ -10,7 +10,7 @@ import SwiftUI
 class AlertNotification: MainNotification {
     let dismissButtonTitle: LocalizedStringResource
     
-    init(notification: NotificationStructure, dismissButtonTitle: LocalizedStringResource, onDismiss: @escaping () -> Void) {
+    init(notification: NotificationStructure, dismissButtonTitle: LocalizedStringResource, onDismiss: (() -> Void)?) {
         self.dismissButtonTitle = dismissButtonTitle
         super.init(notification: notification, onDismiss: onDismiss)
     }

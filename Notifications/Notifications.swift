@@ -60,11 +60,40 @@ enum Codes: Error, Notifiable {
     }
 }
 
+enum PostErrors: Error, Notifiable {
+    case titleTooLong(maxLength: Int)
+    case contentTooLong(maxLength: Int)
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .titleTooLong(let maxLength):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Il titolo è troppo lungo. Massimo \(maxLength) caratteri.", type: .error)
+        case .contentTooLong(let maxLength):
+            return MainNotification.NotificationStructure(title: "Errore", message: "Il contenuto è troppo lungo. Massimo \(maxLength) caratteri.", type: .error)
+        }
+    }
+}
+
+enum PostNotification: Notifiable {
+    case posted
+    case notPosted
+    
+    var notification: MainNotification.NotificationStructure {
+        switch self {
+        case .posted:
+            return MainNotification.NotificationStructure(title: "Postato", message: "Il post è stato pubblicato con successo!", type: .success)
+        case .notPosted:
+            return MainNotification.NotificationStructure(title: "Attenzione", message: "Il post non è stato pubblicato. Riprova.", type: .warning)
+        }
+    }
+}
+
 enum Errors: Error, Notifiable {
     case invalidResponse(message: String)
     case unknownError(message: String)
     case JSONError(message: String)
     case invalidURL(url: String)
+    case arrayIsEmpty(message: String)
     
     var notification: MainNotification.NotificationStructure {
         switch self {
@@ -76,6 +105,8 @@ enum Errors: Error, Notifiable {
             return MainNotification.NotificationStructure(title: "Errore", message: "Errore JSON riscontrato:\n\(message)", type: .error)
         case .invalidURL(let url):
             return MainNotification.NotificationStructure(title: "Errore", message: "L'URL \(url) non è valido", type: .error)
+        case .arrayIsEmpty(let message):
+            return MainNotification.NotificationStructure(title: "Errore", message: "L'array è vuoto: \(message)", type: .error)
         }
     }
 }

@@ -9,9 +9,9 @@ import SwiftUI
 
 @main
 struct Voci_di_CorridoioApp: App {
-    @StateObject private var userManager = UserManager.shared
-    @StateObject private var notificationManager = NotificationManager.shared
-    @StateObject private var keyboardManager = KeyboardManager.shared
+    @ObservedObject private var userManager = UserManager.shared
+    @ObservedObject private var notificationManager = NotificationManager.shared
+    @ObservedObject private var keyboardManager = KeyboardManager.shared
     
     var body: some Scene {
         WindowGroup {
@@ -25,6 +25,8 @@ struct Voci_di_CorridoioApp: App {
             .addAlerts(notificationManager)
             .addBottomNotifications(notificationManager)
             .foregroundStyle(Color.accentColor)
+            .tint(Color.accentColor)
+            .accentColor(Color.accent)
             .onOpenURL { URL in
                 //vocidicorridoio://settings/ssl
                 openSettings(with: URL)

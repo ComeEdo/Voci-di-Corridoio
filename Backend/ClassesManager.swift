@@ -154,8 +154,7 @@ func checkResponse<T: Codable, V: ApiResponseData<T>>(response: URLResponse?, da
             if let userId = UserManager.shared.mainUser?.user.id {
                 Task {
                     do {
-                        let alert = try await UserManager.shared.getAuthUserAndToken(userId)
-                        Utility.setupBottom(alert.notification)
+                        try await UserManager.shared.getAuthUserAndToken(userId)
                     } catch {
                         if let err = mapError(error) {
                             print(err.description)

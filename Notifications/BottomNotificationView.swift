@@ -74,7 +74,7 @@ struct BottomNotificationView: View {
             offsetY = defaultOffset
         }
         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { _ in
-            bottom.onDismiss()
+            bottom.onDismiss?()
         }
     }
     
@@ -98,5 +98,7 @@ struct BottomNotificationView: View {
 }
 
 #Preview {
-    BottomNotificationView(BottomNotification(notification: MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbb", type: .info), duration: 6, onDismiss: { print("workaa") } ))
+    @Previewable @ObservedObject var keyboardManager = KeyboardManager.shared
+    
+    BottomNotificationView(BottomNotification(notification: MainNotification.NotificationStructure(title: "aaaaaaaaaaaaaaaaaaaaaa", message: "bbbbbbbbbbbbbbbbbbbbbbbbb", type: .info), duration: 6, onDismiss: { print("workaa") } )).environmentObject(keyboardManager)
 }
